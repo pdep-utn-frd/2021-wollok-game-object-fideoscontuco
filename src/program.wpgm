@@ -1,0 +1,7 @@
+// program example
+
+program main {
+
+	console.println('Hello Wollok')
+
+}
