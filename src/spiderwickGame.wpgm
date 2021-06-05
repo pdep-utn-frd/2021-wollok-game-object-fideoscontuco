@@ -13,8 +13,10 @@ program fideosConTuco {
 	//game.addVisualCharacter(girasoles)
 	game.addVisual(girasoles)
 	
+	
 	//atributos
 	game.showAttributes(girasoles)
+	
 	
 	//colisiones
 	keyboard.c().onPressDo{girasoles.comerPosicion()}

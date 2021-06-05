@@ -35,7 +35,7 @@ class Visual { // arboles
 object girasoles {
 
 	var property energia = 150
-	var property position = game.at(1, 3)
+	var property position = game.at(0, 3)
 
 	method image() = "girasoles.png"
 
@@ -46,7 +46,7 @@ object girasoles {
 		} catch e : wollok.lang.Exception {
 			game.say(self, "no hay nada aqui para comer")
 		}
-	}
+	} 
 
 	method cansado() {
 		return (energia == 0)
@@ -61,9 +61,15 @@ object girasoles {
   	return 
     game.getObjectsIn(nuevaPos).all{sujeto => sujeto.esAtravesable()}
 	}
+	method fueraDelLimite(nuevaPos){
+		
+		const x = nuevaPos.x()
+		const y = nuevaPos.y()
+		return (x >= game.width() or x <= -1) or ( y >= game.height() or y <=-1) 
+	} //or ( y >= game.height() or y <= 0) 
 	
 	method irA(nuevaPos) { // toma objeto pos
-		if (not self.cansado() && self.puedeMoverseA(nuevaPos)) { // si no esta cansado y casillero siguiente es objeto mov
+		if (not self.cansado() && self.puedeMoverseA(nuevaPos) and not self.fueraDelLimite(nuevaPos)) { // si no esta cansado y casillero siguiente es objeto mov
 			//const distancia = position.distance(nuevaPos) // sirve para viaja varios cuadrados a la vez
 			//self.caminar(distancia) // pierde energia x la distancia recorrida, dist es contante no hace falta parametro
 			energia = energia - 5
@@ -73,7 +79,7 @@ object girasoles {
 			game.schedule(30000, { => game.stop()}) // expandir a pantalla de derrota
 		}
 	}
-		
+
 		 
 /*  
  * 
