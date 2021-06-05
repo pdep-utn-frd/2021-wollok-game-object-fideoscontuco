@@ -1,0 +1,21 @@
+//animacion de humo?
+//en vez de remover bayas poner una baya seca o tronco - pendiente
+//van crecienco con el dia
+
+
+
+//tiempo. PASA X TIEMPO, PASA UN DIA. 
+//trigger, mueren x bichos aparecen mas bayas
+//CRECEN DE VUELTA LAS BAYAS, 
+
+
+//respawnean bichos - pendiente. agregar audios a zombie tomi
+
+// que coma bayas y no la casa - 
+
+// gasta energia cuando camina, a expandir cuando ataca - 
+
+//cuando perdes, que pasa? game.stop , expandir - pendiente
+
+
+//la casa se destruye al chocarla varias veces (on collide do, contador de choques) - pendiente
