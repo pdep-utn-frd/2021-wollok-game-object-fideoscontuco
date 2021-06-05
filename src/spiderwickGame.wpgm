@@ -24,6 +24,9 @@ program fideosConTuco {
 		keyboard.right().onPressDo({ girasoles.irA(girasoles.position().right(1))  })
 		keyboard.left().onPressDo({ girasoles.irA(girasoles.position().left(1))  })
 	
+	//
+	
 	game.start()	
-
+	
 }
+
