@@ -21,40 +21,6 @@ object casa {
 
 }
 
-/*casa grande, unir tiles, opcion B a cellSize(), 
- * todo objeto grande tendria que ser dividod en partes
-
-
- * class Casa{
- * 	var property esAtravesable = false
- * 	var property position
- * }
-
- * object casa1 inherits Casa(position = (game.at(3,4) )){
- * 	method image() = "casa1"
- * }
-
- * object casa2 inherits Casa(position = (game.at(5,4) )){
- * 	method image() = "casa1"
- * }
- * 
- * class casaGrande{
- * var posCrear
- * 
- *  
- *  
- *  
- * object casas{
- * const casa1 = new CasaGrande(position = game.at(3,4))
- * const casa2 = new  CasaGrande(position = game.at(1,7))
- * }
-
- * class CasaGrande{
- * 	var property esAtravesable = 0
- * 		
- * }
-
- */
 object palmera {
 
 	var property position = game.center()
@@ -101,32 +67,6 @@ object bayasMedianas {
 		game.removeVisual(self)
 		roca.darConsejo(self)
 	}
-
-}
-
-/*  
- * class Baya{
- * 	var property esAtravesable = true
- * 	var property calorias = 40  
- * 	var property position = game.at(1, 3)
-
- * 	method image() = "bayasMedianas.png"
-
- * 	method esInteractuado(sujetoParticipe) {
- * 		sujetoParticipe.sumarEnergia(calorias)
- * 		game.say(sujetoParticipe, "ñam")
- * 		game.removeVisual(self)
- * 		roca.darConsejo(self)
- * 	}
- * 	
- * }
- *  
- * const bayaPrueba = new Baya()
- */
-class Visual { // arboles
-
-	var property position
-	var property image
 
 }
 
@@ -324,21 +264,3 @@ object dia {
 
 }
 
-/* 
- * object arriba {
- *   method posicionEnEsaDireccion() = girasoles.position().up(1)
- * }
-
- * object abajo {
- *   method posicionEnEsaDireccion() = girasoles.position().down(1)
- * }
-
- * object izquierda {
- *   method posicionEnEsaDireccion() = girasoles.position().left(1)
- * }
-
- * object derecha {
- *   method posicionEnEsaDireccion() = girasoles.position().right(1)
- * }
-
- */

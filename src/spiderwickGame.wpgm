@@ -5,7 +5,6 @@ program fideosConTuco {
 	
 	nivel.inicio()
 	game.start()
-	
-	
+	 
 }
 
