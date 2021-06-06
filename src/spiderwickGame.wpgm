@@ -1,32 +1,11 @@
 import wollok.game.*
-import models.*
+import nivel.*
+
 program fideosConTuco {
 	
-	game.height(10) // 50PX 50PX  10 = 500
-	game.width(10)
-	game.title("fideosConTuco-casero")
-	//game.boardGround("Map002.jpg") 
-	//visuales
-	game.addVisual(palmera)// visualIn ini objeto ya con pos
-	game.addVisual(casa)
-	game.addVisual(bayasMedianas)
-	//game.addVisualCharacter(girasoles)
-	game.addVisual(girasoles)
+	nivel.inicio()
+	game.start()
 	
-	//atributos
-	game.showAttributes(girasoles)
-	
-	//colisiones
-	keyboard.c().onPressDo{girasoles.comerPosicion()}
- 	
-	keyboard.up().onPressDo({ girasoles.irA(girasoles.position().up(1))  })
-		keyboard.down().onPressDo({ girasoles.irA(girasoles.position().down(1))  })
-		keyboard.right().onPressDo({ girasoles.irA(girasoles.position().right(1))  })
-		keyboard.left().onPressDo({ girasoles.irA(girasoles.position().left(1))  })
-	
-	//
-	
-	game.start()	
 	
 }
 
