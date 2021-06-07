@@ -21,6 +21,129 @@ object casa {
 
 }
 
+class Baya {
+
+	var property esAtravesable = true
+	var property calorias = 10
+	var property position = game.at(1, 3)
+
+	method image() = "bayasMedianas.png"
+
+	method esInteractuado(sujetoParticipe) {
+		sujetoParticipe.sumarEnergia(calorias)
+		game.say(sujetoParticipe, "ñam")
+		game.removeVisual(self)
+		roca.darConsejo(self)
+	}
+
+}
+
+// preguntar que espacios estan vacios en y = 1. y en esos espacios, hacer un randomUpToMax()
+const baya1 = new Baya(position = game.at(1, 1))
+
+const baya2 = new Baya(position = game.at(1, 2))
+
+const baya3 = new Baya(position = game.at(1, 3))
+
+const baya4 = new Baya(position = game.at(1, 4))
+
+const baya5 = new Baya(position = game.at(1, 5))
+
+const baya6 = new Baya(position = game.at(1, 6))
+
+const baya7 = new Baya(position = game.at(1, 7))
+
+const baya8 = new Baya(position = game.at(1, 8))
+
+const baya9 = new Baya(position = game.at(1, 9))
+
+object tablero{
+	
+	method filasVacias(posX){
+		const posiciones = []
+		const ancho = game.width() - 1  // debemos restarles uno para  
+		const alto = game.height()  - 1 // que las posiciones se generen bien.
+		(posX .. alto  ).forEach{ num => posiciones.add(game.at(posX, num))} // lado izquierdo
+		return posiciones.filter{ pos => game.getObjectsIn(pos).isEmpty()} // array solo con true
+	}
+	
+	method filasVaciasTodoElMapa(){ // completar
+		
+	}
+}
+
+object zombie {
+
+	var property position = game.at(1, 0) // game.at(1, 2.randomUpTo(9))
+	var property image = "hongos.png"
+	var property vida = 100
+	var danio = 10
+ /*
+	method posicionesVaciosEn1() { // setter de posiciones
+		var posiciones = []
+		const ancho = game.width() - 1  // debemos restarles uno para  
+		const alto = game.height()  - 1 // que las posiciones se generen bien.
+		(2 .. alto  ).forEach{ num => posiciones.add(game.at(2, num))} // lado izquierdo
+		return posiciones.filter{ pos => game.getObjectsIn(pos).isEmpty()} // array solo con true
+		//probar map, filter no es final
+	}
+	 */
+
+	method muerte(){
+		if (vida <= 0){
+			self.position(game.at(15, 15)) 
+			self.hacerMasFuerte()
+			self.position(tablero.filasVacias(2).anyOne())
+		}
+	}
+	
+	method hacerMasFuerte(){
+		vida = 100
+		danio = danio + 10
+	}
+	
+	// var nombre
+	method esInteractuado(sujetoParticipe) {
+		game.say(sujetoParticipe, "la concha de tu madre")
+		vida = vida - 200
+		self.muerte()
+	}
+
+	method esAtravesable() = true
+	/*  
+	method muerte() {
+		if (vida <= 0) {
+			self.position(game.at(15, 15)) // out of bounds
+			vida = 100
+			game.onTick(200, "zombieBuscaSpawn", {=> self.buscarPosicion()})
+			game.showAttributes(self) // { => self.position(game.at(1, 1.randomUpTo(9)))})
+			danio += 2
+		}
+	}
+ 
+	method buscarPosicion() {
+		const pos2 = game.at(1, 1.randomUpTo(9)) // casa.position()
+		if (self.posicionEsBuena(pos2)) {
+			game.removeTickEvent("zombieBuscaSpawn") // sale del ciclo
+			self.position(pos2) // cambia nueva pos
+		} else game.say(girasolesSentientes, "zombie se topo con algo")
+		self.muerte()
+	}
+
+	method posicionEsBuena(pos) {
+		// si hay un objeto
+		return game.getObjectsIn(pos).isEmpty()
+	}
+*/
+}
+
+/*  
+ * class Sujetos{ // metodos polimorficos interface
+ * 	method esInteractuado(sujetoParticipe)()
+ * 	method esAtravesable()
+ * 	method image()
+ * }
+ */
 object palmera {
 
 	var property position = game.center()

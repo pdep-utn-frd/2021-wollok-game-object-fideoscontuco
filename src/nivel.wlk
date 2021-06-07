@@ -8,8 +8,8 @@ object nivel{
 	method inicio() {
 		game.clear() // importante para reiniciar 
 		
-		game.height(largo) // 50PX 50PX  10 = 500
-		game.width(ancho)
+		game.height(10) // 50PX 50PX  10 = 500
+		game.width(10)
 		game.title("fideosConTuco-casero")
 		game.cellSize(50) // imagenes mas grandes
 			// game.boardGround("Map002.jpg") 
@@ -22,6 +22,20 @@ object nivel{
 	 	game.addVisual(jardinCasa)
 	 	game.addVisual(chimeneaCasa)
 	 	
+	 	/*  probar hacer coleciones de bayas
+	 	game.addVisual(baya1)
+	 	game.addVisual(baya2)
+	 	game.addVisual(baya3)
+	 	game.addVisual(baya4)
+	 	game.addVisual(baya5)
+	 	game.addVisual(baya6)
+	 	game.addVisual(baya7)
+	 	game.addVisual(baya8)
+	 	game.addVisual(baya9)
+	 	*/
+	    game.addVisual(zombie)
+	    game.showAttributes(zombie)
+	    
 		game.addVisual(bayasMedianas)
 			// game.addVisualCharacter(girasolesSentientes)
 		game.addVisual(girasolesSentientes)
@@ -50,9 +64,9 @@ object nivel{
 	
 	method escenarioDerrota(){
 		game.clear()
-		game.width(ancho) 
+		game.width(10) 
 		game.title("fideosConTuco-casero")
-		game.height(largo)
+		game.height(10)
 		game.ground("0.png" )
 		game.addVisualIn(roca,game.center())
 //		game.allElements().forEach{ e => e.reiniciarEstado()} 
@@ -64,4 +78,3 @@ object nivel{
 		
 	}
 }
-

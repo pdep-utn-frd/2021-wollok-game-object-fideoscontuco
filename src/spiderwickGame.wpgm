@@ -2,8 +2,10 @@ import wollok.game.*
 import nivel.*
 
 program fideosConTuco {
-	
+	game.width(10)
+	game.height(10)
 	nivel.inicio()
+	
 	game.start()
 	 
 }
