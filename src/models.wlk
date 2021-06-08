@@ -31,10 +31,10 @@ object tablero {
 		const posiciones = []
 		const ancho = game.width() - 2
 		const alto = game.height() - 2
-		(0 .. alto  ).forEach{ num => posiciones.add(game.at(0, num))} // lado izquierdo
-		(0 .. alto  ).forEach{ num => posiciones.add(game.at(ancho, num))} // derecha 
-		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, alto))} // arriba 
-		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, 0))}
+		(0 .. alto  ).forEach{ num => posiciones.add(game.at(1, num))} // lado izquierdo
+		(0 .. alto  ).forEach{ num => posiciones.add(game.at(ancho - 1, num))} // derecha 
+		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, alto - 1))} // arriba 
+		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, 1))}
 		return posiciones.filter{ pos => game.getObjectsIn(pos).isEmpty() } // array solo con true
 	}
 
@@ -47,13 +47,15 @@ object tablero {
 	method fueraDelLimite(nuevaPos) {
 		const x = nuevaPos.x()
 		const y = nuevaPos.y()
-		return (x > game.width() or x < 0) or ( y >= game.height() or y < 0)
+		return (x >= game.width() or x < 0) or ( y >= game.height() or y < 0)
 	}
 
-	method puedeMoverseA(nuevaPos) { // si es atravezable y no esta fuera del limite
-		return ( not self.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() }) // get objectsIn devuelve lista. 
+	 // zombie huye solo a tiles vacios
+	method puedeMoverseA(nuevaPos) { // si esta vacio y no esta fuera del limite
+		return ( not self.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).isEmpty()) // get objectsIn devuelve lista. 
 		//
 	}
+	
 
 	method reiniciarEstado() {
 	}
@@ -62,7 +64,9 @@ object tablero {
 	method espacioLibreEnMapa(){  // preguntar
 		var listaOcupados = []
 		var listaTotal = []
-		(0 .. 10).forEach{ x=> (x .. 10).forEach{ y => listaTotal.add(game.at(x,y))}} 
+		(0 .. 10).forEach{ x => (0 .. 10).forEach{ y => listaTotal.add(game.at(x,y))}}  //falta 2,0
+	//	(10 .. 10-1).forEach{ y => (y .. 10-1).forEach{ x => listaTotal.add(game.at(x,y))}}
+		 
 		game.allVisuals().forEach{ v => listaOcupados.add(v.position())}
 		listaTotal.removeAll(listaOcupados)
 		return listaTotal 
@@ -135,7 +139,11 @@ object zombie {
 	}
 
 }
-
+object bosque{
+	method sembrarBosque(n){
+		n.times{ l  => game.addVisual(new Arbol())}
+	}
+}
 class Arbol {
 
 	var property position = tablero.posRandom()
@@ -306,7 +314,7 @@ object personajePrincipal {
 	var property position = game.at(1, 3)
 	var property madera = 0
 	var property contadorEscondidoDePasos = 0
-	var property danio = 40
+	var property danio = 5
 
 	method image() = "shovelMain.png"
 
@@ -351,7 +359,7 @@ object personajePrincipal {
 	method irA(nuevaPos) { // toma objeto pos
 	// cada paso chequeo si no hay energia o casa esta rota
 		if (self.puedeMoverseA(nuevaPos)) { // solo si casillero siguiente es objeto atravesable
-			self.cansar(5)
+			self.cansar(2)
 			position = nuevaPos // asigna nueva posicion
 			contadorEscondidoDePasos = contadorEscondidoDePasos + 1
 		}
@@ -369,12 +377,12 @@ object personajePrincipal {
 		}
 	}
 
-	method reiniciarEstado() {
+	method reiniciarEstado() { // rever, cambiar energia requeire en ambos lugares,no esta bueno
 		self.energia(333)
 		position = game.center()
 		madera = 0
 		contadorEscondidoDePasos = 0
-		danio = 40
+		danio = 5
 	}
 
 }
