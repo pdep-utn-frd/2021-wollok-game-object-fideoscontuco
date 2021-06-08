@@ -19,17 +19,13 @@ object casa {
 		return (salud < 0 )
 	}
 
+	method reiniciarEstado() {
+		salud = 40
+	}
+
 }
 
 object tablero {
-
-	method filasVacias(posX) {
-		const posiciones = []
-		const ancho = game.width() - 1
-		const alto = game.height() - 1
-		(posX .. alto  ).forEach{ num => posiciones.add(game.at(posX, num))} // lado izquierdo
-		return posiciones.filter{ pos => game.getObjectsIn(pos).isEmpty() } // array solo con true
-	}
 
 	method celdasVaciasBordes() { // completar
 		const posiciones = []
@@ -41,29 +37,41 @@ object tablero {
 		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, 0))}
 		return posiciones.filter{ pos => game.getObjectsIn(pos).isEmpty() } // array solo con true
 	}
-	 
+
 	method espacioLibreAlrededor(posicion) { // tom 4 direcciones posibles y toma la aprimera que este empty
 		const posiciones = [ posicion.up(1), posicion.down(1), posicion.right(1), posicion.left(1) ]
-		
-		return  posiciones.filter{ p => self.puedeMoverseA(p)}.anyOne() //check si esta fuera de limite o 
- 	
+		return posiciones.filter{ p => self.puedeMoverseA(p) }.anyOne() // check si esta fuera de limite o 
 	}
-	
-	
-	
-	//logica repetida
+
+	// logica repetida 
 	method fueraDelLimite(nuevaPos) {
 		const x = nuevaPos.x()
 		const y = nuevaPos.y()
-		return (x > game.width() or x < 0) or ( y >= game.height() or y < 0) 
+		return (x > game.width() or x < 0) or ( y >= game.height() or y < 0)
 	}
-	
+
 	method puedeMoverseA(nuevaPos) { // si es atravezable y no esta fuera del limite
 		return ( not self.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() }) // get objectsIn devuelve lista. 
 		//
 	}
-	 
+
+	method reiniciarEstado() {
+	}
 	
+	
+	method espacioLibreEnMapa(){  // preguntar
+		var listaOcupados = []
+		var listaTotal = []
+		(0 .. 10).forEach{ x=> (x .. 10).forEach{ y => listaTotal.add(game.at(x,y))}} 
+		game.allVisuals().forEach{ v => listaOcupados.add(v.position())}
+		listaTotal.removeAll(listaOcupados)
+		return listaTotal 
+	}
+	
+	method posRandom(){
+		return self.espacioLibreEnMapa().anyOne()
+	}
+	 
 }
 
 object zombie {
@@ -80,8 +88,7 @@ object zombie {
 			self.hacerMasFuerte()
 				// game.schedule(2000, { self.position(tablero.filasVacias(1).anyOne())}) // no aparezca inst
 			game.schedule(2000, { self.position(tablero.celdasVaciasBordes().anyOne())})
-		} else 
-		self.huye()
+		} else self.huye()
 	}
 
 	// logica repetida con personajePrincipal , pasar a clase mas adelante
@@ -113,11 +120,17 @@ object zombie {
 
 	method esAtravesable() = true
 
+	method reiniciarEstado() {
+		position = game.at(1, 0)
+		danio = 10
+		vida = 100
+	}
+
 }
 
-object arbol {
+class Arbol {
 
-	var property position = game.center()
+	var property position = tablero.posRandom()
 	var property esAtravesable = true
 	var property calorias = 0
 	var estaEnPie = true
@@ -142,11 +155,20 @@ object arbol {
 
 	method reiniciarEstado() {
 		estaEnPie = true
+		madera = 40
 	}
 
 }
-
-object bayasMedianas {
+/*  
+object listaDeArboles{
+	var lista = []
+	
+	method cuantosArboles(nro){
+		nro.times{game.addVisualnew Arbol()}
+	}
+}
+ */
+class BayasMedianas {
 
 	var property esAtravesable = true
 	var property calorias = 10
@@ -160,6 +182,9 @@ object bayasMedianas {
 		game.removeVisual(self)
 	}
 
+	method reiniciarEstado() {
+	}
+
 }
 
 object roca {
@@ -167,10 +192,20 @@ object roca {
 	var property position = game.at(2, 8)
 	var property esAtravesable = false
 	var property c = 0
+	var property diccio = new Dictionary() // const y objeto mismo nombre rompen todo
+
+	// const presentacion = diccio.put(presentacion,"interactua con sujetos presionando la c")
+	method llenarDiccio() {
+		diccio.put(new Arbol(), "la madera pueda utilizarse para reparar  la casa")
+			// diccio.put(bayasMedianas, "bayas aparecen cada cierto tiempo")
+		diccio.put(casa, "si la casa cae pierdes el juego")
+		diccio.put(zombie, "no dejes que los zombies se acerquen a la casa")
+	}
 
 	method image() = "piedra80.png"
 
 	method mensajeDeBienvenida() {
+		self.llenarDiccio()
 		return "preciona C para interactuar con objetos"
 	}
 
@@ -184,39 +219,46 @@ object roca {
 	 } */
 	method darConsejo(sobreQuien) { // consejo se elegi arb 
 		try { // que no lo de al mismo tiempo que ocurre el mensaje de la accion
-			var consejo = diccioDeBuenosConsejos.diccio().get(sobreQuien)
+			var consejo = diccio.get(sobreQuien)
 			game.schedule(3000, { game.say(self, consejo) // bloques
-				diccioDeBuenosConsejos.diccio().remove(sobreQuien)
+				diccio.remove(sobreQuien)
 			})
 		} catch e : ElementNotFoundException {
 		// game.say(self,"no deberia decir nada ahora")// hacer nada - preguntar 
 		}
 	}
 
+	method reiniciarEstado() {
+	}
+
 }
 
 //como inicializo u n dictionary y lo populo de mejor manera?
-object diccioDeBuenosConsejos { //quiero que los consejos se agoten. sean un one shot 
+/*  
+ * object diccioDeBuenosConsejos { //quiero que los consejos se agoten. sean un one shot 
 
-	var property diccio = new Dictionary() // const y objeto mismo nombre rompen todo
-	// const presentacion = diccio.put(presentacion,"interactua con sujetos presionando la c")
-	const madera = diccio.put(arbol, "la madera pueda utilizarse para reparar  la casa")
-	const bayas = diccio.put(bayasMedianas, "bayas aparecen cada cierto tiempo")
-	const hogar = diccio.put(casa, "si la casa cae pierdes el juego")
-	const zomb = diccio.put(zombie, "no dejes que los zombies se acerquen a la casa")
-
-}
-
+ * 	var property diccio = new Dictionary() // const y objeto mismo nombre rompen todo
+ * 	// const presentacion = diccio.put(presentacion,"interactua con sujetos presionando la c")
+ * 	const madera = diccio.put(arbol, "la madera pueda utilizarse para reparar  la casa")
+ * 	const bayas = diccio.put(bayasMedianas, "bayas aparecen cada cierto tiempo")
+ * 	const hogar = diccio.put(casa, "si la casa cae pierdes el juego")
+ * 	const zomb = diccio.put(zombie, "no dejes que los zombies se acerquen a la casa")
+ * 	
+ * 	 
+ }*/
 // para que las paredes de la casa no puedan ser atravesadas y solo pueda entrarse por la puerta
 // un mejor enfoque seria dividir la imagen en 4 de la casa, y tener un objeto padre que
 // conoce la salud de la casa, y pasarle a los  hijos que se encargen del metodo imagen c/u
-object techoCasa {
+object techoCasa { // ver unir casa 
 
 	var property position = casa.position().up(1)
 	var property esAtravesable = false
 
 	method image() {
 		return "tileInvisible.png"
+	}
+
+	method reiniciarEstado() {
 	}
 
 }
@@ -230,6 +272,9 @@ object chimeneaCasa {
 		return "tileInvisible.png"
 	}
 
+	method reiniciarEstado() {
+	}
+
 }
 
 object jardinCasa {
@@ -241,12 +286,15 @@ object jardinCasa {
 		return "tileInvisible.png"
 	}
 
+	method reiniciarEstado() {
+	}
+
 }
 
 ////
 object personajePrincipal {
 
-	var property energia = 666
+	var property energia = 333
 	var property position = game.at(1, 3)
 	var property madera = 0
 	var property contadorEscondidoDePasos = 0
@@ -274,7 +322,7 @@ object personajePrincipal {
 		energia = energia + nro
 	}
 
-	method cansado() {
+	method estaCansado() {
 		return (energia <= 0)
 	}
 
@@ -299,8 +347,11 @@ object personajePrincipal {
 			position = nuevaPos // asigna nueva posicion
 			contadorEscondidoDePasos = contadorEscondidoDePasos + 1
 		}
-		derrota.hayDerrota(self) // si queda con e nergia negativa o su casa esta rota luego de
-		// finalizar el paso pierde
+		if (self.estaCansado()) {
+			nivel.escenarioDerrota()
+		}
+	// si queda con e nergia negativa o su casa esta rota luego de
+	// finalizar el paso pierde
 	}
 
 	method alarmaDeEnergia() {
@@ -310,18 +361,27 @@ object personajePrincipal {
 		}
 	}
 
-}
-
-object derrota {
-
-	method hayDerrota(sujeto) {
-		if (sujeto.cansado() or casa.estaRota()) {
-			nivel.escenarioDerrota() // cambia escena
-		}
+	method reiniciarEstado() {
+		self.energia(55)
+		position = game.center()
+		madera = 0
+		contadorEscondidoDePasos = 0
+		danio = 40
 	}
 
 }
 
+/*  
+ * object derrota {
+
+ * 	method comprobarDerrota(sujeto) {
+ * 		if (sujeto.cansado() or casa.estaRota()) {
+ * 			nivel.escenarioDerrota() // cambia escena
+ * 		}
+ * 	}
+
+ * }
+ */
 object nube {
 
 	var property position = game.at(1, 9)
@@ -346,6 +406,10 @@ object nube {
 			self.position(game.at(1, 9)) // mueve al inicio y suma 1 dia
 		} else self.position((self.position().right(1)))
 		self.position(self.position().down(1))
+	}
+
+	method reiniciarEstado() {
+		position = game.at(1, 9)
 	}
 
 }
