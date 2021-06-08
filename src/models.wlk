@@ -74,19 +74,27 @@ object tablero {
 	 
 }
 
+class Sonido{ // los sonidos pueden ejecutarse una sola vez, 
+//entonces instanciamos
+	var property agonia = game.sound("tomasAgonia.mp3")
+}
+
 object zombie {
 
 	var property position = game.at(1, 0) // game.at(1, 2.randomUpTo(9))
 	var property image = "zombie3.png"
 	var property vida = 100
 	var danio = 10
-
+	 
+	
 	method recibeDanio() {
 		vida = vida - personajePrincipal.danio()
+		 
 		if (vida <= 0) {
+			new Sonido().agonia().play()
 			self.position(game.at(15, 15)) // moverlo a 15 o respawnear? Preguntar mejor enfoque
 			self.hacerMasFuerte()
-				// game.schedule(2000, { self.position(tablero.filasVacias(1).anyOne())}) // no aparezca inst
+			
 			game.schedule(2000, { self.position(tablero.celdasVaciasBordes().anyOne())})
 		} else self.huye()
 	}
@@ -362,7 +370,7 @@ object personajePrincipal {
 	}
 
 	method reiniciarEstado() {
-		self.energia(55)
+		self.energia(333)
 		position = game.center()
 		madera = 0
 		contadorEscondidoDePasos = 0
