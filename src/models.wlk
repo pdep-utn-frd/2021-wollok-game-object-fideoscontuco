@@ -31,9 +31,39 @@ object tablero {
 		return posiciones.filter{ pos => game.getObjectsIn(pos).isEmpty() } // array solo con true
 	}
 
-	method filasVaciasTodoElMapa() { // completar
+	method celdasVaciasBordes() { // completar
+		const posiciones = []
+		const ancho = game.width() - 2
+		const alto = game.height() - 2
+		(0 .. alto  ).forEach{ num => posiciones.add(game.at(0, num))} // lado izquierdo
+		(0 .. alto  ).forEach{ num => posiciones.add(game.at(ancho, num))} // derecha 
+		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, alto))} // arriba 
+		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, 0))}
+		return posiciones.filter{ pos => game.getObjectsIn(pos).isEmpty() } // array solo con true
 	}
-
+	 
+	method espacioLibreAlrededor(posicion) { // tom 4 direcciones posibles y toma la aprimera que este empty
+		const posiciones = [ posicion.up(1), posicion.down(1), posicion.right(1), posicion.left(1) ]
+		
+		return  posiciones.filter{ p => self.puedeMoverseA(p)}.anyOne() //check si esta fuera de limite o 
+ 	
+	}
+	
+	
+	
+	//logica repetida
+	method fueraDelLimite(nuevaPos) {
+		const x = nuevaPos.x()
+		const y = nuevaPos.y()
+		return (x > game.width() or x < 0) or ( y >= game.height() or y < 0) 
+	}
+	
+	method puedeMoverseA(nuevaPos) { // si es atravezable y no esta fuera del limite
+		return ( not self.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() }) // get objectsIn devuelve lista. 
+		//
+	}
+	 
+	
 }
 
 object zombie {
@@ -44,13 +74,30 @@ object zombie {
 	var danio = 10
 
 	method recibeDanio() {
-		
 		vida = vida - personajePrincipal.danio()
 		if (vida <= 0) {
 			self.position(game.at(15, 15)) // moverlo a 15 o respawnear? Preguntar mejor enfoque
 			self.hacerMasFuerte()
-		 	game.schedule(2000,{self.position(tablero.filasVacias(1).anyOne())}) // no aparezca inst
-		}
+				// game.schedule(2000, { self.position(tablero.filasVacias(1).anyOne())}) // no aparezca inst
+			game.schedule(2000, { self.position(tablero.celdasVaciasBordes().anyOne())})
+		} else 
+		self.huye()
+	}
+
+	// logica repetida con personajePrincipal , pasar a clase mas adelante
+	method fueraDelLimite(nuevaPos) {
+		const x = nuevaPos.x()
+		const y = nuevaPos.y()
+		return (x > game.width() or x <= -1) or ( y > game.height() or y <= -1) // rever 
+	}
+
+	method puedeMoverseA(nuevaPos) { // si es atravezable y no esta fuera del limite
+		return ( not self.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() }) // get objectsIn devuelve lista. 
+	}
+
+	// //
+	method huye() { // que espacio hay libre disponible alrededor de el??
+		self.position(tablero.espacioLibreAlrededor(self.position()))
 	}
 
 	method hacerMasFuerte() {
@@ -60,8 +107,8 @@ object zombie {
 
 	// var nombre
 	method esInteractuado(sujetoParticipe) {
-		  game.say(self,"ouch")
-		  self.recibeDanio()
+		game.say(self, "ouch")
+		self.recibeDanio()
 	}
 
 	method esAtravesable() = true
@@ -147,16 +194,17 @@ object roca {
 	}
 
 }
-//como inicializo u n dictionary y lo populo de mejor manera?
 
+//como inicializo u n dictionary y lo populo de mejor manera?
 object diccioDeBuenosConsejos { //quiero que los consejos se agoten. sean un one shot 
-	
+
 	var property diccio = new Dictionary() // const y objeto mismo nombre rompen todo
 	// const presentacion = diccio.put(presentacion,"interactua con sujetos presionando la c")
 	const madera = diccio.put(arbol, "la madera pueda utilizarse para reparar  la casa")
 	const bayas = diccio.put(bayasMedianas, "bayas aparecen cada cierto tiempo")
 	const hogar = diccio.put(casa, "si la casa cae pierdes el juego")
-	const zomb = diccio.put(zombie,"no dejes que los zombies se acerquen a la casa")
+	const zomb = diccio.put(zombie, "no dejes que los zombies se acerquen a la casa")
+
 }
 
 // para que las paredes de la casa no puedan ser atravesadas y solo pueda entrarse por la puerta
@@ -202,7 +250,8 @@ object personajePrincipal {
 	var property position = game.at(1, 3)
 	var property madera = 0
 	var property contadorEscondidoDePasos = 0
-	var property danio = 50
+	var property danio = 40
+
 	method image() = "shovelMain.png"
 
 	method interactuarPosicion() {
@@ -237,6 +286,7 @@ object personajePrincipal {
 
 	method puedeMoverseA(nuevaPos) { // si es atravezable y no esta fuera del limite
 		return ( not self.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() }) // get objectsIn devuelve lista. 
+		//
 	}
 
 	// si no hay objeto es atravezable para el.
@@ -283,13 +333,9 @@ object nube {
 		game.say(self, "una pista o consejo") // o cambiar el clima, se ponga a llover
 	}
 
-	/*  
-	 * method enojarse(sujeto){
-	 * 	game.schedule(5000,estadoNormal = false)//estado cambiado x tiempo
-	 * 	game.removeTickEvent("nubesSeMueven")
-	 * 	self.position(casa.position()) // venganza
-	 * }
-	 */
+	method avanzarElTiempo() {
+	}
+
 	method image() {
 		if (estadoNormal) return "nube80.png"
 		return "nube5.png"
@@ -298,7 +344,6 @@ object nube {
 	method moverDerecha() {
 		if ((self.position().x() > game.width()) && (self.position().y() < game.height())) { // si la siguiente celda en x no es 0
 			self.position(game.at(1, 9)) // mueve al inicio y suma 1 dia
-			dia.pasarUnDia()
 		} else self.position((self.position().right(1)))
 		self.position(self.position().down(1))
 	}
@@ -310,7 +355,7 @@ object dia {
 	var property dia = 0
 
 	method pasarUnDia() {
-		dia = dia + 1 // si pasan 5 dias aparecen plantas, igual mobs. timer
+		dia = dia + 1 // si pasan 5 dias aparecen plantas, igual mobs. timer. 
 	}
 
 }

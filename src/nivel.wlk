@@ -22,17 +22,7 @@ object nivel{
 	 	game.addVisual(jardinCasa)
 	 	game.addVisual(chimeneaCasa)
 	 	
-	 	/*  probar hacer coleciones de bayas
-	 	game.addVisual(baya1)
-	 	game.addVisual(baya2)
-	 	game.addVisual(baya3)
-	 	game.addVisual(baya4)
-	 	game.addVisual(baya5)
-	 	game.addVisual(baya6)
-	 	game.addVisual(baya7)
-	 	game.addVisual(baya8)
-	 	game.addVisual(baya9)
-	 	*/
+
 	    game.addVisual(zombie)
 	    game.showAttributes(zombie)
 	    
@@ -47,7 +37,6 @@ object nivel{
 		game.showAttributes(bayasMedianas)
 		game.showAttributes(arbol)
 		game.say(roca, roca.mensajeDeBienvenida())
-	//	game.onTick(6000, "rocaDaConsejos", { => roca.darConsejo()})
 		game.onTick(800, "nubesSeMueven", {=> nube.moverDerecha()})
 		
 			// colisiones
