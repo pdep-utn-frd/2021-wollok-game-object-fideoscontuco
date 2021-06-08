@@ -15,7 +15,7 @@ object nivel{
 			// game.boardGround("Map002.jpg") 
 			// visuales
 	 
-		game.addVisual(palmera) // visualIn ini objeto ya con pos
+		game.addVisual(arbol) // visualIn ini objeto ya con pos
 		
 		game.addVisual(casa) // el add visual de la casa podria construir todo junto
 	 	game.addVisual(techoCasa)
@@ -37,25 +37,25 @@ object nivel{
 	    game.showAttributes(zombie)
 	    
 		game.addVisual(bayasMedianas)
-			// game.addVisualCharacter(girasolesSentientes)
-		game.addVisual(girasolesSentientes)
+			// game.addVisualCharacter(personajePrincipal)
+		game.addVisual(personajePrincipal)
 		game.addVisual(roca)
 		game.addVisual(nube)
 			// atributos
-		game.showAttributes(girasolesSentientes)
+		game.showAttributes(personajePrincipal)
 		game.showAttributes(casa)
 		game.showAttributes(bayasMedianas)
-		game.showAttributes(palmera)
+		game.showAttributes(arbol)
 		game.say(roca, roca.mensajeDeBienvenida())
 	//	game.onTick(6000, "rocaDaConsejos", { => roca.darConsejo()})
 		game.onTick(800, "nubesSeMueven", {=> nube.moverDerecha()})
 		
 			// colisiones
-		keyboard.c().onPressDo{ girasolesSentientes.interactuarPosicion()}
-		keyboard.up().onPressDo({ girasolesSentientes.irA(girasolesSentientes.position().up(1))})
-		keyboard.down().onPressDo({ girasolesSentientes.irA(girasolesSentientes.position().down(1))})
-		keyboard.right().onPressDo({ girasolesSentientes.irA(girasolesSentientes.position().right(1))})
-		keyboard.left().onPressDo({ girasolesSentientes.irA(girasolesSentientes.position().left(1))})
+		keyboard.c().onPressDo{ personajePrincipal.interactuarPosicion()}
+		keyboard.up().onPressDo({ personajePrincipal.irA(personajePrincipal.position().up(1))})
+		keyboard.down().onPressDo({ personajePrincipal.irA(personajePrincipal.position().down(1))})
+		keyboard.right().onPressDo({ personajePrincipal.irA(personajePrincipal.position().right(1))})
+		keyboard.left().onPressDo({ personajePrincipal.irA(personajePrincipal.position().left(1))})
 	// mejor hacer la guia por ontick
 	// keyboard.any().onPressDo({game.say(roca,"presiona c para interactuar con lugares")})
 	//
