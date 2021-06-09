@@ -1,12 +1,38 @@
 import wollok.game.*
 import nivel.*
+import tablero.*
+	/*  
+class Visuales{
+	method cobrarVida()
+	method reiniciarEstado()
+	
+}*/
 
-object casa {
+class ParteCasa {
+
+	var property position
+	var property esAtravesable = true
+
+	method esInteractuado(sujetoParticipe) {
+		casa.salud(casa.salud() + (sujetoParticipe.madera() * 2))
+		game.say(casa, "salud de casa + " + sujetoParticipe.madera())
+		sujetoParticipe.madera(0)
+	}
+
+	method image() {
+		return "tileInvisible.png"
+	}
+
+ 	method cobrarVida(){}
+	method reiniciarEstado(){}
+}
+
+object casa  {
 
 	var property esAtravesable = true
 	var property position = game.at(3, 4) // tiene varios position
 	var property salud = 40
-
+	var property estaRota
 	method image() = "casa.png"
 
 	method esInteractuado(sujetoParticipe) {
@@ -19,86 +45,50 @@ object casa {
 		return (salud < 0 )
 	}
 
-	method reiniciarEstado() {
+	  method reiniciarEstado() {
 		salud = 40
 	}
 
+	method dibujar() {
+		game.addVisual(self) // si esta al final se rompe
+		game.addVisual(new ParteCasa(position = self.position().up(1)))
+		game.addVisual(new ParteCasa(position = self.position().right(1)))
+		game.addVisual(new ParteCasa(position = self.position().right(1).up(1)))
+		game.showAttributes(self)
+	}
+	
+	method recibeDanio(danio){ // logica repetida, probar clase
+		salud = salud - danio
+		game.say(self,"ouch, me queda " + salud + " vida")
+		if (salud < 0){
+			nivel.escenarioDerrota()
+		}
+	}
+	
+	method cobrarVida(){}
+ 
 }
 
-object tablero {
-
-	method celdasVaciasBordes() { // completar
-		const posiciones = []
-		const ancho = game.width() - 2
-		const alto = game.height() - 2
-		(0 .. alto  ).forEach{ num => posiciones.add(game.at(1, num))} // lado izquierdo
-		(0 .. alto  ).forEach{ num => posiciones.add(game.at(ancho - 1, num))} // derecha 
-		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, alto - 1))} // arriba 
-		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, 1))}
-		return posiciones.filter{ pos => game.getObjectsIn(pos).isEmpty() } // array solo con true
-	}
-
-	method espacioLibreAlrededor(posicion) { // tom 4 direcciones posibles y toma la aprimera que este empty
-		const posiciones = [ posicion.up(1), posicion.down(1), posicion.right(1), posicion.left(1) ]
-		return posiciones.filter{ p => self.puedeMoverseA(p) }.anyOne() // check si esta fuera de limite o 
-	}
-
-	// logica repetida 
-	method fueraDelLimite(nuevaPos) {
-		const x = nuevaPos.x()
-		const y = nuevaPos.y()
-		return (x >= game.width() or x < 0) or ( y >= game.height() or y < 0)
-	}
-
-	 // zombie huye solo a tiles vacios
-	method puedeMoverseA(nuevaPos) { // si esta vacio y no esta fuera del limite
-		return ( not self.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).isEmpty()) // get objectsIn devuelve lista. 
-		//
-	}
-	
-
-	method reiniciarEstado() {
-	}
-	
-	
-	method espacioLibreEnMapa(){  // preguntar
-		var listaOcupados = []
-		var listaTotal = []
-		(0 .. 10).forEach{ x => (0 .. 10).forEach{ y => listaTotal.add(game.at(x,y))}}  //falta 2,0
-	//	(10 .. 10-1).forEach{ y => (y .. 10-1).forEach{ x => listaTotal.add(game.at(x,y))}}
-		 
-		game.allVisuals().forEach{ v => listaOcupados.add(v.position())}
-		listaTotal.removeAll(listaOcupados)
-		return listaTotal 
-	}
-	
-	method posRandom(){
-		return self.espacioLibreEnMapa().anyOne()
-	}
-	 
-}
-
-class Sonido{ // los sonidos pueden ejecutarse una sola vez, 
+class Sonido { // los sonidos pueden ejecutarse una sola vez, 
 //entonces instanciamos
+
 	var property agonia = game.sound("tomasAgonia.mp3")
+
 }
 
-object zombie {
 
-	var property position = game.at(1, 0) // game.at(1, 2.randomUpTo(9))
+class Zombie  {
+	var property position = tablero.celdasVaciasBordes().anyOne()// game.at(1, 2.randomUpTo(9))
 	var property image = "zombie3.png"
 	var property vida = 100
 	var danio = 10
-	 
-	
+
 	method recibeDanio() {
 		vida = vida - personajePrincipal.danio()
-		 
 		if (vida <= 0) {
 			new Sonido().agonia().play()
 			self.position(game.at(15, 15)) // moverlo a 15 o respawnear? Preguntar mejor enfoque
 			self.hacerMasFuerte()
-			
 			game.schedule(2000, { self.position(tablero.celdasVaciasBordes().anyOne())})
 		} else self.huye()
 	}
@@ -114,9 +104,10 @@ object zombie {
 		return ( not self.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() }) // get objectsIn devuelve lista. 
 	}
 
+
 	// //
 	method huye() { // que espacio hay libre disponible alrededor de el??
-		self.position(tablero.espacioLibreAlrededor(self.position()))
+		self.position(tablero.espacioLibreAlrededor(self.position()).anyOne())
 	}
 
 	method hacerMasFuerte() {
@@ -132,19 +123,54 @@ object zombie {
 
 	method esAtravesable() = true
 
-	method reiniciarEstado() {
+	 method reiniciarEstado() {
 		position = game.at(1, 0)
 		danio = 10
 		vida = 100
 	}
-
-}
-object bosque{
-	method sembrarBosque(n){
-		n.times{ l  => game.addVisual(new Arbol())}
+	
+	
+  method cobrarVida(){ // necesito un objeto casa que sea golpeable
+		
+ 
+		game.onTick(4000, "zombie se mueve", { => 
+			self.position(tablero.posicionMasCercanaACasa(self))
+			if (self.llegoALaCasa(self.position()) ){
+				game.removeTickEvent("zombie se mueve")
+				game.say(self,"llegue")
+				self.atacar()
+			}
+			
+				 
+				 
+			})
+			}
+		
+		/* 
+		game.onCollideDo(self, { casa =>
+			casa.recibeDanio(self.danio())
+			game.removeTickEvent("zombie se mueve")
+		})
+		*/
+	
+	
+	method llegoALaCasa(posicion){
+	const posiciones = [ posicion.up(1), posicion.down(1), posicion.right(1), posicion.left(1) ]
+	return posiciones.any{p => game.getObjectsIn(p) == [casa]}
 	}
+	
+	method atacar(){
+		game.onTick(6000,"zombie ataca", { => var sonido = new Sonido() 
+			sonido.agonia().play() 
+			casa.recibeDanio(danio)
+		})
+		
+	}
+	
 }
-class Arbol {
+
+ 
+class Arbol  {
 
 	var property position = tablero.posRandom()
 	var property esAtravesable = true
@@ -163,32 +189,38 @@ class Arbol {
 		if (estaEnPie) {
 			estaEnPie = false
 			sujetoParticipe.cansar(10) // reever
-			sujetoParticipe.madera(15)
+			sujetoParticipe.madera(sujetoParticipe.madera() + 15)
 			game.say(sujetoParticipe, "madera  + " + madera)
 			madera = 0
 		}
 	}
 
-	method reiniciarEstado() {
+	  method reiniciarEstado() {
 		estaEnPie = true
 		madera = 40
 	}
 
-}
-/*  
-object listaDeArboles{
-	var lista = []
-	
-	method cuantosArboles(nro){
-		nro.times{game.addVisualnew Arbol()}
+	method instanciarNuevo() {
+		return new Arbol()
 	}
+	
+	  method cobrarVida(){}
 }
- */
+
+object visualYAtributos {
+
+	method addVisual(sujeto) {
+		game.addVisual(sujeto)
+		game.showAttributes(sujeto)
+	}
+
+}
+
 class BayasMedianas {
 
 	var property esAtravesable = true
 	var property calorias = 10
-	var property position = game.at(1, 3)
+	var property position = tablero.posRandom()
 
 	method image() = "bayasMedianas.png"
 
@@ -201,6 +233,11 @@ class BayasMedianas {
 	method reiniciarEstado() {
 	}
 
+	method instanciarNuevo() {
+		return new BayasMedianas()
+	}
+	
+	  method cobrarVida(){}
 }
 
 object roca {
@@ -212,10 +249,10 @@ object roca {
 
 	// const presentacion = diccio.put(presentacion,"interactua con sujetos presionando la c")
 	method llenarDiccio() {
-		diccio.put(new Arbol(), "la madera pueda utilizarse para reparar  la casa")
+		diccio.put(new Arbol(), "la madera pueda utilizarse para reparar  la casa") // probar
 			// diccio.put(bayasMedianas, "bayas aparecen cada cierto tiempo")
 		diccio.put(casa, "si la casa cae pierdes el juego")
-		diccio.put(zombie, "no dejes que los zombies se acerquen a la casa")
+		diccio.put(new Zombie(), "no dejes que los zombies se acerquen a la casa")
 	}
 
 	method image() = "piedra80.png"
@@ -243,71 +280,14 @@ object roca {
 		// game.say(self,"no deberia decir nada ahora")// hacer nada - preguntar 
 		}
 	}
+	
+	method reiniciarEstado(){}
 
-	method reiniciarEstado() {
+	method cobrarVida(){
+		game.schedule(3000, {game.say(self,self.mensajeDeBienvenida())})		
 	}
-
 }
 
-//como inicializo u n dictionary y lo populo de mejor manera?
-/*  
- * object diccioDeBuenosConsejos { //quiero que los consejos se agoten. sean un one shot 
-
- * 	var property diccio = new Dictionary() // const y objeto mismo nombre rompen todo
- * 	// const presentacion = diccio.put(presentacion,"interactua con sujetos presionando la c")
- * 	const madera = diccio.put(arbol, "la madera pueda utilizarse para reparar  la casa")
- * 	const bayas = diccio.put(bayasMedianas, "bayas aparecen cada cierto tiempo")
- * 	const hogar = diccio.put(casa, "si la casa cae pierdes el juego")
- * 	const zomb = diccio.put(zombie, "no dejes que los zombies se acerquen a la casa")
- * 	
- * 	 
- }*/
-// para que las paredes de la casa no puedan ser atravesadas y solo pueda entrarse por la puerta
-// un mejor enfoque seria dividir la imagen en 4 de la casa, y tener un objeto padre que
-// conoce la salud de la casa, y pasarle a los  hijos que se encargen del metodo imagen c/u
-object techoCasa { // ver unir casa 
-
-	var property position = casa.position().up(1)
-	var property esAtravesable = false
-
-	method image() {
-		return "tileInvisible.png"
-	}
-
-	method reiniciarEstado() {
-	}
-
-}
-
-object chimeneaCasa {
-
-	var property position = casa.position().right(1)
-	var property esAtravesable = false
-
-	method image() {
-		return "tileInvisible.png"
-	}
-
-	method reiniciarEstado() {
-	}
-
-}
-
-object jardinCasa {
-
-	var property position = casa.position().right(1).up(1)
-	var property esAtravesable = false
-
-	method image() {
-		return "tileInvisible.png"
-	}
-
-	method reiniciarEstado() {
-	}
-
-}
-
-////
 object personajePrincipal {
 
 	var property energia = 333
@@ -322,7 +302,7 @@ object personajePrincipal {
 		try {
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
 			itemFound.esInteractuado(self)
-			roca.darConsejo(itemFound)
+		// roca.darConsejo(itemFound)
 		// game.say(self,"interactuo con " + itemFound.toString()) // testing
 		} catch e : wollok.lang.Exception {
 			game.say(self, "no hay nada aqui para interactuar")
@@ -353,9 +333,6 @@ object personajePrincipal {
 		//
 	}
 
-	// si no hay objeto es atravezable para el.
-	// pregunto si es una locacion que  
-	// game.colliders(self).all{sujeto => sujeto.esAtravesable()}
 	method irA(nuevaPos) { // toma objeto pos
 	// cada paso chequeo si no hay energia o casa esta rota
 		if (self.puedeMoverseA(nuevaPos)) { // solo si casillero siguiente es objeto atravesable
@@ -384,32 +361,49 @@ object personajePrincipal {
 		contadorEscondidoDePasos = 0
 		danio = 5
 	}
-
+	
+	method cobrarVida(){
+		
+	}
+	
 }
 
-/*  
- * object derrota {
+object dia {
 
- * 	method comprobarDerrota(sujeto) {
- * 		if (sujeto.cansado() or casa.estaRota()) {
- * 			nivel.escenarioDerrota() // cambia escena
- * 		}
- * 	}
+	var property estado = "dia"
 
- * }
- */
+	method cambiarEstado() {
+		if (self.estado() == "dia") {
+			self.oscurer()
+		} else self.esclarecer()
+	}
+
+	method esclarecer() { // cambia el bg, simple por ahora. extender con dif modelos o musica
+		game.ground("dia.png")
+	// game.allVisuals().forEach{ v => v.image("vNoche")}
+	}
+
+	method oscurer() {
+		game.ground("oscurecer")
+	}
+
+	method reiniciarEstado() {
+		estado = "dia"
+	}
+	
+	method cobrarVida(){}
+}
+
 object nube {
 
 	var property position = game.at(1, 9)
 	var property estadoNormal = true
 	var property esAtravesable = true
-
+	var property cDias = 0 // medida de tiempo, cuando la nube vuelve pasa de dia a noche
 	// var property contadorDeOdio
+
 	method esInteractuado(sujeto) {
 		game.say(self, "una pista o consejo") // o cambiar el clima, se ponga a llover
-	}
-
-	method avanzarElTiempo() {
 	}
 
 	method image() {
@@ -427,16 +421,10 @@ object nube {
 	method reiniciarEstado() {
 		position = game.at(1, 9)
 	}
-
-}
-
-object dia {
-
-	var property dia = 0
-
-	method pasarUnDia() {
-		dia = dia + 1 // si pasan 5 dias aparecen plantas, igual mobs. timer. 
+	
+	method cobrarVida(){
+		
 	}
-
+	
 }
 
