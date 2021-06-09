@@ -21,7 +21,7 @@ object nivel {
 		game.addVisual(nube)
 		6.times{ l => game.addVisual((new Arbol(position = tablero.posRandom())))} // preguntar por manera con fabrica
 		4.times{ l => game.addVisual(new BayasMedianas())}
-		2.times{ l => game.addVisual(new Zombie())}
+		15.times{ l => game.addVisual(new Zombie())}
 	    game.allVisuals().forEach{ v => v.reiniciarEstado()}    // preguntar
 		game.allVisuals().forEach{ v => v.cobrarVida()}
 			// game.onTick(1000, "avanza el tiempo", { => self.inicio()})

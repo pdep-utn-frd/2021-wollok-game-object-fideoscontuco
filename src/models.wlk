@@ -129,7 +129,7 @@ class Zombie {
 		vida = vida - personajePrincipal.danio()
 		if (vida <= 0) {
 			new Sonido().agonia().play()
-			//game.removeTickEvent("zombie se mueve")
+			//game.removeTisckEvent("zombie se mueve")
 			game.removeVisual(self)
 			const zombieNuevo = new Zombie()
 			game.schedule(3000,{game.addVisual(zombieNuevo) zombieNuevo.cobrarVida()}) // reemplazante
@@ -322,6 +322,7 @@ object roca {
 
 }
 
+ 
 object personajePrincipal {
 
 	var property energia = 333
@@ -330,7 +331,9 @@ object personajePrincipal {
 	var property contadorEscondidoDePasos = 0
 	var property danio = 40
 	var property nombre = "personajePrincipal"
-	method image() = "shovelMain.png"
+	var property estaEnPie = false
+
+	
 
 	method interactuarPosicion() {
 		try {
@@ -363,17 +366,26 @@ object personajePrincipal {
 	}
 	
 	method irA(nuevaPos) { // toma objeto pos
-	// cada paso chequeo si no hay energia o casa esta rota
-		if (self.puedeMoverseA(nuevaPos)) { // solo si casillero siguiente es objeto atravesable
-			self.cansar(2)
-			position = nuevaPos // asigna nueva posicion
-			contadorEscondidoDePasos = contadorEscondidoDePasos + 1
-		}
-		if (self.estaCansado()) {
-			nivel.escenarioDerrota()
-		}
+    // cada paso chequeo si no hay energia o casa esta rota
+        if (self.puedeMoverseA(nuevaPos)) { // solo si casillero siguiente es objeto atravesable
+             estaEnPie = not estaEnPie // preguntar
+            position = nuevaPos // asigna nueva posicion
+            contadorEscondidoDePasos = contadorEscondidoDePasos + 1
+        }
+        if (self.estaCansado()) {
+            nivel.escenarioDerrota()
+        }
  
-	}
+    }
+
+
+     method image() {
+        if (self.estaEnPie()) {
+            return "shovelMain.png"
+        } else 
+            return "shovelMain2.png"
+
+    }
 
 	method alarmaDeEnergia() {
 		if (energia < 15) {
@@ -418,7 +430,10 @@ object dia {
 	}
 
 }
-
+	  
+	  
+	  
+ 
 object nube {
 
 	var property position = game.at(1, 9)
