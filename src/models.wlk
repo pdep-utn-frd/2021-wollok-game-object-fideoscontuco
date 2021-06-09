@@ -330,7 +330,9 @@ object personajePrincipal {
 	var property contadorEscondidoDePasos = 0
 	var property danio = 40
 	var property nombre = "personajePrincipal"
-	method image() = "shovelMain.png"
+	var property estaEnPie = false
+
+	
 
 	method interactuarPosicion() {
 		try {
@@ -363,17 +365,26 @@ object personajePrincipal {
 	}
 	
 	method irA(nuevaPos) { // toma objeto pos
-	// cada paso chequeo si no hay energia o casa esta rota
-		if (self.puedeMoverseA(nuevaPos)) { // solo si casillero siguiente es objeto atravesable
-			self.cansar(2)
-			position = nuevaPos // asigna nueva posicion
-			contadorEscondidoDePasos = contadorEscondidoDePasos + 1
-		}
-		if (self.estaCansado()) {
-			nivel.escenarioDerrota()
-		}
+    // cada paso chequeo si no hay energia o casa esta rota
+        if (self.puedeMoverseA(nuevaPos)) { // solo si casillero siguiente es objeto atravesable
+             estaEnPie = not estaEnPie // preguntar
+            position = nuevaPos // asigna nueva posicion
+            contadorEscondidoDePasos = contadorEscondidoDePasos + 1
+        }
+        if (self.estaCansado()) {
+            nivel.escenarioDerrota()
+        }
  
-	}
+    }
+
+
+     method image() {
+        if (self.estaEnPie()) {
+            return "shovelMain.png"
+        } else 
+            return "shovelMain2.png"
+
+    }
 
 	method alarmaDeEnergia() {
 		if (energia < 15) {
