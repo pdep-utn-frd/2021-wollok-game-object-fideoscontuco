@@ -13,9 +13,8 @@ object tablero {
 		return posiciones.filter{ pos => game.getObjectsIn(pos).isEmpty() } // array solo con true
 	}
 
-	method espacioLibreAlrededor(posicion) { // tom 4 direcciones posibles  
-		const posiciones = [ posicion.up(1), posicion.down(1), posicion.right(1), posicion.left(1) ]
-		return posiciones.filter{ p => self.puedeMoverseA(p) } // check si esta fuera de limite o 
+	method espacioLibreAlrededor(sujeto) { // tom 4 direcciones posibles  
+		return self.posicionesProximas(sujeto).filter{ p => sujeto.puedeMoverseA(p) } // check si esta fuera de limite o 
 	}
 
 	// logica repetida 
@@ -25,10 +24,8 @@ object tablero {
 		return (x >= game.width() or x < 0) or ( y >= game.height() or y < 0)
 	}
 
-	// zombie huye solo a tiles vacios
-	method puedeMoverseA(nuevaPos) { // si esta vacio y no esta fuera del limite
-		return ( not self.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).isEmpty()) // get objectsIn devuelve lista. 
-		//
+	method posicionesProximas(sujeto){ 
+		return [sujeto.position().up(1), sujeto.position().down(1), sujeto.position().right(1), sujeto.position().left(1) ]
 	}
 	
 	method reiniciarEstado() {
@@ -40,19 +37,21 @@ object tablero {
 		const alto = game.height() - 1 // 50PX 50PX  10 = 500
 		const largo = game.width() - 1
 		(1 .. largo).forEach{ x => (1 .. alto).forEach{ y => listaTotal.add(game.at(x, y))}} // falta 2,0
-			// (10 .. 10-1).forEach{ y => (y .. 10-1).forEach{ x => listaTotal.add(game.at(x,y))}}
-		game.allVisuals().forEach{ v => listaOcupados.add(v.position())}
-		listaTotal.removeAll(listaOcupados)
-		return listaTotal
+	    return	listaTotal.filter{ celda => game.getObjectsIn(celda).isEmpty()}
 	}
 
-	method posRandom() { // que no de repetidas
+	method posRandom() {
 		return  self.espacioLibreEnMapa().anyOne()
 	}
-	
+	  
 	method posicionMasCercanaACasa(sujeto){ // busco posicion menor dentro de las disponibles
-	const listaEspaciosLibres = self.espacioLibreAlrededor(sujeto.position())
-	return listaEspaciosLibres.min{ pos => pos.distance(casa.position())}
-	}
+	const listaEspaciosLibres = self.espacioLibreAlrededor(sujeto)
+	return listaEspaciosLibres.min{ pos => pos.distance(
+		casa.celdasOcupadas().min{ p => p.distance(pos)})
+	 
+	 
+	 }}
 
-}
+} 
+
+ 
