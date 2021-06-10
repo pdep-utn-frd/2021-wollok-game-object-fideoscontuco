@@ -1,11 +1,12 @@
 import wollok.game.*
 import models.*
-object tablero {
+
+object tablero { // candidato a clase?
 
 	method celdasVaciasBordes() { // completar
 		const posiciones = []
-		const ancho = game.width() - 2
-		const alto = game.height() - 2
+		const ancho = game.width() - 1
+		const alto = game.height() - 1
 		(0 .. alto  ).forEach{ num => posiciones.add(game.at(1, num))} // lado izquierdo
 		(0 .. alto  ).forEach{ num => posiciones.add(game.at(ancho - 1, num))} // derecha 
 		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, alto - 1))} // arriba 
@@ -21,13 +22,13 @@ object tablero {
 	method fueraDelLimite(nuevaPos) {
 		const x = nuevaPos.x()
 		const y = nuevaPos.y()
-		return (x >= game.width() or x < 0) or ( y >= game.height() or y < 0)
+		return (x > game.width() or x < 0) or ( y > game.height() or y < 0)
 	}
 
-	method posicionesProximas(sujeto){ 
-		return [sujeto.position().up(1), sujeto.position().down(1), sujeto.position().right(1), sujeto.position().left(1) ]
+	method posicionesProximas(sujeto) {
+		return [ sujeto.position().up(1), sujeto.position().down(1), sujeto.position().right(1), sujeto.position().left(1) ]
 	}
-	
+
 	method reiniciarEstado() {
 	}
 
@@ -37,21 +38,34 @@ object tablero {
 		const alto = game.height() - 1 // 50PX 50PX  10 = 500
 		const largo = game.width() - 1
 		(1 .. largo).forEach{ x => (1 .. alto).forEach{ y => listaTotal.add(game.at(x, y))}} // falta 2,0
-	    return	listaTotal.filter{ celda => game.getObjectsIn(celda).isEmpty()}
+		return listaTotal.filter{ celda => game.getObjectsIn(celda).isEmpty() }
 	}
 
 	method posRandom() {
-		return  self.espacioLibreEnMapa().anyOne()
+		return self.espacioLibreEnMapa().anyOne()
 	}
-	  
-	method posicionMasCercanaACasa(sujeto){ // busco posicion menor dentro de las disponibles
-	const listaEspaciosLibres = self.espacioLibreAlrededor(sujeto)
-	return listaEspaciosLibres.min{ pos => pos.distance(
-		casa.celdasOcupadas().min{ p => p.distance(pos)})
-	 
-	 
-	 }}
 
-} 
+	method posicionMasCercanaACasa(sujeto) { // busco posicion menor dentro de las disponibles
+		//const listaEspaciosLibres = self.espacioLibreAlrededor(sujeto)
+		/*  
+		try {
+			return self.espacioLibreAlrededor(sujeto).min{ pos => pos.distance(casa.celdasOcupadas().min{ p => p.distance(pos)}) }
+		} catch e : Exception { // no hay espacio libre
+			//e.printStackTrace() 
+			return sujeto.position()
+		} 
+		*/
+		return self.espacioLibreAlrededor(sujeto).min{ pos => pos.distance(casa.celdasOcupadas().min{ p => p.distance(pos)}) }
+	}
+	
+	method hayEspacioLibre(sujeto){
+		return not self.espacioLibreAlrededor(sujeto).isEmpty()
+	}
+	
+	method estaAlBordeDeLaCasa(sujeto) {
+		return self.posicionesProximas(sujeto).any{ c => casa.celdasOcupadas().contains(c)}
+	} 
+	 
 
+}
  

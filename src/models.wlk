@@ -79,7 +79,7 @@ object casa {
 	}
 
 	method reiniciarEstado() {
-		salud = 40
+		salud = 80
 	}
 
 	method celdasOcupadas() {
@@ -119,11 +119,14 @@ class Sonido { // los sonidos pueden ejecutarse una sola vez,
 class Zombie {
 
 	var property position = tablero.celdasVaciasBordes().anyOne() // game.at(1, 2.randomUpTo(9))
-	var property image = "zombie3.png"
-	var property vida = 100
-	var danio = 10
+	
+	var property vida = 50
+	var danio = 5
 	var property nombre = "zombie"
+ 	var property paso = true
  	
+ 	method image() = "zombie3.png" 
+ 			 
 	method recibeDanio() {
 		vida = vida - personajePrincipal.danio()
 		if (vida <= 0) {
@@ -173,10 +176,12 @@ class Zombie {
 	method esAtravesable() = true
 
 	method reiniciarEstado() {
-		danio = 10
-		vida = 100
+		danio = 5
+		vida = 50
 	}
-
+	
+	
+	
 	method puedeMoverseA(nuevaPos) { // zombie huye solo a tiles vacios
 		return ( not tablero.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).isEmpty()) // get objectsIn devuelve lista. 
 		//
@@ -185,6 +190,7 @@ class Zombie {
 	method cobrarVida() { // necesito un objeto casa que sea golpeable
 		game.onTick(4000, "zombie se mueve", { =>
 			self.position(tablero.posicionMasCercanaACasa(self))
+			paso = not paso
 			if (self.estaAlBordeDeLaCasa(self)) {
 				// game.say(self, "llegue")   preguntar por que esta mal
 				self.atacar()
@@ -203,7 +209,7 @@ class Zombie {
 	}
 
 	method atacar() { // si el tiempo es corto, cada vez que el zombie huya va a dañar la casa
-		game.onTick(7000, "zombie ataca", { =>
+		game.onTick(6000, "zombie ataca", { =>
 			var sonido = new Sonido()
 			sonido.agonia().play()
 			casa.recibeDanio(danio)
@@ -237,7 +243,7 @@ class Arbol {
 			sujetoParticipe.madera(sujetoParticipe.madera() + madera)
 			game.say(sujetoParticipe, "madera  + " + madera)
 			madera = 0
-			game.schedule(500, { self.reiniciarEstado()})
+			game.schedule(1200, { self.reiniciarEstado()})
 			}
 		}
 	}
@@ -339,11 +345,11 @@ object roca {
 
 object personajePrincipal {
 
-	var property energia = 333
+	var property energia = 444
 	var property position = game.at(1, 3)
 	var property madera = 0
 	var property contadorEscondidoDePasos = 0
-	var property danio = 40
+	var property danio = 45
 	var property nombre = "personajePrincipal"
 	var property estaEnPie = false
 
@@ -397,18 +403,18 @@ object personajePrincipal {
 	}
 
 	method alarmaDeEnergia() {
-		if (energia < 15) {
+		if (energia < 50) {
 			game.say(self, "me estoy quedando sin energia")
 			roca.darConsejo(self)
 		}
 	}
 
 	method reiniciarEstado() { // rever, cambiar energia requeire en ambos lugares,no esta bueno
-		self.energia(333)
+		self.energia(444)
 		position = game.center()
 		madera = 0
 		contadorEscondidoDePasos = 0
-		danio = 40
+		danio = 45
 	}
 
 	method cobrarVida() {
@@ -470,3 +476,4 @@ object nube {
 
 }
 
+ 
