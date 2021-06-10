@@ -123,27 +123,37 @@ class Zombie {
 	var property vida = 100
 	var danio = 10
 	var property nombre = "zombie"
-
+ 	
 	method recibeDanio() {
 		vida = vida - personajePrincipal.danio()
 		if (vida <= 0) {
 			new Sonido().agonia().play()
 			game.removeVisual(self)
+			self.removerEventos()
 			const zombieNuevo = new Zombie()
-			game.schedule(3000, { game.addVisual(zombieNuevo)
+			game.schedule(3000.randomUpTo(6000), {=>
+				game.addVisual(zombieNuevo)
 				zombieNuevo.cobrarVida()
-			}) // reemplazante
+			})
+		/*  
+		 * game.addVisual(zombieNuevo) 
+		 * 			try{
+		 * 			zombieNuevo.cobrarVida() 
+		 * 			 }catch e: Exception{
+		 * 			 	e.printStackTrace()
+		 * 			 }
+		 */
 		} else self.huye()
 	}
 
-	method removerEventos(){
-		 game.removeTickEvent("zombie se mueve")
-		try{
-			  game.removeTickEvent("zombie ataca")
-		}catch e: Exception{
-			
+	method removerEventos() {
+		game.removeTickEvent("zombie se mueve")
+		try {
+			game.removeTickEvent("zombie ataca") // si no esta atacando daria error
+		} catch e : Exception {
 		}
 	}
+
 	// //
 	method huye() { // que espacio hay libre disponible alrededor de el??
 		self.position(tablero.espacioLibreAlrededor(self).anyOne())
@@ -176,8 +186,7 @@ class Zombie {
 		game.onTick(4000, "zombie se mueve", { =>
 			self.position(tablero.posicionMasCercanaACasa(self))
 			if (self.estaAlBordeDeLaCasa(self)) {
-				game.removeTickEvent("zombie se mueve")
-					// game.say(self, "llegue")   preguntar por que da error
+				// game.say(self, "llegue")   preguntar por que esta mal
 				self.atacar()
 			}
 		})
@@ -193,13 +202,14 @@ class Zombie {
 		return tablero.posicionesProximas(sujeto).any{ c => casa.celdasOcupadas().contains(c) }
 	}
 
-	method atacar() {
-		game.onTick(8000, "zombie ataca", { =>
+	method atacar() { // si el tiempo es corto, cada vez que el zombie huya va a dañar la casa
+		game.onTick(7000, "zombie ataca", { =>
 			var sonido = new Sonido()
 			sonido.agonia().play()
 			casa.recibeDanio(danio)
 		})
 	}
+ 	
 
 }
 
