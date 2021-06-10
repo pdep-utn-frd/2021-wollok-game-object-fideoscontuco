@@ -13,7 +13,7 @@ object nivel {
 		game.addVisual(roca)
 			// game.errorReporter(roca)
 		game.addVisual(nube)
-		6.randomUpToMax(12).times{ l => game.addVisual((new Arbol(position = tablero.posRandom())))} // preguntar por manera con fabrica
+		6.randomUpTo(12).times{ l => game.addVisual((new Arbol(position = tablero.posRandom())))} // preguntar por manera con fabrica
 		4.times{ l => game.addVisual(new BayasMedianas())}
 		6.times{ l => game.addVisual(new Zombie())}
 		game.allVisuals().forEach{ v => v.reiniciarEstado()} // preguntar
