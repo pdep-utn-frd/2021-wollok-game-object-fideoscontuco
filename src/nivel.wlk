@@ -23,7 +23,7 @@ object nivel{         // 750 * 750
 	 	game.allVisuals().forEach{ v => v.cobrarVida()}
 	 	
 		self.configurarTeclado()
-		game.schedule(6000, cambioDelDia.iniciar())
+ 
 	}
 	
 	method spawnear(){
