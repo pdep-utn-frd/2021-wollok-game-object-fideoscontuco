@@ -2,12 +2,16 @@ import wollok.game.*
 import models.*
 import tablero.*
 
-object nivel {
+ 
+
+object nivel{         // 750 * 750 
 	const ancho = 15
 	const alto = 15
+	
 	method inicio() {
 		self.configurarPantalla()
-		game.boardGround("escenaDia.png")
+	//	game.boardGround("escenaDia.png")
+		game.addVisual(horario)
 		casa.dibujar()
 		visualYAtributos.addVisual(personajePrincipal)
 		game.addVisual(roca)
@@ -17,11 +21,13 @@ object nivel {
 		 
 		game.allVisuals().forEach{ v => v.reiniciarEstado()} // preguntar
 	 	game.allVisuals().forEach{ v => v.cobrarVida()}
+	 	
 		self.configurarTeclado()
+		game.schedule(6000, cambioDelDia.iniciar())
 	}
 	
 	method spawnear(){
-		2.randomUpTo(6).times{ l => game.addVisual((new Arbol(position = tablero.posRandom())))} // preguntar por manera con fabrica
+		2.randomUpTo(6).times{ l => game.addVisual((new Arbol(position = tablero.posRandom())))}  
 		6.times{ l => game.addVisual(new BayasMedianas())}
 		4.times{ l => game.addVisual(new Zombie())}
 	}
@@ -57,5 +63,30 @@ object nivel {
 	}
 
 	 
+}
+
+object cambioDelDia{
+	
+}
+
+object horario{  
+	
+	var property position = game.origin()
+	var property estado = true
+	method image(){
+		if(estado){
+			 return "escenaDiaGrande.png"  
+		}
+		return "escenaNocheGrande.png"
+	}
+	
+	
+	method reiniciarEstado(){}
+	method cobrarVida(){
+		game.onTick(8000, "dia cambia", {=> estado = not estado}) //preguntar
+	}
+	
+	
+	
 }
 	 

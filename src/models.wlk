@@ -310,7 +310,7 @@ object roca {
 	method mensajeDeDespedida() { // expandir con razon de derrota
 		return "te has quedado sin energia presiona una tecla para volver a comenzar"
 	}
-
+	
 	method darConsejo(sobreQuien) { // consejo se elegi arb 
 		try { // que no lo de al mismo tiempo que ocurre el mensaje de la accion
 			var consejo = diccio.get(sobreQuien.nombre())
