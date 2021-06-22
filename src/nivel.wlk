@@ -2,15 +2,14 @@ import wollok.game.*
 import models.*
 import tablero.*
 
- 
+object nivel { // 750 * 750 
 
-object nivel{         // 750 * 750 
 	const ancho = 15
 	const alto = 15
-	
+
 	method inicio() {
 		self.configurarPantalla()
-	//	game.boardGround("escenaDia.png")
+			// game.boardGround("escenaDia.png")
 		game.addVisual(horario)
 		casa.dibujar()
 		visualYAtributos.addVisual(personajePrincipal)
@@ -18,22 +17,24 @@ object nivel{         // 750 * 750
 			// game.errorReporter(roca)
 		game.addVisual(nube)
 		self.spawnear()
-		 
 		game.allVisuals().forEach{ v => v.reiniciarEstado()} // preguntar
-	 	game.allVisuals().forEach{ v => v.cobrarVida()}
-	 	
+		game.allVisuals().forEach{ v => v.cobrarVida()}
 		self.configurarTeclado()
- 
 	}
-	
-	method spawnear(){
-		2.randomUpTo(6).times{ l => game.addVisual((new Arbol(position = tablero.posRandom())))}  
-		6.times{ l => game.addVisual(new BayasMedianas())}
-		4.times{ l => game.addVisual(new Zombie())}
+
+	method visualesComportamiento() { // se filtra para reducir el numero, por ej, quitar arboles, y reducir la carga del pedido
+		return game.allVisuals().filter{ v => v.tieneComportamiento() }
 	}
+
+	method spawnear() {
+		2.randomUpTo(6).times{ l => game.addVisual((new Arbol(position = tablero.posRandom())))}
+		4.times{ l => game.addVisual(new BayasMedianas())}
+		8.times{ l => game.addVisual(new Zombie())} // lista de zombies para darle ordenes mediante forEach y polimorfismo
+	}
+
 	method configurarPantalla() {
 		game.clear()
-		game.height(alto)  
+		game.height(alto)
 		game.width(ancho)
 		game.title("fideosConTuco-casero - C para interactuar / L para reiniciar")
 	}
@@ -62,31 +63,51 @@ object nivel{         // 750 * 750
 		}
 	}
 
-	 
 }
 
-object cambioDelDia{
-	
-}
+object horario {
 
-object horario{  
-	
+	var property tiempoDelDia = 24000
 	var property position = game.origin()
-	var property estado = true
-	method image(){
-		if(estado){
-			 return "escenaDiaGrande.png"  
+	var property estado = "dia"
+
+	method tieneComportamiento() = false
+
+	method image() {
+		if (estado == "dia") {
+			return "escenaDiaGrande.png"
 		}
 		return "escenaNocheGrande.png"
 	}
-	
-	
-	method reiniciarEstado(){}
-	method cobrarVida(){
-		game.onTick(8000, "dia cambia", {=> estado = not estado}) //preguntar
+
+	method comportamientoNoche() {
 	}
-	
-	
-	
+
+	method comportamientoDia() {
+	}
+
+	method reiniciarEstado() {
+	}
+
+	method cobrarVida() {
+		game.onTick(tiempoDelDia, "dia cambia", {=>
+			if (estado == "dia") {
+				estado = "noche"
+					// nivel.listaZombies().forEach{ z => z.traerAlMapa()}  // pedirle que cambien de posicion por lista es menos pesado que preguntarle a todos los elementos de game.allVisuals() (incluye todos los arboles, y provoca  que los zombies aparezcan en tiempso diferentes)
+					// nube.comportamientoNoche() // rever, utilizar polimorfismo
+				nivel.visualesComportamiento().forEach{ v => v.comportamientoNoche()}
+			} else {
+				estado = "dia"
+				nivel.visualesComportamiento().forEach{ v => v.comportamientoDia()} // preguntar a todos los visuals tilda
+				// nivel.listaZombies().forEach{ z => z.moverFueraDelMapa()  }
+				// nube.comportamientoDia()  
+			}
+		}) // preguntar
+	}
+
+	method esAtravesable() {
+		return true
+	}
+
 }
-	 
+
