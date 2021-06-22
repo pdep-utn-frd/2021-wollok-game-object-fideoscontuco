@@ -22,7 +22,7 @@ object tablero { // candidato a clase?
 	method fueraDelLimite(nuevaPos) {
 		const x = nuevaPos.x()
 		const y = nuevaPos.y()
-		return (x > game.width() or x < 0) or ( y > game.height() or y < 0)
+		return (x > game.width() - 1 or x < 0) or ( y > game.height() - 1 or y < 0)
 	}
 
 	method posicionesProximas(sujeto) {
