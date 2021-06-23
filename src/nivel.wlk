@@ -28,7 +28,7 @@ object nivel { // 750 * 750
 	method spawnear() {
 		2.randomUpTo(6).times{ l => game.addVisual((new Arbol(position = tablero.posRandom())))}
 		4.times{ l => game.addVisual(new BayasMedianas())}
-		8.times{ l => game.addVisual(new Zombie())} // lista de zombies para darle ordenes mediante forEach y polimorfismo
+		3.randomUpTo(5).times{ l => game.addVisual(new Zombie())} // lista de zombies para darle ordenes mediante forEach y polimorfismo
 	}
 
 	method configurarPantalla() {

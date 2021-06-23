@@ -183,8 +183,7 @@ class Zombie inherits Visual {
 	method comenzarMovimiento() {
 		game.onTick(6000, "zombie se mueve", { => try {
 			if (self.estaAlBordeDeLaCasa(self)) { // si la casa esta a su alcance ataca
-				var sonido = new Sonido() // rever si es necesario crear una instancia de sonido cda vez
-				sonido.golpeMadera().play()
+				new Sonido().golpeMadera().play()
 				casa.recibeDanio(danio)
 			} else { // si no, se mueve
 				self.position(tablero.posicionMasCercanaACasa(self))
