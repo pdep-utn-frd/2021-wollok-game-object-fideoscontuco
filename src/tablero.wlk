@@ -1,6 +1,10 @@
 import wollok.game.*
 import models.*
 
+
+//pantalla cargando.. eso estaria buenisimo!
+
+
 object tablero { // candidato a clase?
 	var property casa 
 	method celdasVaciasBordes() { // completar
