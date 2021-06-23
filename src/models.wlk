@@ -4,22 +4,21 @@ import tablero.*
 
 class Visual {
 
-	method comportamientoNoche() {
+	method comportamientoNoche(horario) {
 	}
 
-	method comportamientoDia() {
+	method comportamientoDia(horario) {
 	}
 
 	method tieneComportamiento() = false
-	
-	method reiniciarEstado(){}
+	 
 }
 
 class ParteCasa inherits Visual {
 
 	var property position
 	var property esAtravesable = true
-
+	var property casa 
 	method esInteractuado(sujetoParticipe) {
 		casa.salud(casa.salud() + (sujetoParticipe.madera() * 2))
 		game.say(casa, "salud de casa + " + sujetoParticipe.madera())
@@ -34,9 +33,8 @@ class ParteCasa inherits Visual {
 	}
  
 }
-
-object casa inherits Visual {
-
+class Casa inherits Visual{
+	
 	var property esAtravesable = true
 	// var property position = game.at(3, 4) // tiene varios position
 	var property salud = 80
@@ -45,7 +43,8 @@ object casa inherits Visual {
 	var property nombre = "casa"
 	var property position = game.at(3, 4)
 	var property tieneComportamiento = false
-
+	
+	
 	method image() = "casa.png"
 
 	method esInteractuado(sujetoParticipe) {
@@ -60,9 +59,7 @@ object casa inherits Visual {
 		return (salud < 0 )
 	}
 
-	override method reiniciarEstado() {
-		salud = 80
-	}
+ 
 
 	method celdasOcupadas() {
 		// return [self.arriba(),self.derecha(),
@@ -73,9 +70,9 @@ object casa inherits Visual {
 	method dibujar() {
 		game.addVisual(self)
 		game.showAttributes(self)
-		game.addVisual(new ParteCasa(position = self.position().right(1)))
-		game.addVisual(new ParteCasa(position = self.position().up(1)))
-		game.addVisual(new ParteCasa(position = self.position().up(1).right(1)))
+		game.addVisual(new ParteCasa(position = self.position().right(1), casa  = self))
+		game.addVisual(new ParteCasa(position = self.position().up(1), casa  = self))
+		game.addVisual(new ParteCasa(position = self.position().up(1).right(1), casa  = self))
 	}
 
 	method recibeDanio(danio) { // logica repetida, probar clase
@@ -90,7 +87,7 @@ object casa inherits Visual {
 	}
 
 }
-
+	
 class Sonido { // los sonidos pueden ejecutarse una sola vez, 
 //entonces instancio?
 
@@ -108,11 +105,13 @@ class Zombie inherits Visual {
 	var property nombre = "zombie"
 	var property paso = true
 	var property tieneComportamiento = true
-
+	var property heroe
+	var property hogar
+	
 	method image() = "zombie3.png"
 
 	method recibeDanio() {
-		vida = vida - personajePrincipal.danio()
+		vida = vida - heroe.danio()
 		if (vida <= 0) {
 			new Sonido().agonia().play()
 				// game.removeVisual(self)
@@ -123,11 +122,11 @@ class Zombie inherits Visual {
 		} else self.huye()
 	}
 
-	override method comportamientoDia() {
+	override method comportamientoDia(horario) {
 		game.schedule(8000, { self.moverFueraDelMapa()})
 	}
 
-	override method comportamientoNoche() {
+	override method comportamientoNoche(horario) {
 		game.schedule(2000, { self.traerAlMapa()})
 	}
 
@@ -154,7 +153,7 @@ class Zombie inherits Visual {
 	}
 
 	method cobrarVida() {
-		self.comenzarMovimiento()
+		self.comenzarMovimiento(hogar)
 	}
 
 	// var nombre
@@ -164,11 +163,7 @@ class Zombie inherits Visual {
 	}
 
 	method esAtravesable() = true
-
-	override method reiniciarEstado() {
-		danio = 5
-		vida = 50
-	}
+ 
 
 	method puedeMoverseA(nuevaPos) { // zombie huye solo a tiles vacios
 		return ( not tablero.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).isEmpty()) // get objectsIn devuelve lista. 
@@ -177,12 +172,12 @@ class Zombie inherits Visual {
 
 	method traerAlMapa() { // necesito un objeto casa que sea golpeable
 		self.position(tablero.celdasVaciasBordes().anyOne())
-		self.comenzarMovimiento()
+		self.comenzarMovimiento(hogar)
 	}
 
-	method comenzarMovimiento() {
+	method comenzarMovimiento(casa) {
 		game.onTick(6000, "zombie se mueve", { => try {
-			if (self.estaAlBordeDeLaCasa(self)) { // si la casa esta a su alcance ataca
+			if (self.estaAlBordeDeLaCasa()) { // si la casa esta a su alcance ataca
 				new Sonido().golpeMadera().play()
 				casa.recibeDanio(danio)
 			} else { // si no, se mueve
@@ -194,8 +189,8 @@ class Zombie inherits Visual {
 		})
 	}
 
-	method estaAlBordeDeLaCasa(sujeto) {
-		return tablero.posicionesProximas(sujeto).any{ c => casa.celdasOcupadas().contains(c) }
+	method estaAlBordeDeLaCasa() {
+		return tablero.posicionesProximas(self).any{ c => hogar.celdasOcupadas().contains(c) }
 	}
 
 }
@@ -225,16 +220,16 @@ class Arbol inherits Visual {
 				sujetoParticipe.madera(sujetoParticipe.madera() + madera)
 				game.say(sujetoParticipe, "madera  + " + madera)
 				madera = 0
-				game.schedule(9200, { self.reiniciarEstado()})
+				game.schedule(9200, { self.reinicio()})
 			}
 		}
 	}
-
-	override method reiniciarEstado() {
-		estaEnPie = true
+ 
+	method reinicio(){
 		madera = 40
+		estaEnPie = true
 	}
-
+	
 	method cobrarVida() {
 	}
 
@@ -273,7 +268,7 @@ class BayasMedianas inherits Visual {
 
 }
 
-object roca inherits Visual {
+class Roca inherits Visual {
 
 	var property position = game.at(2, 8)
 	var property esAtravesable = false
@@ -307,10 +302,7 @@ object roca inherits Visual {
 		}
 	}
 
-	override method reiniciarEstado() {
-		self.position(tablero.posicionesProximas(self).anyOne())
-	}
-
+	 
 	method cobrarVida() {
 		self.llenarDiccio()
 		game.say(self, "preciona C para interactuar con objetos")
@@ -318,7 +310,8 @@ object roca inherits Visual {
 
 }
 
-object personajePrincipal inherits Visual {
+
+class PersonajePrincipal inherits Visual {
 
 	var property energia = 15555
 	var property position = game.at(1, 3)
@@ -328,13 +321,13 @@ object personajePrincipal inherits Visual {
 	var property nombre = "personajePrincipal"
 	var property estaEnPie = false
 	var property tieneComportamiento = false
-
+	var property rocaConsejera
 	method interactuarPosicion() {
 		try {
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
 			itemFound.esInteractuado(self)
 			self.cansar(10)
-			roca.darConsejo(itemFound)
+			rocaConsejera.darConsejo(itemFound)
 		// game.say(self,"interactuo con " + itemFound.toString()) // testing
 		} catch e : wollok.lang.Exception {
 		// game.say(self, "no hay nada aqui para interactuar")
@@ -382,30 +375,21 @@ object personajePrincipal inherits Visual {
 	method alarmaDeEnergia() {
 		if (energia < 50) {
 			game.say(self, "me estoy quedando sin energia")
-			roca.darConsejo(self)
+			rocaConsejera.darConsejo(self)
 		}
 	}
-
-	override method reiniciarEstado() { // rever, cambiar energia requeire en ambos lugares,no esta bueno
-		self.energia(15444)
-		position = game.center()
-		madera = 0
-		contadorEscondidoDePasos = 0
-		danio = 45
-	}
-
+ 
 	method cobrarVida() {
 	}
 
 }
 
-object nube inherits Visual {
+class Nube inherits Visual {
 
 	var property position = game.at(1, 9)
 	var property estadoNormal = true
 	var property esAtravesable = true
 	var property cDias = 0 // medida de tiempo, cuando la nube vuelve pasa de dia a noche
-	var property nombre = nube
 	var property tieneComportamiento = true
 
 	method esInteractuado(sujeto) {
@@ -424,21 +408,19 @@ object nube inherits Visual {
 		self.position(self.position().down(1))
 	}
 
-	override method reiniciarEstado() {
-		position = game.at(1, 9)
-	}
-
+	 
 	method cobrarVida() {
 		game.onTick(800, "nubesSeMueven", {=> self.moverDerecha()})
 	}
 
-	override method comportamientoNoche() {
+	override method comportamientoNoche(horario) {
 		game.schedule(horario.tiempoDelDia() - 8000, { => game.say(self, "dentro de poco sera de dia")})
 	}
 
-	override method comportamientoDia() {
+	override method comportamientoDia(horario) {
 		game.schedule(horario.tiempoDelDia() - 8000, { => game.say(self, "dentro de poco sera de noche")})
 	}
 
 }
+
 

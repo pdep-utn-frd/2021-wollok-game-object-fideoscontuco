@@ -1,22 +1,27 @@
 import wollok.game.*
 import models.*
 import tablero.*
+import models.*
 
 object nivel { // 750 * 750 
 
 	const ancho = 15
 	const alto = 15
+	const casaActual = new Casa(estaRota = false)
+	const roca = new Roca()
+	const nube = new Nube()
+	const personajePrincipal = new PersonajePrincipal(rocaConsejera = roca)
 
 	method inicio() {
 		self.configurarPantalla()
-		game.addVisual(horario)
-		casa.dibujar()
+		game.addVisual(new Horario())
+		casaActual.dibujar()
+		tablero.casa(casaActual)
 		visualYAtributos.addVisual(personajePrincipal)
 		game.addVisual(roca)
-			// game.errorReporter(roca)
 		game.addVisual(nube)
 		self.spawnear()
-		game.allVisuals().forEach{ v => v.reiniciarEstado()} // preguntar
+			// game.allVisuals().forEach{ v => v.reiniciarEstado()} // no hace falta al instanciar desde clase con cada mensaje inicio()
 		game.allVisuals().forEach{ v => v.cobrarVida()}
 		self.configurarTeclado()
 	}
@@ -26,9 +31,9 @@ object nivel { // 750 * 750
 	}
 
 	method spawnear() {
-		2.randomUpTo(6).times{ l => game.addVisual((new Arbol(position = tablero.posRandom())))}
+		2.randomUpTo(6).times{ l => game.addVisual(new Arbol())}
 		4.times{ l => game.addVisual(new BayasMedianas())}
-		3.randomUpTo(5).times{ l => game.addVisual(new Zombie())} // lista de zombies para darle ordenes mediante forEach y polimorfismo
+		3.randomUpTo(5).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // z
 	}
 
 	method configurarPantalla() {
@@ -57,14 +62,14 @@ object nivel { // 750 * 750
 		game.addVisualIn(roca, game.center())
 		game.say(roca, "has perdido: " + razon) // razon de derrota.
 		game.schedule(3000, {=> game.say(roca, "presiona L para volver a comenzar")})
-		keyboard.any().onPressDo{ game.clear()
+		keyboard.any().onPressDo{ game.clear() // como reinicio
 			self.inicio()
 		}
 	}
 
 }
 
-object horario inherits Visual {
+class Horario inherits Visual {
 
 	var property tiempoDelDia = 24000
 	var property position = game.origin()
@@ -81,10 +86,10 @@ object horario inherits Visual {
 		game.onTick(tiempoDelDia, "dia cambia", {=>
 			if (estado == "dia") {
 				estado = "noche"
-				nivel.visualesComportamiento().forEach{ v => v.comportamientoNoche()}
+				nivel.visualesComportamiento().forEach{ v => v.comportamientoNoche(self)}
 			} else {
 				estado = "dia"
-				nivel.visualesComportamiento().forEach{ v => v.comportamientoDia()} // preguntar a todos los visuals tilda
+				nivel.visualesComportamiento().forEach{ v => v.comportamientoDia(self)} // preguntar a todos los visuals tilda
 			}
 		}) // preguntar
 	}

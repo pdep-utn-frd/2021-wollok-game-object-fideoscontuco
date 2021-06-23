@@ -2,7 +2,7 @@ import wollok.game.*
 import models.*
 
 object tablero { // candidato a clase?
-
+	var property casa 
 	method celdasVaciasBordes() { // completar
 		const posiciones = []
 		const ancho = game.width() - 1

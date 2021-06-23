@@ -3,8 +3,9 @@ import nivel.*
 
 program fideosConTuco {
  
-	nivel.inicio() // para volver a empezar
 	
+	nivel.inicio()
+	  
 	game.start()
 	 
 }
