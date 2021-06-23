@@ -2,18 +2,6 @@ import wollok.game.*
 import nivel.*
 import tablero.*
 
-/*  
- * class Visuales{
- * method cobrarVida()
- * method nombre()
- * method reiniciarEstado()
- * method esAtravezable() = true
- * method puedeMoverse(sujeto)
- * method posicionesProximas(sujeto){ // codigo repetido en otros
- * 		return [sujeto.position().up(1), sujeto.position().down(1), sujeto.position().right(1), sujeto.position().left(1) ]
- * 	}
- * comp dia y noche
- */
 class Visual {
 
 	method comportamientoNoche() {
@@ -22,8 +10,9 @@ class Visual {
 	method comportamientoDia() {
 	}
 
-	method tieneComportamiento()
-
+	method tieneComportamiento() = false
+	
+	method reiniciarEstado(){}
 }
 
 class ParteCasa inherits Visual {
@@ -43,31 +32,9 @@ class ParteCasa inherits Visual {
 
 	method cobrarVida() {
 	}
-
-	method reiniciarEstado() {
-	}
-
-	method tieneComportamiento() = false
-
+ 
 }
 
-/*  
- * class Direccion{
- * 	var property position
- * 	method arriba(){
- * 		return self.position().up(1)
- * 	}
- * 	method derecha(){
- * 		return self.position().right(1)
- * 	}
- * 	method izquierda(){
- * 		return self.position().left(1)
- * 	}
- * 	method abajo(){
- * 		return self.position().down(1)
- * 	}
- * }
- */
 object casa inherits Visual {
 
 	var property esAtravesable = true
@@ -93,7 +60,7 @@ object casa inherits Visual {
 		return (salud < 0 )
 	}
 
-	method reiniciarEstado() {
+	override method reiniciarEstado() {
 		salud = 80
 	}
 
@@ -164,7 +131,7 @@ class Zombie inherits Visual {
 		game.schedule(2000, { self.traerAlMapa()})
 	}
 
-	method tieneComportamiento() = true
+	override method tieneComportamiento() = true
 
 	method moverFueraDelMapa() {
 		self.removerEventos()
@@ -198,7 +165,7 @@ class Zombie inherits Visual {
 
 	method esAtravesable() = true
 
-	method reiniciarEstado() {
+	override method reiniciarEstado() {
 		danio = 5
 		vida = 50
 	}
@@ -232,15 +199,6 @@ class Zombie inherits Visual {
 		return tablero.posicionesProximas(sujeto).any{ c => casa.celdasOcupadas().contains(c) }
 	}
 
-/* 
- * method atacar() { // si el tiempo es corto, cada vez que el zombie huya va a dañar la casa
- * 	game.onTick(6000, "zombie ataca", { =>
- * 		var sonido = new Sonido()
- * 		sonido.agonia().play()
- * 		casa.recibeDanio(danio)
- * 	})
- * }
- */
 }
 
 class Arbol inherits Visual {
@@ -273,7 +231,7 @@ class Arbol inherits Visual {
 		}
 	}
 
-	method reiniciarEstado() {
+	override method reiniciarEstado() {
 		estaEnPie = true
 		madera = 40
 	}
@@ -309,14 +267,7 @@ class BayasMedianas inherits Visual {
 		self.position(game.at(25, 25))
 		game.schedule(6000, { => self.position(tablero.posRandom())})
 	}
-
-	method reiniciarEstado() {
-	}
-
-	method instanciarNuevo() {
-		return new BayasMedianas()
-	}
-
+ 
 	method cobrarVida() {
 		calorias = 100
 	}
@@ -357,7 +308,7 @@ object roca inherits Visual {
 		}
 	}
 
-	method reiniciarEstado() {
+	override method reiniciarEstado() {
 		self.position(tablero.posicionesProximas(self).anyOne())
 	}
 
@@ -394,12 +345,6 @@ object personajePrincipal inherits Visual {
 	method cansar(nro) {
 		energia = energia - nro
 		self.alarmaDeEnergia()
-	}
-
-	method comportamientoDia() {
-	}
-
-	method comportamientoNoche() {
 	}
 
 	method sumarEnergia(nro) {
@@ -442,7 +387,7 @@ object personajePrincipal inherits Visual {
 		}
 	}
 
-	method reiniciarEstado() { // rever, cambiar energia requeire en ambos lugares,no esta bueno
+	override method reiniciarEstado() { // rever, cambiar energia requeire en ambos lugares,no esta bueno
 		self.energia(15444)
 		position = game.center()
 		madera = 0
@@ -480,7 +425,7 @@ object nube inherits Visual {
 		self.position(self.position().down(1))
 	}
 
-	method reiniciarEstado() {
+	override method reiniciarEstado() {
 		position = game.at(1, 9)
 	}
 
@@ -488,14 +433,6 @@ object nube inherits Visual {
 		game.onTick(800, "nubesSeMueven", {=> self.moverDerecha()})
 	}
 
-	/*  
-	 *  method comportamiento(){
-	 * 	if (horario.estado() == "dia"){
-	 * 		game.schedule(horario.tiempoDelDia() - 6000,{ => game.say(self,"dentro de poco sera de noche,")})
-	 * 	}else{game.schedule(horario.tiempoDelDia() - 6000, { => game.say(self,"dentro de poco sera de dia") })}
-	 * 	
-	 * }
-	 */
 	override method comportamientoNoche() {
 		game.schedule(horario.tiempoDelDia() - 8000, { => game.say(self, "dentro de poco sera de dia")})
 	}

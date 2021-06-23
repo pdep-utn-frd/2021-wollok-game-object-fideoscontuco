@@ -9,7 +9,6 @@ object nivel { // 750 * 750
 
 	method inicio() {
 		self.configurarPantalla()
-			// game.boardGround("escenaDia.png")
 		game.addVisual(horario)
 		casa.dibujar()
 		visualYAtributos.addVisual(personajePrincipal)
@@ -65,13 +64,11 @@ object nivel { // 750 * 750
 
 }
 
-object horario {
+object horario inherits Visual {
 
 	var property tiempoDelDia = 24000
 	var property position = game.origin()
 	var property estado = "dia"
-
-	method tieneComportamiento() = false
 
 	method image() {
 		if (estado == "dia") {
@@ -80,27 +77,14 @@ object horario {
 		return "escenaNocheGrande.png"
 	}
 
-	method comportamientoNoche() {
-	}
-
-	method comportamientoDia() {
-	}
-
-	method reiniciarEstado() {
-	}
-
 	method cobrarVida() {
 		game.onTick(tiempoDelDia, "dia cambia", {=>
 			if (estado == "dia") {
 				estado = "noche"
-					// nivel.listaZombies().forEach{ z => z.traerAlMapa()}  // pedirle que cambien de posicion por lista es menos pesado que preguntarle a todos los elementos de game.allVisuals() (incluye todos los arboles, y provoca  que los zombies aparezcan en tiempso diferentes)
-					// nube.comportamientoNoche() // rever, utilizar polimorfismo
 				nivel.visualesComportamiento().forEach{ v => v.comportamientoNoche()}
 			} else {
 				estado = "dia"
 				nivel.visualesComportamiento().forEach{ v => v.comportamientoDia()} // preguntar a todos los visuals tilda
-				// nivel.listaZombies().forEach{ z => z.moverFueraDelMapa()  }
-				// nube.comportamientoDia()  
 			}
 		}) // preguntar
 	}
