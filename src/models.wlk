@@ -123,11 +123,11 @@ class Zombie inherits Visual {
 	}
 
 	override method comportamientoDia(horario) {
-		game.schedule(8000, { self.moverFueraDelMapa()})
+		game.schedule(1000.randomUpTo(3000), { self.moverFueraDelMapa()})
 	}
 
-	override method comportamientoNoche(horario) {
-		game.schedule(2000, { self.traerAlMapa()})
+	override method comportamientoNoche(horario) { // spawn progresivo
+		game.schedule(1000.randomUpTo(5000), { self.traerAlMapa()})
 	}
 
 	override method tieneComportamiento() = true
@@ -313,7 +313,7 @@ class Roca inherits Visual {
 
 class PersonajePrincipal inherits Visual {
 
-	var property energia = 15555
+	var property energia = 2
 	var property position = game.at(1, 3)
 	var property madera = 0
 	var property contadorEscondidoDePasos = 0
@@ -365,7 +365,12 @@ class PersonajePrincipal inherits Visual {
 		// sprite en el piso
 		}
 	}
-
+	
+	method cobrarVida(){ // conviene inicializar objeto
+		energia = 1000
+	  position = game.at(1, 3)
+	  madera = 0
+	}
 	method image() {
 		if (self.estaEnPie()) {
 			return "shovelMain.png"
@@ -379,9 +384,7 @@ class PersonajePrincipal inherits Visual {
 		}
 	}
  
-	method cobrarVida() {
-	}
-
+	 
 }
 
 class Nube inherits Visual {
