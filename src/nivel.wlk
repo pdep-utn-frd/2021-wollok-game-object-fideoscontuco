@@ -22,18 +22,23 @@ object nivel { // 750 * 750
 		game.addVisual(nube)
 		self.spawnear()
 		game.addVisual(roca)
-		game.allVisuals().forEach{ v => v.cobrarVida()}
+		game.allVisuals().forEach{ v => v.cobrarVida()} // cobrar vida cumple dos funciones al mismo tiempo, da comportamiento de movimiento y tambien reinicia estado, 
+		//no esta bueno dos propositos en mismo mensaje
 		self.configurarTeclado()
 	}
-
-	method visualesComportamiento() { // se filtra para reducir el numero, por ej, quitar arboles, y reducir la carga del pedido
-		return game.allVisuals().filter{ v => v.tieneComportamiento() }
+	/*  
+	 // rever,  discrimina  los objetos, preferible game.allvisuals
+		method visualesComportamiento() { // se filtra para reducir el numero, por ej, quitar arboles, y reducir la carga del pedido.
+	
+		//return game.allVisuals().filter{ v => v.tieneComportamiento() }
+		return game.allVisuals().filter{ v => (v.comportamientoDia()) == null && (v.comportamientoNoche() == null) } // si ambas dan null no tiene nada que ofrecer y es quitado de la lista
+		// se quita para reducir la lista y que la transicion no demore mucho por una lista muy grande(muchos arboles)
 	}
-
-	method spawnear() { // buscar mejor manera que sea mas liviano
-		12.randomUpTo(24).times{ l => game.addVisual(new Arbol())}
+	*/
+	method spawnear() { // buscar mejor manera que sea mas liviano.  cambiar spawn segun dificultad
+		6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
 		4.times{ l => game.addVisual(new BayasMedianas())}
-		3.randomUpTo(22).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // z
+		3.randomUpTo(8).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // z
 	}
 
 	method configurarPantalla() {
@@ -98,7 +103,7 @@ class PantallaNegra inherits Visual { // pasar a clase
 
 class Horario inherits Visual {
 
-	var property tiempoDelDia = 12000
+	var property tiempoDelDia = 20000
 	var property position = game.origin()
 	var property estado = "dia"
 
@@ -113,10 +118,12 @@ class Horario inherits Visual {
 		game.onTick(tiempoDelDia, "dia cambia", {=>
 			if (estado == "dia") {
 				estado = "noche"
-				nivel.visualesComportamiento().forEach{ v => v.comportamientoNoche(self)}
+				//nivel.visualesComportamiento().forEach{ v => v.comportamientoNoche(self)}
+				game.allVisuals().forEach{ v => v.comportamientoNoche(self)}
 			} else {
 				estado = "dia"
-				nivel.visualesComportamiento().forEach{ v => v.comportamientoDia(self)}  
+				//nivel.visualesComportamiento().forEach{ v => v.comportamientoDia(self)}   
+				game.allVisuals().forEach{ v => v.comportamientoDia(self)} // probar si tilda
 			}
 		})  
 	}

@@ -123,11 +123,11 @@ class Zombie inherits Visual {
 	}
 
 	override method comportamientoDia(horario) {
-		game.schedule(1000.randomUpTo(3000), { self.moverFueraDelMapa()})
+		game.schedule(1000.randomUpTo(2000), { self.moverFueraDelMapa()})
 	}
 
 	override method comportamientoNoche(horario) { // spawn progresivo
-		game.schedule(1000.randomUpTo(5000), { self.traerAlMapa()})
+		game.schedule(500.randomUpTo(4000), { self.traerAlMapa()})
 	}
 
 	override method tieneComportamiento() = true
@@ -176,7 +176,7 @@ class Zombie inherits Visual {
 	}
 
 	method comenzarMovimiento(casa) {
-		game.onTick(6000, "zombie se mueve", { => try {
+		game.onTick(3000.randomUpTo(6000), "zombie se mueve", { => try {
 			if (self.estaAlBordeDeLaCasa()) { // si la casa esta a su alcance ataca
 				new Sonido().golpeMadera().play()
 				casa.recibeDanio(danio)
