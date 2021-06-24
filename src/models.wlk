@@ -113,6 +113,7 @@ object casa inherits Visual {
 
 	method recibeDanio(danio) { // logica repetida, probar clase
 		salud = salud - danio
+		new Sonido().roturaCasa().play()
 		game.say(self, "ouch, me queda " + salud + " vida")
 		if (salud < 0) {
 			nivel.escenarioDerrota("la casa ha sido destruida")
@@ -130,6 +131,7 @@ class Sonido { // los sonidos pueden ejecutarse una sola vez,
 	var property agonia = game.sound("tomasAgonia.mp3")
 	var property meDueleTodo = game.sound("tomasMeDueleTodo.mp3")
 	var property golpeMadera = game.sound("golpeMadera.mp3")
+	var property roturaCasa = game.sound("roturaCasa.mp3")
 
 }
 
