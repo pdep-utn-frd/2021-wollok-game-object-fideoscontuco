@@ -132,6 +132,8 @@ class Sonido { // los sonidos pueden ejecutarse una sola vez,
 	var property meDueleTodo = game.sound("tomasMeDueleTodo.mp3")
 	var property golpeMadera = game.sound("golpeMadera.mp3")
 	var property roturaCasa = game.sound("roturaCasa.mp3")
+	var property paso1 = game.sound("caminata1.mp3")
+	var property paso2 = game.sound("caminata2.mp3")
 
 }
 
@@ -423,6 +425,12 @@ object personajePrincipal inherits Visual {
 			estaEnPie = not estaEnPie // preguntar
 			self.cansar(2)
 			position = nuevaPos // asigna nueva posicion
+			if (contadorEscondidoDePasos % 2 == 0) { 
+				self.daUnPaso()
+			}else{
+				self.daOtroPaso()
+			
+				}
 			contadorEscondidoDePasos = contadorEscondidoDePasos + 1
 		}
 		if (self.estaCansado()) {
@@ -430,6 +438,8 @@ object personajePrincipal inherits Visual {
 		// sprite en el piso
 		}
 	}
+	method daUnPaso() = new Sonido().paso1().play()
+	method daOtroPaso() = new Sonido().paso2().play()
 
 	method image() {
 		if (self.estaEnPie()) {
