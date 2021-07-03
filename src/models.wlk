@@ -13,6 +13,7 @@ class Visual {
 //	method tieneComportamiento() = false
 	 
 }
+ 
 
 class ParteCasa inherits Visual {
 
@@ -126,11 +127,12 @@ class Zombie inherits Visual {
 				// utilizar enfoque de fabrica de zombies crea muchas instancias de zombie que parecen relentizar el juego al pasar el tiempo(preguntar)
 				// utilizar removeVisual y despues addVisualIn no me permite volver a cambiarle la posicion en game.onTick() (preguntar)
 			self.traerAlMapa() // traer al mapa no tiene en cuenta el horario. necesitaria que chequee de alguna manera si es de dia o no 
-		} else self.huye()
+		}
+		 else self.huye()
 	}
 
-	override method comportamientoDia(horario) {
-		game.schedule(1000.randomUpTo(2000), { self.moverFueraDelMapa()})
+	override method comportamientoDia(horario) { // de dia se va del mapa
+		game.schedule(1000.randomUpTo(2000), { self.moverFueraDelMapa()  })  
 	}
 
 	override method comportamientoNoche(horario) { // spawn progresivo
@@ -148,7 +150,7 @@ class Zombie inherits Visual {
 	method moverFueraDelMapa() { // se mueve fuera del mapa para no instanciar nuevos zombies. justificar
 		self.removerEventos()
 		vida = 50
-		self.position(game.at(nivel.ancho() + 5, nivel.alto() + 5))
+	    self.position(game.at(nivel.ancho() + 5, nivel.alto() + 5))  // espera que se termina el ultimo tick por las dudas.
 	}
 	
 	
@@ -169,7 +171,7 @@ class Zombie inherits Visual {
 	method removerEventos() {
 		try{ 
 		game.removeTickEvent("zombie se mueve")
-		}catch e: Exception{
+		}catch e: Exception{ // evento puede no existir si ocurre que el zombie no vuelve al mapa por ser justo de dia
 			//
 		}
 	}
@@ -184,8 +186,8 @@ class Zombie inherits Visual {
 		danio = danio + 10
 	}
 
-	method cobrarVida() {
-		self.comenzarMovimiento(hogar)
+	method cobrarVida() { // es necesario con logica dia?
+	//	self.comenzarMovimiento(hogar)
 	}
 
 	// var nombre
@@ -201,18 +203,28 @@ class Zombie inherits Visual {
 		return ( not tablero.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).isEmpty()) // get objectsIn devuelve lista. 
 		//
 	}
-
-
+	
+	method estaFueraDelMapa(){
+		return self.position().equals(game.at(nivel.ancho() + 5, nivel.alto() + 5))
+	}
+	
+	method darUnPaso(){
+		if (not self.estaFueraDelMapa()){ // con remove tick event, parece que lo remueve pero se dispara una ultima vez.
+		self.position(tablero.posicionMasCercanaACasa(self))
+		}
+	}
+	
 	method comenzarMovimiento(casa) {
-		game.onTick(3000.randomUpTo(6000), "zombie se mueve", { => try {
+		game.onTick(2000.randomUpTo(4000), "zombie se mueve", { => try {
 			if (self.estaAlBordeDeLaCasa()) { // si la casa esta a su alcance ataca
 				new Sonido().golpeMadera().play()
 				casa.recibeDanio(danio)
 			} else { // si no, se mueve
-				self.position(tablero.posicionMasCercanaACasa(self))
+				self.darUnPaso()
 			}
 		} catch e : wollok.lang.ElementNotFoundException {
 			game.say(self, "no tengo donde ir")
+			e.printStackTrace()
 		}
 		})
 	}
@@ -296,6 +308,24 @@ class BayasMedianas inherits Visual {
 
 }
 
+
+class PartePiedra inherits Visual{ // tiles invisibles que ocupan el espacio del game.say, para que no sea spawneado por un arbol.
+	var property position
+	var property esAtravesable = true
+	//var property casa 
+	method esInteractuado(sujetoParticipe) { //  
+	 	//no hace nada
+	}
+	
+	method image() {
+		return "tileInvisible.png"
+	}
+	
+	method cobrarVida() {
+	}
+}
+
+
 class Roca inherits Visual {
 
 	var property position = game.at(2, 8)
@@ -303,7 +333,21 @@ class Roca inherits Visual {
 	var property c = 0
 	var property diccio = new Dictionary() // const y objeto mismo nombre rompen todo
 	var property tieneComportamiento = false
-
+	
+	method construirRoca(){
+		var position1 =  self.position().up(1).right(1) // uno arriba y a la derecha
+		var position2 =  self.position().right(1)
+		var position3 = self.position().up(1)
+		var position4 = self.position().right(2)
+		var position5 = self.position().right(3)
+	 	game.addVisual(new PartePiedra(position = position1))
+	 	game.addVisual(new PartePiedra(position = position2))
+	 	game.addVisual(new PartePiedra(position = position3))
+	 	game.addVisual(new PartePiedra(position = position4))
+	 	game.addVisual(new PartePiedra(position = position5))
+	}
+	
+	
 	// const presentacion = diccio.put(presentacion,"interactua con sujetos presionando la c")
 	method llenarDiccio() {
 		diccio.put("arbol", "la madera pueda utilizarse para reparar  la casa") // probar

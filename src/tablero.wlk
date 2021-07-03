@@ -60,7 +60,13 @@ object tablero { // candidato a clase?
 		} 
 		*/
 		return self.espacioLibreAlrededor(sujeto).min{ pos => pos.distance(casa.celdasOcupadas().min{ p => p.distance(pos)}) }
+	//	return self.espacioLibreAlrededor(sujeto).min{ pos => pos.distance(self.parteCasaMasCercana(pos)) } // busca el espacio alrededor con la menor distancia entre su posicion y la parte mas cercana
+		
 		//crear zombie y ver si 
+	}
+	
+	method parteCasaMasCercana(posicion2){ // la parte mas cercana de la casa a tomar como referencia
+		return casa.celdasOcupadas().min{ p => p.distance(posicion2)}
 	}
 	
 	method hayEspacioLibre(sujeto){
