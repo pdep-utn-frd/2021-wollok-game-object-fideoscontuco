@@ -113,7 +113,7 @@ class Zombie inherits Visual {
 	var property tieneComportamiento = true
 	var property heroe
 	var property hogar
-	
+	var property horarioZombie = null
 	method image() = "zombie3.png"
 
 	method recibeDanio() {
@@ -125,7 +125,7 @@ class Zombie inherits Visual {
 			self.moverFueraDelMapa()
 				// utilizar enfoque de fabrica de zombies crea muchas instancias de zombie que parecen relentizar el juego al pasar el tiempo(preguntar)
 				// utilizar removeVisual y despues addVisualIn no me permite volver a cambiarle la posicion en game.onTick() (preguntar)
-			self.traerAlMapa()
+			self.traerAlMapa() // traer al mapa no tiene en cuenta el horario. necesitaria que chequee de alguna manera si es de dia o no 
 		} else self.huye()
 	}
 
@@ -134,21 +134,44 @@ class Zombie inherits Visual {
 	}
 
 	override method comportamientoNoche(horario) { // spawn progresivo
-		game.schedule(500.randomUpTo(4000), { self.traerAlMapa()})
+	//	game.schedule(500.randomUpTo(4000), { self.traerAlMapa()})
+ 	// 	horarioZombie = horario
+		game.schedule(500.randomUpTo(4000), { 
+				self.traerAlMapa()}
+				
+		)
+ 
 	}
 	
 	
-	
-	 method tieneComportamiento() = true
-
+		
 	method moverFueraDelMapa() { // se mueve fuera del mapa para no instanciar nuevos zombies. justificar
 		self.removerEventos()
 		vida = 50
 		self.position(game.at(nivel.ancho() + 5, nivel.alto() + 5))
 	}
+	
+	
+	method traerAlMapa() { // necesito un objeto casa que sea golpeable
 
+			game.schedule(4000, {=> 
+			//  si es de dia, no haga nada
+			if (not reloj.esDeDia()){
+				self.position(tablero.celdasVaciasBordes().anyOne())
+				self.comenzarMovimiento(hogar)
+		}})
+	
+	}
+	
+	
+	 method tieneComportamiento() = true
+ 
 	method removerEventos() {
+		try{ 
 		game.removeTickEvent("zombie se mueve")
+		}catch e: Exception{
+			//
+		}
 	}
 
 	// //
@@ -179,13 +202,6 @@ class Zombie inherits Visual {
 		//
 	}
 
-	method traerAlMapa() { // necesito un objeto casa que sea golpeable
-		game.schedule(1500, {=> 
-			self.position(tablero.celdasVaciasBordes().anyOne())
-				self.comenzarMovimiento(hogar)
-		})
-	
-	}
 
 	method comenzarMovimiento(casa) {
 		game.onTick(3000.randomUpTo(6000), "zombie se mueve", { => try {

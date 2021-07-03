@@ -45,7 +45,7 @@ object tablero { // candidato a clase?
 		return listaTotal.filter{ celda => game.getObjectsIn(celda).isEmpty() }
 	}
 
-	method posRandom() {
+	method posRandom() { // arbol utiliza para saber donde aparecer, un tile ocupado por cualquier objeto descalifica
 		return self.espacioLibreEnMapa().anyOne()
 	}
 

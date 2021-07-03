@@ -3,6 +3,8 @@ import models.*
 import tablero.*
 import models.*
 
+const reloj = new Horario()
+
 object nivel { // 750 * 750 
 
 	var property ancho = 15
@@ -15,15 +17,15 @@ object nivel { // 750 * 750
 	
 	method inicio() {
 		self.configurarPantalla()
-		game.addVisual(new Horario()) // que no sea al mismo tiempo.
+		 
+		game.addVisual(reloj) // que no sea al mismo tiempo.
 		casaActual.dibujar()
 		tablero.casa(casaActual)
 		visualYAtributos.addVisual(personajePrincipal)
 		game.addVisual(nube)
 		self.spawnear()
 		game.addVisual(roca)
-		game.allVisuals().forEach{ v => v.cobrarVida()} // cobrar vida cumple dos funciones al mismo tiempo, da comportamiento de movimiento y tambien reinicia estado, 
-		//no esta bueno dos propositos en mismo mensaje
+		game.allVisuals().forEach{ v => v.cobrarVida()} //no esta bueno dos propositos en mismo mensaje
 		self.configurarTeclado()
 	}
 	/*  
@@ -39,8 +41,10 @@ object nivel { // 750 * 750
 	method spawnear() { // buscar mejor manera que sea mas liviano.  cambiar spawn segun dificultad
 		6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
 		4.times{ l => game.addVisual(new BayasMedianas())}
-		3.randomUpTo(24).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
-	}
+		//3.randomUpTo(24).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+	3.times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+	
+		}
 	
 
 	method configurarPantalla() {
@@ -117,15 +121,24 @@ class Horario inherits Visual {
 		}
 		return "escenaNocheGrande.png"
 	}
-
+	
+	method quedaTiempoDisponible(nro){ // 
+		return tiempoDelDia - nro >= 1 
+	}
+	
+	method esDeDia(){
+		return (estado == "dia")
+	}
 	method cobrarVida() {
 		game.onTick(tiempoDelDia, "dia cambia", {=>
-			if (estado == "dia") {
+			if (estado == "dia") { // probar ocn objeto en vez de string
 				estado = "noche"
+				
 				//nivel.visualesComportamiento().forEach{ v => v.comportamientoNoche(self)}
 				game.allVisuals().forEach{ v => v.comportamientoNoche(self)}
 			} else {
 				estado = "dia"
+				//
 				//nivel.visualesComportamiento().forEach{ v => v.comportamientoDia(self)}   
 				game.allVisuals().forEach{ v => v.comportamientoDia(self)} // probar si tilda
 			}
