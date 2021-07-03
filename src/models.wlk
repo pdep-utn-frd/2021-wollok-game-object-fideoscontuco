@@ -19,8 +19,8 @@ class ParteCasa inherits Visual {
 	var property position
 	var property esAtravesable = true
 	var property casa 
-	method esInteractuado(sujetoParticipe) { //
-		casa.repararCasa(sujetoParticipe)
+	method esInteractuado(sujetoParticipe) { //  
+		casa.repararCasa(sujetoParticipe) // que parteCasa no hable por casa
 	}
 
 	method image() {
