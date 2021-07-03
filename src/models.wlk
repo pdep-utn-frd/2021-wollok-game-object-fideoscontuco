@@ -10,7 +10,7 @@ class Visual {
 	method comportamientoDia(horario) {
 	}
 
-	method tieneComportamiento() = false
+//	method tieneComportamiento() = false
 	 
 }
 
@@ -19,10 +19,8 @@ class ParteCasa inherits Visual {
 	var property position
 	var property esAtravesable = true
 	var property casa 
-	method esInteractuado(sujetoParticipe) {
-		casa.salud(casa.salud() + (sujetoParticipe.madera() * 2))
-		game.say(casa, "salud de casa + " + sujetoParticipe.madera())
-		sujetoParticipe.madera(0)
+	method esInteractuado(sujetoParticipe) { //
+		casa.repararCasa(sujetoParticipe)
 	}
 
 	method image() {
@@ -44,14 +42,18 @@ class Casa inherits Visual{
 	var property position = game.at(3, 4)
 	var property tieneComportamiento = false
 	
+	method repararCasa(sujetoParticipe){ // que la casa hable por si misma
+		self.salud(self.salud() + (sujetoParticipe.madera() * 2))
+		game.say(self, "salud de casa + " + sujetoParticipe.madera())
+		sujetoParticipe.madera(0)
+	}
+	
 	
 	method image() = "casa.png"
 
-	method esInteractuado(sujetoParticipe) {
+	method esInteractuado(sujetoParticipe) { // rever
 		if (sujetoParticipe.madera() > 0) {
-			salud = salud + (sujetoParticipe.madera() * 2)
-			game.say(self, "salud de casa + " + sujetoParticipe.madera())
-			sujetoParticipe.madera(0)
+			self.repararCasa(sujetoParticipe)
 		}
 	}
 
@@ -97,6 +99,10 @@ class Sonido { // los sonidos pueden ejecutarse una sola vez,
 
 }
 
+object sonido{
+	var property agonia = game.sound("tomasAgonia.mp3")
+}
+
 class Zombie inherits Visual {
 
 	var property position = game.at(20, 20) // game.at(1, 2.randomUpTo(9))
@@ -114,6 +120,7 @@ class Zombie inherits Visual {
 		vida = vida - heroe.danio()
 		if (vida <= 0) {
 			new Sonido().agonia().play()
+		//	sonido.agonia().play()
 				// game.removeVisual(self)
 			self.moverFueraDelMapa()
 				// utilizar enfoque de fabrica de zombies crea muchas instancias de zombie que parecen relentizar el juego al pasar el tiempo(preguntar)
@@ -129,13 +136,15 @@ class Zombie inherits Visual {
 	override method comportamientoNoche(horario) { // spawn progresivo
 		game.schedule(500.randomUpTo(4000), { self.traerAlMapa()})
 	}
+	
+	
+	
+	 method tieneComportamiento() = true
 
-	override method tieneComportamiento() = true
-
-	method moverFueraDelMapa() {
+	method moverFueraDelMapa() { // se mueve fuera del mapa para no instanciar nuevos zombies. justificar
 		self.removerEventos()
 		vida = 50
-		self.position(game.at(20, 20))
+		self.position(game.at(nivel.ancho() + 5, nivel.alto() + 5))
 	}
 
 	method removerEventos() {
@@ -171,8 +180,11 @@ class Zombie inherits Visual {
 	}
 
 	method traerAlMapa() { // necesito un objeto casa que sea golpeable
-		self.position(tablero.celdasVaciasBordes().anyOne())
-		self.comenzarMovimiento(hogar)
+		game.schedule(1500, {=> 
+			self.position(tablero.celdasVaciasBordes().anyOne())
+				self.comenzarMovimiento(hogar)
+		})
+	
 	}
 
 	method comenzarMovimiento(casa) {

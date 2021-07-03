@@ -5,14 +5,14 @@ import models.*
 
 object nivel { // 750 * 750 
 
-	const ancho = 15
-	const alto = 15
+	var property ancho = 15
+	var property alto = 15
 	const casaActual = new Casa(estaRota = false)
 	const roca = new Roca()
 	const nube = new Nube() // hacerlos por fuera de nivel?
 	const personajePrincipal = new PersonajePrincipal(rocaConsejera = roca)
 	var property reiniciado = false
-
+	
 	method inicio() {
 		self.configurarPantalla()
 		game.addVisual(new Horario()) // que no sea al mismo tiempo.
@@ -27,6 +27,7 @@ object nivel { // 750 * 750
 		self.configurarTeclado()
 	}
 	/*  
+	 * 
 	 // rever,  discrimina  los objetos, preferible game.allvisuals
 		method visualesComportamiento() { // se filtra para reducir el numero, por ej, quitar arboles, y reducir la carga del pedido.
 	
@@ -38,8 +39,9 @@ object nivel { // 750 * 750
 	method spawnear() { // buscar mejor manera que sea mas liviano.  cambiar spawn segun dificultad
 		6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
 		4.times{ l => game.addVisual(new BayasMedianas())}
-		3.randomUpTo(8).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // z
+		3.randomUpTo(12).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	}
+	
 
 	method configurarPantalla() {
 		// game.clear()
@@ -54,9 +56,11 @@ object nivel { // 750 * 750
 		keyboard.down().onPressDo({ personajePrincipal.irA(personajePrincipal.position().down(1))})
 		keyboard.right().onPressDo({ personajePrincipal.irA(personajePrincipal.position().right(1))})
 		keyboard.left().onPressDo({ personajePrincipal.irA(personajePrincipal.position().left(1))})
-		keyboard.l().onPressDo({ game.clear()
+		keyboard.l().onPressDo({ 
+			game.clear()
 			game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
-			game.schedule(500, {=> self.inicio()}) // utilizo schedule para que wollok ejecute self.inicio() ejecute el bloque solo cuando termino de dibujar, sino se tildaria con la pantalla anterior dibujada.
+		 	game.schedule(1, {=> self.inicio()}) // utilizo schedule para que wollok ejecute self.inicio() ejecute el bloque solo cuando termino de dibujar, sino se tildaria con la pantalla anterior dibujada.
+			 
 		})
 	}
 

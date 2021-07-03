@@ -60,6 +60,7 @@ object tablero { // candidato a clase?
 		} 
 		*/
 		return self.espacioLibreAlrededor(sujeto).min{ pos => pos.distance(casa.celdasOcupadas().min{ p => p.distance(pos)}) }
+		//crear zombie y ver si 
 	}
 	
 	method hayEspacioLibre(sujeto){
