@@ -1,9 +1,11 @@
+/*  
 import wollok.game.*
 import models.*
 import tablero.*
 import models.*
-
+*/
 const reloj = new Horario()
+
 
 object nivel { // 750 * 750 
 
@@ -42,11 +44,11 @@ object nivel { // 750 * 750
 	}
 	*/
 	method spawnear() { // buscar mejor manera que sea mas liviano.  cambiar spawn segun dificultad
-		//6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
+		 6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
 	//	80.times{ l => game.addVisual(new Arbol())}
 		4.times{ l => game.addVisual(new BayasMedianas())}
-	//	3.randomUpTo(24).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
-		3.times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+		3.randomUpTo(24).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+	//	3.times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	
 		}
 	

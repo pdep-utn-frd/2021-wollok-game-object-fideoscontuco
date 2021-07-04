@@ -1,7 +1,7 @@
 import wollok.game.*
-import nivel.*
+//import nivel.*
 import tablero.*
-
+import nivelPrueba.*
 class Visual {
 
 	method comportamientoNoche(horario) {
@@ -42,7 +42,7 @@ class Casa inherits Visual{
 	var property nombre = "casa"
 	var property position = game.at(3, 4)
 	var property tieneComportamiento = false
-	
+ 
 	method repararCasa(sujetoParticipe){ // que la casa hable por si misma
 		self.salud(self.salud() + (sujetoParticipe.madera() * 2))
 		game.say(self, "salud de casa + " + sujetoParticipe.madera())
@@ -82,7 +82,8 @@ class Casa inherits Visual{
 		salud = salud - danio
 		game.say(self, "ouch, me queda " + salud + " vida")
 		if (salud < 0) {
-			nivel.escenarioDerrota("la casa ha sido destruida")
+	//		nivel.escenarioDerrota("la casa ha sido destruida")
+			escenarioDerrota.inicio("la casa ha sido destruida")		
 		}
 	}
 
@@ -150,7 +151,7 @@ class Zombie inherits Visual {
 	method moverFueraDelMapa() { // se mueve fuera del mapa para no instanciar nuevos zombies. justificar
 		self.removerEventos()
 		vida = 50
-	    self.position(game.at(nivel.ancho() + 5, nivel.alto() + 5))  // espera que se termina el ultimo tick por las dudas.
+	    self.position(game.at( anchoVentanas + 5,  altoVentanas + 5))  // espera que se termina el ultimo tick por las dudas.
 	}
 	
 	
@@ -205,7 +206,7 @@ class Zombie inherits Visual {
 	}
 	
 	method estaFueraDelMapa(){
-		return self.position().equals(game.at(nivel.ancho() + 5, nivel.alto() + 5))
+		return self.position().equals(game.at(anchoVentanas + 5, altoVentanas + 5))
 	}
 	
 	method darUnPaso(){
@@ -394,6 +395,7 @@ class PersonajePrincipal inherits Visual {
 	var property estaEnPie = false
 	var property tieneComportamiento = false
 	var property rocaConsejera
+	 
 	method interactuarPosicion() {
 		try {
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
@@ -433,7 +435,7 @@ class PersonajePrincipal inherits Visual {
 			contadorEscondidoDePasos = contadorEscondidoDePasos + 1
 		}
 		if (self.estaCansado()) {
-			nivel.escenarioDerrota("te has quedado sin energia")
+		 escenarioDerrota.inicio("te has quedado sin energia")
 		// sprite en el piso
 		}
 	}

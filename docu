@@ -1,2 +1,8 @@
-// stage dificultades
-// 
+
+//  hacer mas testing 
+// para expandir : y si la dificultad cambiase el comportamiento de zombies? la velocidad de sus pasos, la vida de la personas? y no solo lo que aparece?
+
+agregar
+// que la vida sea visible. de alguna manera, barras , o corazon.
+// que no puede ir por los costados al subir una escalera. poner tiles invisibles?
+

@@ -1,10 +1,12 @@
 import wollok.game.*
 import nivel.*
+import nivelPrueba.*
+
 
 program fideosConTuco {
  
-	
-	nivel.inicio()
+	seleccionDificultad.inicio() // y que seleccion diga que nivel inicio hacer. y nivelFacil, nivel Dificil, nivelNormal hereden de nivel. tambien podrian ser objetos que hereden
+//	nivel.inicio()
 	  
 	game.start()
 	 
