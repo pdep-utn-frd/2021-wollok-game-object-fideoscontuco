@@ -44,13 +44,14 @@ object seleccionDificultad inherits Ventanas { // como se podra usar el mouse?
 
 	method configurarTeclado() { // mover con las flechas pasa de un objeto a otro, seleccionar ejecuta el nivel.
 		keyboard.up().onPressDo({ 
-	 
+	 		new Sonido().sonidoMenu().play()
 			dificultad.quitarMarca() // quita marca a dificultad actual 
 			dificultad.siguiente().remarcar()   // pone marca en dificultad siguiente
 			self.nuevaDificultad(dificultad.siguiente()) // nueva dificultad para
 			 
 		})
 	 	keyboard.down().onPressDo({ 
+	 		new Sonido().sonidoMenu().play()
 	 		dificultad.quitarMarca() // quita marca a dificultad actual 
 			dificultad.anterior().remarcar()   // pone marca en dificultad siguiente
 			self.nuevaDificultad(dificultad.anterior()) // nueva dificultad para
@@ -185,6 +186,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 
 	// var property ancho = 15
 	// var property alto = 15
+	//var property multiplicador   // incrementa o reduce la capacidad de actores
 	const casaActual = new Casa(estaRota = false )
 	const roca = new Roca()
 	const nube = new Nube() // hacerlos por fuera de nivel?
@@ -265,8 +267,23 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	 */
 }
 
-object nivelFacil inherits Nivel { // y si la dificultad cambiase el comportamiento de zombies? 
+object multiplicador{
+	var property numero
+ 
+}
 
+
+//repite mucho factor = multiplicador, demasiados mensajes. ademas si aplica a todos tendria que repetir eso mil veces
+//
+
+object nivelFacil inherits Nivel { // y si la dificultad cambiase el comportamiento de zombies? 
+	  // es utilizado en el comportamiento de los sujetos que se mueven en el mapa para variar su dificultad
+	override method inicio(){
+		multiplicador.numero(2) // podria tambien pasando parametro multiplacador a cada instancia, 
+		//pero seria mas corto que cada objeto conozca mensaje multiplicador.numero() y actue diferente
+		super()
+	 }
+	
 	override method spawnear() {
 		6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
 		12.times{ l => game.addVisual(new BayasMedianas())}
@@ -275,18 +292,29 @@ object nivelFacil inherits Nivel { // y si la dificultad cambiase el comportamie
 
 }
 
-object nivelDificil inherits Nivel {
-
+object nivelDificil inherits Nivel{
+	  // es utilizado en el comportamiento de los sujetos que se mueven en el mapa para variar su dificultad
+	
+	override method inicio(){
+		multiplicador.numero(0.2) // podria tambien pasando parametro multiplacador a cada instancia, 
+		//pero seria mas corto que cada objeto conozca mensaje multiplicador.numero() y actue diferente
+		super()
+	 }
+	
 	override method spawnear() {
 		3.randomUpTo(6).times{ l => game.addVisual(new Arbol())}
 		4.times{ l => game.addVisual(new BayasMedianas())}
-		6.randomUpTo(14).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+		6.randomUpTo(14).times{ l => game.addVisual(new Zombie( hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	}
 
 }
 
 object nivelNormal inherits Nivel {
-
+ 	override method inicio(){
+		multiplicador.numero(1) // podria tambien pasando parametro multiplacador a cada instancia, 
+		//pero seria mas corto que cada objeto conozca mensaje multiplicador.numero() y actue diferente
+		super()
+	 }
 	override method spawnear() {
 		4.randomUpTo(10).times{ l => game.addVisual(new Arbol())}
 		9.times{ l => game.addVisual(new BayasMedianas())}
@@ -348,41 +376,76 @@ class Horario inherits Visual {
 
 	var property tiempoDelDia = 20000
 	var property position = game.origin()
-	var property estado = "dia"
+	var property estado = dia // polimorfismo? estado.ejecutar()
 
 	method image() {
+		/*  
 		if (estado == "dia") {
 			return "escenaDiaGrande.png"
 		}
 		return "escenaNocheGrande.png"
+		 */
+		return estado.getImagen() // probar
 	}
-
+	
 	method quedaTiempoDisponible(nro) { //
 		return tiempoDelDia - nro >= 1
 	}
-
+  
 	method esDeDia() {
-		return (estado == "dia")
+		return (estado.equals(dia))
 	}
-
+	 
+	//method comportamiento       estado.cambiarHorario()
 	method cobrarVida() {
 		game.onTick(tiempoDelDia, "dia cambia", {=>
+			/*  
 			if (estado == "dia") { // probar ocn objeto en vez de string
-				estado = "noche"
+				self.cambiar()
 					// nivel.visualesComportamiento().forEach{ v => v.comportamientoNoche(self)}
 				game.allVisuals().forEach{ v => v.comportamientoNoche(self)}
 			} else {
-				estado = "dia"
+				self.cambiar()
 					//
 					// nivel.visualesComportamiento().forEach{ v => v.comportamientoDia(self)}   
 				game.allVisuals().forEach{ v => v.comportamientoDia(self)} // probar si tilda
-			}
+			}*/
+			var estadoSiguiente = estado.escenarioSiguiente()
+			 self.cambiarEstado(estadoSiguiente) // estado dia cambia a noche, noche a dia
+			 estadoSiguiente.ejecutar(self) 
 		})
 	}
-
+	
+	method cambiarEstado(nuevoEstado){
+		estado = nuevoEstado
+	}
 	method esAtravesable() {
 		return true
 	}
 
 }
 
+object dia{
+	method escenarioSiguiente() = noche
+	method ejecutar(phorario){
+		 
+		game.allVisuals().forEach{ v => v.comportamientoDia(phorario)} 
+	}
+	
+	
+	
+	method getImagen() = "escenaDiaGrande.png"
+	
+}
+
+object noche{
+	method escenarioSiguiente() = dia
+	method ejecutar(phorario){
+		game.allVisuals().forEach{ v => v.comportamientoNoche(phorario)}
+	}
+	
+	method getImagen() = "escenaNocheGrande.png"
+}
+
+
+ 

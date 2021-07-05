@@ -98,7 +98,7 @@ class Sonido { // los sonidos pueden ejecutarse una sola vez,
 	var property agonia = game.sound("tomasAgonia.mp3")
 	var property meDueleTodo = game.sound("tomasMeDueleTodo.mp3")
 	var property golpeMadera = game.sound("golpeMadera.mp3")
-
+	var property sonidoMenu = game.sound("menuSeleccion.ogg")
 }
 
 object sonido{
@@ -108,7 +108,7 @@ object sonido{
 class Zombie inherits Visual {
 
 	var property position = game.at(20, 20) // game.at(1, 2.randomUpTo(9))
-	var property vida = 50
+	//var property vida = 50
 	var danio = 5
 	var property nombre = "zombie"
 	var property paso = true
@@ -116,11 +116,20 @@ class Zombie inherits Visual {
 	var property heroe
 	var property hogar
 	var property horarioZombie = null
+	var vida = 50
+	
+	method vida(){
+		return vida  
+	}
+	
+	method vida(nro){
+		vida = nro
+	}
 	method image() = "zombie3.png"
-
+	
 	method recibeDanio() {
-		vida = vida - heroe.danio()
-		if (vida <= 0) {
+		self.vida(self.vida() - heroe.danio())
+		if (self.vida() <= 0) {
 			new Sonido().agonia().play()
 		//	sonido.agonia().play()
 				// game.removeVisual(self)
@@ -292,7 +301,6 @@ class BayasMedianas inherits Visual {
 	var property position = tablero.posRandom()
 	var property nombre = "bayasMedianas"
 	var property tieneComportamiento = true
-
 	method image() = "bayasMedianas.png"
 
 	method esInteractuado(sujetoParticipe) { // bayas vuelven a aparecer cada cierto tiempo
@@ -304,7 +312,7 @@ class BayasMedianas inherits Visual {
 	}
  
 	method cobrarVida() {
-		calorias = 100
+		calorias = 100 * multiplicador.numero()
 	}
 
 }
@@ -396,6 +404,11 @@ class PersonajePrincipal inherits Visual {
 	var property tieneComportamiento = false
 	var property rocaConsejera
 	 
+	 
+	method danio(){
+		return danio * multiplicador.numero()
+	}
+	
 	method interactuarPosicion() {
 		try {
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
@@ -481,8 +494,9 @@ class Nube inherits Visual {
 	method moverDerecha() {
 		if ((self.position().x() > game.width()) && (self.position().y() < game.height())) { // si la siguiente celda en x no es 0
 			self.position(game.at(1, 9)) // mueve al inicio 
-		} else self.position((self.position().right(1)))
-		self.position(self.position().down(1))
+		} else 
+			self.position((self.position().right(1)))
+			self.position(self.position().down(1))
 	}
 
 	 
