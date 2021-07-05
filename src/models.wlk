@@ -359,6 +359,7 @@ class Roca inherits Visual {
 	
 	// const presentacion = diccio.put(presentacion,"interactua con sujetos presionando la c")
 	method llenarDiccio() {
+		
 		diccio.put("arbol", "la madera pueda utilizarse para reparar  la casa") // probar
 		diccio.put("bayasMedianas", "bayas aparecen cada cierto tiempo")
 		diccio.put("casa", "si la casa cae pierdes el juego")
@@ -375,7 +376,7 @@ class Roca inherits Visual {
 	method darConsejo(sobreQuien) { // consejo se elegi arb 
 		try { // que no lo de al mismo tiempo que ocurre el mensaje de la accion
 			var consejo = diccio.get(sobreQuien.nombre())
-			game.schedule(7000, { game.say(self, consejo) // bloques
+			game.schedule(4000, { game.say(self, consejo) // bloques
 				diccio.remove(sobreQuien.nombre())
 			})
 		} catch e : ElementNotFoundException {
@@ -428,7 +429,7 @@ class PersonajePrincipal inherits Visual {
 
 	method sumarEnergia(nro) {
 		energia = energia + nro
-		game.say(self, "ñam")
+		game.say(self, "ñam   Energia : " + self.energia())
 	}
 
 	method estaCansado() {

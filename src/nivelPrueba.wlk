@@ -23,26 +23,39 @@ object pantallaNegra inherits Visual{
 	method image() = "pantallaNegra.png"
 	method cobrarVida(){}
 }
+
+object dialogoCuidadoZombies{
+	method image() = "cuidado2.png"
+	method cobrarVida(){}
+}
+
+object guiaDificultad{
+	method image() = "Screenshot_8.png"
+	method cobrarVida(){}
+}
 object seleccionDificultad inherits Ventanas { // como se podra usar el mouse?
 	 var property dificultad = facil
 	
 	method inicio() { // pantalla inicial de seleccion de dificultades
 		
-		
+		 
 		game.height(alto)
 		game.width(ancho)
 	//	game.boardGround("tileNegro.png")
+	 	game.title("fideosConTuco  X salir / L nueva dificultad / C interactuar")
 		game.addVisualIn(pantallaNegra,game.origin())
 		game.addVisualIn(elegirDif, game.at(4,12))
+		game.addVisualIn(guiaDificultad,game.origin())
 		game.addVisual(dificil)
 		game.addVisual(facil)
 		game.addVisual(normal)
-		game.title("Mover con flecha arriba/abajo, seleccionar con Enter")
+	 	 
 		self.configurarTeclado()
 		
 	}
 
 	method configurarTeclado() { // mover con las flechas pasa de un objeto a otro, seleccionar ejecuta el nivel.
+		keyboard.x().onPressDo({game.stop()})
 		keyboard.up().onPressDo({ 
 	 		new Sonido().sonidoMenu().play()
 			dificultad.quitarMarca() // quita marca a dificultad actual 
@@ -98,8 +111,9 @@ object facil inherits Visual {
 	
 	method seleccionar(){
 		game.clear()
+		game.title("sdsdsdsd")
 		game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
-		game.schedule(1, {=> nivelFacil.inicio()})
+		game.schedule(1, {=>   nivelFacil.inicio()})
 		
 		 
 	}
@@ -179,7 +193,23 @@ object normal inherits Visual {
 
 
 
+object burbujaC inherits Visual{
+	method image(){
+		return "burbuja.png"
+	}
+	method cobrarVida(){}
+	method esAtravesable() = true
+}
 
+object flechas inherits Visual{
+	method image(){
+		return "guia15.png"
+	}
+	method cobrarVida(){}
+	method esAtravesable() = true
+	
+	 
+}
 
 // que hace siguiente? remarca al siguiente, lo elegido.  y lo pone como la decision actual
 class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
@@ -200,12 +230,18 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		casaActual.dibujar()
 		tablero.casa(casaActual)
 		visualYAtributos.addVisual(personajePrincipal)
+		//game.addVisualIn(dialogoCuidadoZombies, game.at(3,10) )
 		game.addVisual(nube)
 		game.addVisual(roca)
+		 
 		roca.construirRoca()
 	//	4.randomUpTo(8).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 		
 		self.spawnear()
+		game.addVisualIn(flechas,game.at(0,0))
+		game.schedule(reloj.tiempoDelDia()/2,{=> game.removeVisual(flechas)})
+		 //game.addVisualIn(flechas,game.at(10,9)
+	
 		game.allVisuals().forEach{ v => v.cobrarVida()} // no esta bueno dos propositos en mismo mensaje
 		self.configurarTeclado()
 	}
@@ -226,11 +262,12 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		// game.clear()
 		game.height(alto)
 		game.width(ancho)
-		game.title("fideosConTuco-casero - C para interactuar / L para reiniciar")
+		 
 	}
 	
 	
 	method configurarTeclado() {
+		keyboard.x().onPressDo({game.stop()})
 		keyboard.c().onPressDo{ personajePrincipal.interactuarPosicion()}
 		keyboard.up().onPressDo({ personajePrincipal.irA(personajePrincipal.position().up(1))})
 		keyboard.down().onPressDo({ personajePrincipal.irA(personajePrincipal.position().down(1))})
@@ -239,12 +276,12 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		keyboard.l().onPressDo({
 	 		game.removeTickEvent("dia cambia")
 			 game.clear()
-			 reloj.estado("dia")  // probar instanciar
+			 reloj.estado(dia)  // probar instanciar
 			game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
 			 
-			game.schedule(1, {=> self.inicio()}) // utilizo schedule para que wollok ejecute self.inicio() ejecute el bloque solo cuando termino de dibujar, sino se tildaria con la pantalla anterior dibujada.
+		//	game.schedule(1, {=> self.inicio()}) // utilizo schedule para que wollok ejecute self.inicio() ejecute el bloque solo cuando termino de dibujar, sino se tildaria con la pantalla anterior dibujada.
 			// onPressDo espera a que finalice  inicio para continuar por estar dentro de bloque.  game.schedule tiene su propio bloque
-			
+			game.schedule(1,{=> seleccionDificultad.inicio()})
 		})
 	}
 	/*  
