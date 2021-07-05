@@ -16,6 +16,7 @@ object tablero { // candidato a clase?
 		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, alto - 1))} // arriba 
 		(0 .. ancho ).forEach{ num => posiciones.add(game.at(num, 1))}
 		return posiciones.filter{ pos => game.getObjectsIn(pos).isEmpty() } // array solo con true
+		
 	}
 
 	method espacioLibreAlrededor(sujeto) { // tom 4 direcciones posibles  
@@ -35,18 +36,32 @@ object tablero { // candidato a clase?
 
 	method reiniciarEstado() {
 	}
-
-	method espacioLibreEnMapa() { // preguntar
+	   
+	method espacioLibreEnMapa() { //  9 a 10 segundos de cargas en test 22 bayas
 		const listaOcupados = []
 		const listaTotal = []
 		const alto = game.height() - 1 // 50PX 50PX  10 = 500
 		const largo = game.width() - 1
 		(1 .. largo).forEach{ x => (1 .. alto).forEach{ y => listaTotal.add(game.at(x, y))}} // falta 2,0
-		return listaTotal.filter{ celda => game.getObjectsIn(celda).isEmpty() }
+		
+		// creo u ngame at aleatorio.      pregunto si hay alguien, si lo hay. vuelvo a crear
+		return listaTotal.filter{ celda => game.getObjectsIn(celda).isEmpty() } // 225 pedidos
+	}
+	 
+	
+	method espacioLibreEnMapa2(){ //  < 2 segundo carga en test de 22 bayas
+		var posicion = game.at(1.randomUpTo(14),1.randomUpTo(14))
+		if (game.getObjectsIn(posicion).isEmpty()){
+			return posicion
+		}else{
+			return self.espacioLibreEnMapa2()
+		}
+		
 	}
 
 	method posRandom() { // arbol utiliza para saber donde aparecer, un tile ocupado por cualquier objeto descalifica
-		return self.espacioLibreEnMapa().anyOne()
+		return self.espacioLibreEnMapa2() 
+		//  return self.espacioLibreEnMapa().anyOne()
 	}
 
 	method posicionMasCercanaACasa(sujeto) { // busco posicion menor dentro de las disponibles

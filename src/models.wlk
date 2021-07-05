@@ -148,7 +148,7 @@ class Zombie inherits Visual {
 	override method comportamientoNoche(horario) { // spawn progresivo
 	//	game.schedule(500.randomUpTo(4000), { self.traerAlMapa()})
  	// 	horarioZombie = horario
-		game.schedule(500.randomUpTo(4000), { 
+		game.schedule(500.randomUpTo(6000), { 
 				self.traerAlMapa()}
 				
 		)
@@ -166,7 +166,7 @@ class Zombie inherits Visual {
 	
 	method traerAlMapa() { // necesito un objeto casa que sea golpeable
 
-			game.schedule(4000, {=> 
+			game.schedule(4000.randomUpTo(6000), {=> 
 			//  si es de dia, no haga nada
 			if (not reloj.esDeDia()){
 				self.position(tablero.celdasVaciasBordes().anyOne())
@@ -313,7 +313,8 @@ class BayasMedianas inherits Visual {
  	
  	method reaparecer(){
  		self.position(game.at(25, 25))
- 		game.schedule(7000, { => self.position(tablero.posRandom())})
+ 		var posicionNueva = tablero.posRandom()
+ 		game.schedule(4000.randomUpTo(8000), { => self.position(posicionNueva)})
  	}
 	method cobrarVida() {
 		calorias = 100 * multiplicador.numero()

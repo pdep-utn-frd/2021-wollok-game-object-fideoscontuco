@@ -346,12 +346,16 @@ object nivelFacil inherits Nivel { // y si la dificultad cambiase el comportamie
 	
 	override method spawnear() {
 		
-		//6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
+		6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
 		 
-		4.randomUpTo(10).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+		//4.randomUpTo(10).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+		//22.times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+		
 		listaBayas.lista().forEach{ l => game.addVisual(l)}
 		8.times{ l => game.addVisual(new Arbol())}
 		1.randomUpTo(3).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+		//24.times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+		
 	}
 
 }
@@ -370,7 +374,7 @@ object nivelDificil inherits Nivel{
 		//4.times{ l => game.addVisual(new BayasMedianas())}
 		2.randomUpTo(4).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
 		listaBayas.lista().forEach{ l => game.addVisual(l)}
-		6.randomUpTo(14).times{ l => game.addVisual(new Zombie( hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+		6.randomUpTo(12).times{ l => game.addVisual(new Zombie( hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	}
 
 }
@@ -408,7 +412,7 @@ object escenarioDerrota inherits Ventanas{  // nuevo nivel
 			keyboard.any().onPressDo{ 
 				game.removeTickEvent("dia cambia")
 				game.clear() // como reinicio
-				reloj.estado("dia")
+				reloj.estado(dia)
 				game.addVisual(new Cargando()) // es necesario?
 				game.schedule(500, {=> seleccionDificultad.inicio()})
 			}
