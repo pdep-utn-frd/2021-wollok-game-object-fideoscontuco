@@ -43,6 +43,7 @@ object seleccionDificultad inherits Ventanas { // como se podra usar el mouse?
 		game.width(ancho)
 	//	game.boardGround("tileNegro.png")
 	 	game.title("fideosConTuco  X salir / L nueva dificultad / C interactuar")
+		
 		game.addVisualIn(pantallaNegra,game.origin())
 		game.addVisualIn(elegirDif, game.at(4,12))
 		game.addVisualIn(guiaDificultad,game.origin())
@@ -211,6 +212,20 @@ object flechas inherits Visual{
 	 
 }
 
+class TileInvisible inherits Visual{
+	method image(){
+		return "tileInvisible.png"
+	}
+	method cobrarVida(){}
+	method esAtravesable() = false
+}
+
+object mapa{
+	method crearParedesInvisibles(){
+		game.addVisualIn(new TileInvisible(),game.at(6,4))
+		game.addVisualIn(new TileInvisible(),game.at(8,4))
+	}
+}
 // que hace siguiente? remarca al siguiente, lo elegido.  y lo pone como la decision actual
 class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 
@@ -227,10 +242,12 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		game.clear()
 		self.configurarPantalla()
 		game.addVisual(reloj) // que no sea al mismo tiempo.
+		mapa.crearParedesInvisibles()
 		casaActual.dibujar()
 		tablero.casa(casaActual)
 		visualYAtributos.addVisual(personajePrincipal)
 		//game.addVisualIn(dialogoCuidadoZombies, game.at(3,10) )
+		
 		game.addVisual(nube)
 		game.addVisual(roca)
 		 
@@ -241,7 +258,9 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		game.addVisualIn(flechas,game.at(0,0))
 		game.schedule(reloj.tiempoDelDia()/2,{=> game.removeVisual(flechas)})
 		 //game.addVisualIn(flechas,game.at(10,9)
-	
+		
+		mapa.crearParedesInvisibles()
+		
 		game.allVisuals().forEach{ v => v.cobrarVida()} // no esta bueno dos propositos en mismo mensaje
 		self.configurarTeclado()
 	}
@@ -256,7 +275,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	 * 	// se quita para reducir la lista y que la transicion no demore mucho por una lista muy grande(muchos arboles)
 	 * }
 	 */
-	method spawnear() // definido por redefinicion 
+	method spawnear()
 
 	method configurarPantalla() {
 		// game.clear()
@@ -309,12 +328,16 @@ object multiplicador{
  
 }
 
-
+object listaBayas{
+	var property lista = []
+}
 //repite mucho factor = multiplicador, demasiados mensajes. ademas si aplica a todos tendria que repetir eso mil veces
 //
 
 object nivelFacil inherits Nivel { // y si la dificultad cambiase el comportamiento de zombies? 
 	  // es utilizado en el comportamiento de los sujetos que se mueven en el mapa para variar su dificultad
+	
+	 
 	override method inicio(){
 		multiplicador.numero(2) // podria tambien pasando parametro multiplacador a cada instancia, 
 		//pero seria mas corto que cada objeto conozca mensaje multiplicador.numero() y actue diferente
@@ -322,9 +345,13 @@ object nivelFacil inherits Nivel { // y si la dificultad cambiase el comportamie
 	 }
 	
 	override method spawnear() {
-		6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
-		12.times{ l => game.addVisual(new BayasMedianas())}
-		2.randomUpTo(3).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+		
+		//6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
+		 
+		4.randomUpTo(10).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+		listaBayas.lista().forEach{ l => game.addVisual(l)}
+		8.times{ l => game.addVisual(new Arbol())}
+		1.randomUpTo(3).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	}
 
 }
@@ -340,7 +367,9 @@ object nivelDificil inherits Nivel{
 	
 	override method spawnear() {
 		3.randomUpTo(6).times{ l => game.addVisual(new Arbol())}
-		4.times{ l => game.addVisual(new BayasMedianas())}
+		//4.times{ l => game.addVisual(new BayasMedianas())}
+		2.randomUpTo(4).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+		listaBayas.lista().forEach{ l => game.addVisual(l)}
 		6.randomUpTo(14).times{ l => game.addVisual(new Zombie( hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	}
 
@@ -354,7 +383,9 @@ object nivelNormal inherits Nivel {
 	 }
 	override method spawnear() {
 		4.randomUpTo(10).times{ l => game.addVisual(new Arbol())}
-		9.times{ l => game.addVisual(new BayasMedianas())}
+		//9.times{ l => game.addVisual(new BayasMedianas())}
+		4.randomUpTo(9).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+		listaBayas.lista().forEach{ l => game.addVisual(l)}
 		4.randomUpTo(7).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	}
 

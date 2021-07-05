@@ -307,10 +307,14 @@ class BayasMedianas inherits Visual {
 		sujetoParticipe.sumarEnergia(calorias)
 			// game.removeVisual(self)  
 			// game.schedule(100.randomUpTo(1230), { game.addVisual(new BayasMedianas())})
-		self.position(game.at(25, 25))
-		game.schedule(6000, { => self.position(tablero.posRandom())})
+		 
+		self.reaparecer()
 	}
- 
+ 	
+ 	method reaparecer(){
+ 		self.position(game.at(25, 25))
+ 		game.schedule(7000, { => self.position(tablero.posRandom())})
+ 	}
 	method cobrarVida() {
 		calorias = 100 * multiplicador.numero()
 	}
@@ -376,14 +380,15 @@ class Roca inherits Visual {
 	method darConsejo(sobreQuien) { // consejo se elegi arb 
 		try { // que no lo de al mismo tiempo que ocurre el mensaje de la accion
 			var consejo = diccio.get(sobreQuien.nombre())
-			game.schedule(4000, { game.say(self, consejo) // bloques
+			game.schedule(6000, { 
+				game.say(self, consejo) // bloques
 				diccio.remove(sobreQuien.nombre())
 			})
 		} catch e : ElementNotFoundException {
 		// game.say(self,"no deberia decir nada ahora")// hacer nada - preguntar 
 		}
 	}
-
+	
 	 
 	method cobrarVida() {
 		self.llenarDiccio()
@@ -454,8 +459,8 @@ class PersonajePrincipal inherits Visual {
 		}
 	}
 	
-	method cobrarVida(){ // conviene inicializar objeto
-		energia = 1000
+	method cobrarVida(){ // ya no es necesario
+		energia = 500
 	  position = game.at(1, 3)
 	  madera = 0
 	}
@@ -482,7 +487,7 @@ class Nube inherits Visual {
 	var property esAtravesable = true
 	var property cDias = 0 // medida de tiempo, cuando la nube vuelve pasa de dia a noche
 	var property tieneComportamiento = true
-
+	var property loc = null
 	method esInteractuado(sujeto) {
 		game.say(self, "una pista o consejo") // o cambiar el clima, se ponga a llover
 	}
@@ -498,9 +503,31 @@ class Nube inherits Visual {
 		} else 
 			self.position((self.position().right(1)))
 			self.position(self.position().down(1))
+			if (self.hayUnaBaya()){
+				game.say(self,"ñam")
+				 loc.reaparecer()
+			}
 	}
-
+	
 	 
+	method hayUnaBaya(){
+	   
+	 	try{
+	 		loc = game.uniqueCollider(self)
+	 	 	return listaBayas.lista().contains(loc)
+		}catch e : Exception{
+			return false
+		}
+		  /*
+		 if (game.colliders(self).isEmpty()){
+		 	return false
+		 }else{
+		 	return listaBayas.lista().contains(game.colliders(self))
+		 }
+		 * 
+		 */
+	}
+	
 	method cobrarVida() {
 		game.onTick(800, "nubesSeMueven", {=> self.moverDerecha()})
 	}
