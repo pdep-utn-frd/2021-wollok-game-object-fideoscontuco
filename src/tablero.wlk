@@ -1,6 +1,6 @@
 import wollok.game.*
 import models.*
-
+import seleccionDificultad.*
 
 //pantalla cargando.. eso estaria buenisimo!
 

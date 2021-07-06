@@ -2,6 +2,7 @@ import wollok.game.*
 //import nivel.*
 import tablero.*
 import nivelPrueba.*
+import horario.*
 class Visual {
 
 	method comportamientoNoche(horario) {
@@ -14,6 +15,63 @@ class Visual {
 	 
 }
  
+ 
+object burbujaC inherits Visual{
+	method image(){
+		return "burbuja.png"
+	}
+	method cobrarVida(){}
+	method esAtravesable() = true
+}
+
+object flechas inherits Visual{
+	method image(){
+		return "guia15.png"
+	}
+	method cobrarVida(){}
+	method esAtravesable() = true
+	
+	 
+}
+
+
+
+class TileInvisible inherits Visual{
+	method image(){
+		return "tileInvisible.png"
+	}
+	method cobrarVida(){}
+	method esAtravesable() = false
+}
+
+object mapa{
+	method crearParedesInvisibles(){
+		game.addVisualIn(new TileInvisible(),game.at(6,4))
+		game.addVisualIn(new TileInvisible(),game.at(8,4))
+	}
+}
+
+
+object elegirDif inherits Visual{
+	method image() = "elegirDif.png"
+	method cobrarVida(){}
+}
+
+object pantallaNegra inherits Visual{
+	method image() = "pantallaNegra.png"
+	method cobrarVida(){}
+}
+
+object dialogoCuidadoZombies{
+	method image() = "cuidado2.png"
+	method cobrarVida(){}
+}
+
+object guiaDificultad{
+	method image() = "Screenshot_8.png"
+	method cobrarVida(){}
+}
+
 
 class ParteCasa inherits Visual {
 
