@@ -134,6 +134,7 @@ class Sonido { // los sonidos pueden ejecutarse una sola vez,
 	var property roturaCasa = game.sound("roturaCasa.mp3")
 	var property paso1 = game.sound("caminata1.mp3")
 	var property paso2 = game.sound("caminata2.mp3")
+	var property gemidoZombie = game.sound("gemidoZombie.mp3")
 
 }
 
@@ -198,6 +199,7 @@ class Zombie inherits Visual {
 	method esInteractuado(sujetoParticipe) {
 		game.say(self, "ouch")
 		self.recibeDanio()
+		
 	}
 
 	method esAtravesable() = true
@@ -435,7 +437,7 @@ object personajePrincipal inherits Visual {
 		}
 		if (self.estaCansado()) {
 			nivel.escenarioDerrota("te has quedado sin energia")
-		// sprite en el piso
+		// sprite en el piso--
 		}
 	}
 	method daUnPaso() = new Sonido().paso1().play()
