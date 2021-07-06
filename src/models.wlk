@@ -80,6 +80,7 @@ class Casa inherits Visual{
 
 	method recibeDanio(danio) { // logica repetida, probar clase
 		salud = salud - danio
+		new Sonido().roturaCasa().play()
 		game.say(self, "ouch, me queda " + salud + " vida")
 		if (salud < 0) {
 	//		nivel.escenarioDerrota("la casa ha sido destruida")
@@ -98,7 +99,12 @@ class Sonido { // los sonidos pueden ejecutarse una sola vez,
 	var property agonia = game.sound("tomasAgonia.mp3")
 	var property meDueleTodo = game.sound("tomasMeDueleTodo.mp3")
 	var property golpeMadera = game.sound("golpeMadera.mp3")
+
 	var property sonidoMenu = game.sound("menuSeleccion.ogg")
+
+	var property roturaCasa = game.sound("roturaCasa.mp3")
+	var property paso1 = game.sound("caminata1.mp3")
+	var property paso2 = game.sound("caminata2.mp3")
 }
 
 object sonido{
@@ -452,6 +458,12 @@ class PersonajePrincipal inherits Visual {
 			estaEnPie = not estaEnPie // preguntar
 			self.cansar(2)
 			position = nuevaPos // asigna nueva posicion
+			if (contadorEscondidoDePasos % 2 == 0) { 
+				self.daUnPaso()
+			}else{
+				self.daOtroPaso()
+			
+				}
 			contadorEscondidoDePasos = contadorEscondidoDePasos + 1
 		}
 		if (self.estaCansado()) {
@@ -459,12 +471,18 @@ class PersonajePrincipal inherits Visual {
 		// sprite en el piso
 		}
 	}
+
 	
 	method cobrarVida(){ // ya no es necesario
 		energia = 500
 	  position = game.at(1, 3)
 	  madera = 0
 	}
+
+	method daUnPaso() = new Sonido().paso1().play()
+	method daOtroPaso() = new Sonido().paso2().play()
+
+
 	method image() {
 		if (self.estaEnPie()) {
 			return "shovelMain.png"
