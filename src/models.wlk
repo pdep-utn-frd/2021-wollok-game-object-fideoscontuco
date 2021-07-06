@@ -105,6 +105,12 @@ class Sonido { // los sonidos pueden ejecutarse una sola vez,
 	var property roturaCasa = game.sound("roturaCasa.mp3")
 	var property paso1 = game.sound("caminata1.mp3")
 	var property paso2 = game.sound("caminata2.mp3")
+
+
+
+	var property gemidoZombie = game.sound("gemidoZombie.mp3")
+
+
 }
 
 object sonido{
@@ -210,6 +216,7 @@ class Zombie inherits Visual {
 	method esInteractuado(sujetoParticipe) {
 		game.say(self, "ouch")
 		self.recibeDanio()
+		
 	}
 
 	method esAtravesable() = true
@@ -231,7 +238,7 @@ class Zombie inherits Visual {
 	}
 	
 	method comenzarMovimiento(casa) {
-		game.onTick(2000.randomUpTo(4000), "zombie se mueve", { => try {
+		game.onTick(700.randomUpTo(2009), "zombie se mueve", { => try {
 			if (self.estaAlBordeDeLaCasa()) { // si la casa esta a su alcance ataca
 				new Sonido().golpeMadera().play()
 				casa.recibeDanio(danio)
@@ -310,7 +317,7 @@ class BayasMedianas inherits Visual {
 	method image() = "bayasMedianas.png"
 
 	method esInteractuado(sujetoParticipe) { // bayas vuelven a aparecer cada cierto tiempo
-		sujetoParticipe.sumarEnergia(calorias)
+		sujetoParticipe.sumarEnergia(calorias,self)
 			// game.removeVisual(self)  
 			// game.schedule(100.randomUpTo(1230), { game.addVisual(new BayasMedianas())})
 		 
@@ -439,9 +446,9 @@ class PersonajePrincipal inherits Visual {
 		self.alarmaDeEnergia()
 	}
 
-	method sumarEnergia(nro) {
+	method sumarEnergia(nro,baya) {
 		energia = energia + nro
-		game.say(self, "ñam   Energia : " + self.energia())
+	//	game.say(self, "ñam   Energia : " + self.energia() + " (" + baya.energia() + ") ")
 	}
 
 	method estaCansado() {
@@ -467,8 +474,13 @@ class PersonajePrincipal inherits Visual {
 			contadorEscondidoDePasos = contadorEscondidoDePasos + 1
 		}
 		if (self.estaCansado()) {
+
 		 escenarioDerrota.inicio("te has quedado sin energia")
 		// sprite en el piso
+
+		//	nivel.escenarioDerrota("te has quedado sin energia")
+		// sprite en el piso--
+
 		}
 	}
 
@@ -522,10 +534,10 @@ class Nube inherits Visual {
 		} else 
 			self.position((self.position().right(1)))
 			self.position(self.position().down(1))
-			if (self.hayUnaBaya()){
-				game.say(self,"ñam")
-				 loc.reaparecer()
-			}
+		//	if (self.hayUnaBaya()){
+		//		game.say(self,"ñam")
+		//		 loc.reaparecer()
+		//	}
 	}
 	
 	 

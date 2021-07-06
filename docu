@@ -1,8 +1,21 @@
 
-//  hacer mas testing 
-// para expandir : y si la dificultad cambiase el comportamiento de zombies? la velocidad de sus pasos, la vida de la personas? y no solo lo que aparece?
 
-agregar
-// que la vida sea visible. de alguna manera, barras , o corazon.
-// que no puede ir por los costados al subir una escalera. poner tiles invisibles?
+new FactoriaBichos(zombies = 6.randomUpTo(12), bayas = 4.randomUpTo(10), arbol = 2.randomUpTo(6), dificultad = tanto)
+factoriaBichosIniciar()
+
+
+class FactoriaBichos{
+	z = 0
+	b = 0
+	arboles = 0
+
+
+	spawn de cada uno
+	method iniciar(){
+	}
+}
+
+	
+no seria mejor que los niveles sean clases?
+que necesita el nivel siguiente del anterior?. Seria mejor que n ocomparta aninguna referencia.
 

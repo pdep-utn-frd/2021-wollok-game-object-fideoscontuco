@@ -293,7 +293,12 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		keyboard.right().onPressDo({ personajePrincipal.irA(personajePrincipal.position().right(1))})
 		keyboard.left().onPressDo({ personajePrincipal.irA(personajePrincipal.position().left(1))})
 		keyboard.l().onPressDo({
+		//	try{
 	 		game.removeTickEvent("dia cambia")
+		//	 } catch e : Exception{
+			 	//no hace nada	
+		//	 }
+			 listaBayas.lista().clear() 
 			 game.clear()
 			 reloj.estado(dia)  // probar instanciar
 			game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
@@ -327,10 +332,12 @@ object multiplicador{
 	var property numero
  
 }
-
+  
 object listaBayas{
 	var property lista = []
 }
+  
+
 //repite mucho factor = multiplicador, demasiados mensajes. ademas si aplica a todos tendria que repetir eso mil veces
 //
 
@@ -350,9 +357,11 @@ object nivelFacil inherits Nivel { // y si la dificultad cambiase el comportamie
 		 
 		//4.randomUpTo(10).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
 		//22.times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
-		
+		 
+		6.randomUpTo(12).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
 		listaBayas.lista().forEach{ l => game.addVisual(l)}
-		8.times{ l => game.addVisual(new Arbol())}
+		
+		//8.times{ l => game.addVisual(new Arbol())}
 		1.randomUpTo(3).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 		//24.times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 		
@@ -370,9 +379,12 @@ object nivelDificil inherits Nivel{
 	 }
 	
 	override method spawnear() {
+		const listaBayas = []
 		3.randomUpTo(6).times{ l => game.addVisual(new Arbol())}
 		//4.times{ l => game.addVisual(new BayasMedianas())}
-		2.randomUpTo(4).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+		2.randomUpTo(9).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+		//20.times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+		
 		listaBayas.lista().forEach{ l => game.addVisual(l)}
 		6.randomUpTo(12).times{ l => game.addVisual(new Zombie( hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	}
@@ -410,7 +422,9 @@ object escenarioDerrota inherits Ventanas{  // nuevo nivel
 		game.schedule(6000, {=>
 			game.say(roca1, "presiona cualquier tecla para volver a comenzar")
 			keyboard.any().onPressDo{ 
-				game.removeTickEvent("dia cambia")
+				
+				//game.removeTickEvent("dia cambia")
+				listaBayas.lista().clear() // candidato clase
 				game.clear() // como reinicio
 				reloj.estado(dia)
 				game.addVisual(new Cargando()) // es necesario?
