@@ -55,9 +55,9 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		tablero.casa(casaActual)
 		visualYAtributos.addVisual(personajePrincipal)
 			// game.addVisualIn(dialogoCuidadoZombies, game.at(3,10) )
-		game.addVisual(nube)
-		game.addVisual(roca)
-		roca.construirRoca()
+	 	 game.addVisual(nube)
+	 	 game.addVisual(roca)
+	 	roca.construirRoca()
 			// 4.randomUpTo(8).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 		self.spawnear()
 		game.addVisualIn(flechas, game.at(0, 0))
@@ -142,8 +142,11 @@ object nivelFacil inherits Nivel { // y si la dificultad cambiase el comportamie
 		super()
 	}
 	 
-	override method spawnear() {
+	override method spawnear() { // truncate?
 		new FabricaSujetos(nivel = self, nZombies = 1.randomUpTo(3), nBayas = 10.randomUpTo(18), nArboles = 8.randomUpTo(12)).iniciar()
+	//	new FabricaSujetos(nivel = self, nZombies = 4, nBayas = 15, nArboles =4).iniciar()
+		
+	//	game.addVisual(new BayasMedianas(position = game.at(7,11)))
 	 /* 
 		6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
 			// 4.randomUpTo(10).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas

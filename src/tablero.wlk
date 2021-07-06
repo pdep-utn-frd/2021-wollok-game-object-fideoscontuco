@@ -50,12 +50,22 @@ object tablero { // candidato a clase?
 	 
 	
 	method espacioLibreEnMapa2(){ //  < 2 segundo carga en test de 22 bayas
-		var posicion = game.at(1.randomUpTo(14),1.randomUpTo(14))
+		 
+		var posicion = game.at(1.randomUpTo(13),1.randomUpTo(13))
+		if (game.getObjectsIn(posicion).isEmpty()){
+			return posicion
+		}else{ 
+		    return self.espacioLibreEnMapa2()
+		}
+	/*  
 		if (game.getObjectsIn(posicion).isEmpty()){
 			return posicion
 		}else{
-			return self.espacioLibreEnMapa2()
-		}
+	 		
+	return self.espacioLibreEnMapa2()
+	 	}
+		
+		*/
 		
 	}
 

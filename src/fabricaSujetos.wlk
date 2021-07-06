@@ -5,6 +5,8 @@ import models.*
 import horario.*
 import nivelPrueba.*
 import seleccionDificultad.*
+
+
 class FabricaSujetos{
 	var property nZombies
 	var property nBayas
@@ -19,9 +21,10 @@ class FabricaSujetos{
 	}
 	
 	method agregarBayas(){
-		var lista = listaBayas.lista()
-		nBayas.times{ l => lista.add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
-		lista.forEach{ l => game.addVisual(l)}
+	//	var lista = listaBayas.lista()
+	//	nBayas.truncate(0).times{ l => lista.add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+	//	lista.forEach{ l => game.addVisual(l)}
+	nBayas.times{ l => game.addVisual(new BayasMedianas())}
 	}
 	
 }

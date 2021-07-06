@@ -375,20 +375,27 @@ class BayasMedianas inherits Visual {
 	method image() = "bayasMedianas.png"
 
 	method esInteractuado(sujetoParticipe) { // bayas vuelven a aparecer cada cierto tiempo
-		sujetoParticipe.sumarEnergia(calorias,self)
-			// game.removeVisual(self)  
+	//	sujetoParticipe.sumarEnergia(calorias,self)
+		sujetoParticipe.sumarEnergia(calorias)
+		self.position(game.at(25, 25))
+		//var posicionNueva = tablero.posRandom()
+		var tiempo = 4000.randomUpTo(8000)
+		game.schedule(tiempo, { => self.reaparecer()})
+		 	// game.removeVisual(self)  
 			// game.schedule(100.randomUpTo(1230), { game.addVisual(new BayasMedianas())})
-		 
-		self.reaparecer()
+ 
 	}
  	
  	method reaparecer(){
- 		self.position(game.at(25, 25))
- 		var posicionNueva = tablero.posRandom()
- 		game.schedule(4000.randomUpTo(8000), { => self.position(posicionNueva)})
+ 
+ 		 
+ 	//	game.schedule(4000.randomUpTo(8000), { => self.position(posicionNueva)})
+ 	 	var posicionNueva = tablero.posRandom()
+ 	 	 self.position(posicionNueva)
+ 	 
  	}
 	method cobrarVida() {
-		calorias = 100 * multiplicador.numero()
+		calorias = 100 //* multiplicador.numero()
 	}
 
 }
@@ -492,7 +499,7 @@ class PersonajePrincipal inherits Visual {
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
 			itemFound.esInteractuado(self)
 			self.cansar(10)
-			rocaConsejera.darConsejo(itemFound)
+		//	rocaConsejera.darConsejo(itemFound)
 		// game.say(self,"interactuo con " + itemFound.toString()) // testing
 		} catch e : wollok.lang.Exception {
 		// game.say(self, "no hay nada aqui para interactuar")
@@ -504,7 +511,8 @@ class PersonajePrincipal inherits Visual {
 		self.alarmaDeEnergia()
 	}
 
-	method sumarEnergia(nro,baya) {
+	//method sumarEnergia(nro,baya) {
+	method sumarEnergia(nro) {
 		energia = energia + nro
 	//	game.say(self, "ñam   Energia : " + self.energia() + " (" + baya.energia() + ") ")
 	}
