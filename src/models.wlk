@@ -94,7 +94,7 @@ class Casa inherits Visual{
 	
 	var property esAtravesable = true
 	// var property position = game.at(3, 4) // tiene varios position
-	var property salud = 80
+	var property salud 
 	var property estaRota
 	var property lista = []
 	var property nombre = "casa"
@@ -488,7 +488,7 @@ class PersonajePrincipal inherits Visual {
 	var property estaEnPie = false
 	var property tieneComportamiento = false
 	var property rocaConsejera
-	 
+	var property esAtravesable = true
 	 
 	method danio(){
 		return danio * multiplicador.numero()
@@ -520,11 +520,16 @@ class PersonajePrincipal inherits Visual {
 	method estaCansado() {
 		return (energia <= 0)
 	}
-
+	/*  
 	method puedeMoverseA(nuevaPos) { // si es atravezable y no esta fuera del limite
 		return ( not tablero.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() }) // get objectsIn devuelve lista. 
+	} */
+	
+	method puedeMoverseA(nuevaPos) { // si es atravezable y no esta fuera del limite
+		return  game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() } // get objectsIn devuelve lista. 
 	}
-
+	
+	 
 	method irA(nuevaPos) { // toma objeto pos
 	// cada paso chequeo si no hay energia o casa esta rota
 		if (self.puedeMoverseA(nuevaPos)) { // solo si casillero siguiente es objeto atravesable
@@ -552,7 +557,7 @@ class PersonajePrincipal inherits Visual {
 
 	
 	method cobrarVida(){ // ya no es necesario
-		energia = 500
+		energia = 50000
 	  position = game.at(1, 3)
 	  madera = 0
 	}
@@ -600,12 +605,16 @@ class Nube inherits Visual {
 		} else 
 			self.position((self.position().right(1)))
 			self.position(self.position().down(1))
-		//	if (self.hayUnaBaya()){
-		//		game.say(self,"ñam")
-		//		 loc.reaparecer()
-		//	}
+			if (self.hayUnaBaya()){
+				self.comerBaya()
+			}
 	}
 	
+	
+	method comerBaya(){
+		game.say(self,"ñam")
+	 loc.reaparecer()
+	}
 	 
 	method hayUnaBaya(){
 	   
