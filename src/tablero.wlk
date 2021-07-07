@@ -7,6 +7,7 @@ import seleccionDificultad.*
 
 object tablero { // candidato a clase?
 	var property casa 
+	var property lista = []
 	method celdasVaciasBordes() { // completar
 		const posiciones = []
 		const ancho = game.width() - 1
@@ -50,10 +51,12 @@ object tablero { // candidato a clase?
 	 
 	
 	method espacioLibreEnMapa2(){ //  < 2 segundo carga en test de 22 bayas
-		 
 		var posicion = game.at(1.randomUpTo(13),1.randomUpTo(13))
-		if (game.getObjectsIn(posicion).isEmpty()){
-			return posicion
+		  
+		if (game.getObjectsIn(posicion).isEmpty() && (not self.esRepetido(posicion))){ // verificar que no sea pos ya utilizada. 
+			  // getter y setter? otra manera?
+			  lista.add(posicion)
+				return posicion
 		}else{ 
 		    return self.espacioLibreEnMapa2()
 		}
@@ -68,7 +71,12 @@ object tablero { // candidato a clase?
 		*/
 		
 	}
-
+	
+	 
+	method esRepetido(pos){
+		
+		return lista.contains(pos)
+	}
 	method posRandom() { // arbol utiliza para saber donde aparecer, un tile ocupado por cualquier objeto descalifica
 		return self.espacioLibreEnMapa2() 
 		//  return self.espacioLibreEnMapa().anyOne()

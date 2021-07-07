@@ -1,21 +1,3 @@
-
-
-new FactoriaBichos(zombies = 6.randomUpTo(12), bayas = 4.randomUpTo(10), arbol = 2.randomUpTo(6), dificultad = tanto)
-factoriaBichosIniciar()
-
-
-class FactoriaBichos{
-	z = 0
-	b = 0
-	arboles = 0
-
-
-	spawn de cada uno
-	method iniciar(){
-	}
-}
-
-	
-no seria mejor que los niveles sean clases?
-que necesita el nivel siguiente del anterior?. Seria mejor que n ocomparta aninguna referencia.
-
+-tests
+-explicacion resumida en github
+-pantalla 2 jugadores

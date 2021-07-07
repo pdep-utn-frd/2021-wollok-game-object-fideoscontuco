@@ -495,15 +495,24 @@ class PersonajePrincipal inherits Visual {
 	}
 	
 	method interactuarPosicion() {
+		 
 		try {
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
 			itemFound.esInteractuado(self)
 			self.cansar(10)
-		//	rocaConsejera.darConsejo(itemFound)
+		 //	 rocaConsejera.darConsejo(itemFound)
 		// game.say(self,"interactuo con " + itemFound.toString()) // testing
-		} catch e : wollok.lang.Exception {
-		// game.say(self, "no hay nada aqui para interactuar")
+		} catch e : wollok.lang.Exception { // Illegal operation 'uniqueElement' on collection with 2 elements
+		 //	e.printStackTrace()  tests
+			var lista = game.getObjectsIn(position)
+		 	
+	 		lista.forEach{ v => v.esInteractuado(self)}
+		 	 game.say(self, "interactuo 2 visuales")
 		}
+	}
+	
+	method esInteractuado(personaje){
+		//no hace nada
 	}
 
 	method cansar(nro) {
@@ -511,10 +520,10 @@ class PersonajePrincipal inherits Visual {
 		self.alarmaDeEnergia()
 	}
 
-	//method sumarEnergia(nro,baya) {
+	// method sumarEnergia(nro,baya) {
 	method sumarEnergia(nro) {
 		energia = energia + nro
-	//	game.say(self, "ñam   Energia : " + self.energia() + " (" + baya.energia() + ") ")
+	// 	game.say(self, "ñam   Energia : " + self.energia() + " (" + baya.calorias() + ") ")
 	}
 
 	method estaCansado() {

@@ -47,6 +47,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	method inicio() {
 		game.clear()
 		self.configurarPantalla()
+		
 		game.addVisual(reloj) // que no sea al mismo tiempo.
 		mapa.crearParedesInvisibles()
 		casaActual.dibujar()
@@ -58,7 +59,10 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		game.addVisual(roca)
 		roca.construirRoca()
 			// 4.randomUpTo(8).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+	 	game.addVisual(new BayasMedianas(position = game.at(8,1))) // baya test nube prueba
+		game.addVisual(new Arbol(position = game.at(8,1))) // test 2 visuales mismo tile 
 		self.spawnear()
+		
 		game.addVisualIn(flechas, game.at(0, 0))
 		game.schedule(reloj.tiempoDelDia() / 2, {=> game.removeVisual(flechas)})
 			// game.addVisualIn(flechas,game.at(10,9)
@@ -87,7 +91,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	}
 
 	method configurarTeclado(p) {
-		keyboard.c().onPressDo{ personajePrincipal.interactuarPosicion()}
+		keyboard.c().onPressDo{ p.interactuarPosicion()}
 		keyboard.up().onPressDo({ if (not p.puedeMoverseA(p.position())) {
 				p.position(p.position().down(1)) // ir direccion contraria traba al visual en el lugar que esta
 			} // position() devolveria la posicion final, luego de moverse por game.addVisualCharacter(personajePrincipal)
@@ -112,7 +116,8 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 				// } catch e : Exception{
 				// no hace nada	
 				// }
-			listaBayas.lista().clear()
+			listaBayas.lista().clear() //rever
+			tablero.lista().clear()
 			game.clear()
 			reloj.estado(dia) // probar instanciar
 			game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
@@ -236,6 +241,7 @@ object escenarioDerrota inherits Ventanas { // nuevo nivel
 				listaBayas.lista().clear() // candidato clase
 				game.clear() // como reinicio
 				reloj.estado(dia)
+				tablero.lista().clear()
 				game.addVisual(new Cargando()) // es necesario?
 				game.schedule(500, {=> seleccionDificultad.inicio()})
 			}
