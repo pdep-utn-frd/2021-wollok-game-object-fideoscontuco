@@ -41,7 +41,7 @@ object escenarioDerrota inherits Ventanas { // metodo?
 			game.say(roca1, "reiniciar con") // fondo negro taparia letras, divido en 2 game say
 			game.say(roca1, "cualquier tecla")
 			keyboard.any().onPressDo{ // game.removeTickEvent("dia cambia")
-				listaBayas.lista().clear() // candidato clase
+				estadisticasBayas.reiniciar() // candidato clase
 				game.clear() // como reinicio
 				reloj.estado(dia)
 				tablero.lista().clear()

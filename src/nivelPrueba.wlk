@@ -324,5 +324,4 @@ class Cargando inherits Visual { // pasar a clase
 	method esAtravesable() = true
 
 }
-
->>>>>>> branch 'master' of https://github.com/pdep-utn-frd/2021-wollok-game-object-fideoscontuco.git
+ 
