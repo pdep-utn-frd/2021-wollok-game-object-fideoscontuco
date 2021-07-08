@@ -1,4 +1,4 @@
-# Nombre Juego
+# Spiderwick Shovel knight
 ## Descripcion
  Es un juego basado en las cronicas de Spiderwick. Una pelicula de fantasia estrenada en 2008 en la que un niño debe defender su casa de un ogro.
  
