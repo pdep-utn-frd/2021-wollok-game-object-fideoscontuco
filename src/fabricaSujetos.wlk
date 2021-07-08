@@ -26,7 +26,7 @@ class FabricaSujetos{
 		lista.forEach{ l => game.addVisual(l)}
 	//nBayas.times{ l => game.addVisual(new BayasMedianas())}
 	}
-	
+	//comentario para sacar el truncate
 }
 
 
