@@ -11,7 +11,7 @@
   
 ## Seleccion de numero de jugadores
   Al ejecutar el programa, lo primero que ve el jugador es una pantalla de seleccion del numero de jugadores, en la cual desplazandose con las flechas puede elegir si jugar de a un jugador o de a dos
-  
+  ![Multijugador](https://github.com/pdep-utn-frd/2021-wollok-game-object-fideoscontuco/blob/master/assets/dosjugadores.png)
   
 ## Seleccion de la dificultad
   Lo segundo que ve el jugador alcorrer el programa es una pantalla donde puede elegir la dificultad del juego. Tiene tres niveles: Facil, Normal, y Dificil. Esta seleccion influira en la cantidad de arboles, zombies y Baya que apareceran en el mapa.
