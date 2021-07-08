@@ -29,7 +29,8 @@
               Con la tecla "enter" el personaje interactua con el objeto que este en su misma posicion. 
               Esta interaccion varia dependiendo del objeto en cuestion. A los zombies los ataca, 
               por otro lado a los arboles los tala y a las Baya las come, ademas al interactuar con la casa, 
-              si el jugador tiene madera, la arregla. El segundo jugador debe usar la tecla "c" para interactuar.
+              si el jugador tiene madera, la arregla. El segundo jugador debe usar la tecla "c" para 
+              interactuar.
    #### Opciones del juego
               Ademas, hay otras dos teclas especiales. La "L", y la "x". Con la X el jugador puede salir del
               juego en cualquier momento, al apretar esta tecla el juego se termina y la ventana se cierra. 
