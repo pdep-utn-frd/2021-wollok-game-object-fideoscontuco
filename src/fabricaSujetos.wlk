@@ -4,7 +4,7 @@ import tablero.*
 import models.*
 import horario.*
 import nivelPrueba.*
-import seleccionDificultad.*
+import escenarioDerrota.*
 
 
 class FabricaSujetos{

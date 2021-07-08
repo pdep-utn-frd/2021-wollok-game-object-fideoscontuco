@@ -5,6 +5,8 @@ import models.*
 import horario.*
 import fabricaSujetos.*
 import seleccionDificultad.*
+import escenarioDerrota.*
+
 
 const reloj = new Horario()
 
@@ -15,7 +17,6 @@ const altoVentanas = 15
 object multiplicador { // utilizado para definir comportamiento de personajes segun la dificultad ej : personaje principal hace mas daño
 
 	var property numero = 0
-
 }
 
 object listaBayas { // utilizado para que nube pueda identificar que en celda hay alguna baya y robarla
@@ -41,6 +42,8 @@ class Dia inherits Visual{
 		image = 'dia' + puntaje + '.png'
 	}
 	method cobrarVida(){}
+	
+	method esAtravesable() = true
 }
 
 object diasCartelera inherits Visual{
@@ -60,8 +63,9 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	var property personajePrincipal = new PersonajePrincipal(rocaConsejera = roca)
 	var property reiniciado = false
 	
-	var contadorDias = 1
-	var numeroDia = new Dia(
+	var property contadorDias = 1
+	
+	var property numeroDia = new Dia(
 		position = game.at(13, 14),
 		image='dia' + contadorDias.toString() + '.png'
 	)
@@ -70,7 +74,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	method inicio() {
 		game.clear()
 		self.configurarPantalla()
-			
+		escenarioDerrota.nivel(self)	
 		game.addVisual(reloj) // que no sea al mismo tiempo.
 		mapa.crearParedesInvisibles()
 		casaActual.dibujar()
@@ -274,42 +278,4 @@ object nivelNormal inherits Nivel {
 
 }
 /* */
-object escenarioDerrota inherits Ventanas { // metodo?
-	const roca1 = new Roca()
-
-	method inicio(razon) {
-		game.clear()
-			// game.addVisualIn("derrota.png", game.origin())
-		game.width(ancho)
-		game.title("fideosConTuco-casero")
-		game.height(alto)
-		game.addVisualIn(roca1, game.center())
-		game.say(roca1, "has perdido: " + razon) // razon de derrota.
-		game.schedule(6000, {=>
-			game.say(roca1, "presiona cualquier tecla para volver a comenzar")
-			keyboard.any().onPressDo{ // game.removeTickEvent("dia cambia")
-				listaBayas.lista().clear() // candidato clase
-				game.clear() // como reinicio
-				reloj.estado(dia)
-				tablero.lista().clear()
-				game.addVisual(new Cargando()) // es necesario?
-				game.schedule(500, {=> seleccionDificultad.inicio()})
-			}
-		})
-	}
-
-}
-
-class Cargando inherits Visual { // pasar a clase
-
-	method image() = "cargandoChico.png"
-
-	method position() = game.at(8, 13)
-
-	method cobrarVida() {
-	}
-
-	method esAtravesable() = true
-
-}
-
+ 

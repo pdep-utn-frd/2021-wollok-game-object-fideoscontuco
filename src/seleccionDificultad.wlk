@@ -5,6 +5,11 @@ import models.*
 import horario.*
 import fabricaSujetos.*
 import nivelPrueba.*
+import escenarioDerrota.*
+
+
+
+
 
 object seleccionDificultad inherits Ventanas { // como se podra usar el mouse?
 

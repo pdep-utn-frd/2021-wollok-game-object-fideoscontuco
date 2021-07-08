@@ -3,6 +3,7 @@ import wollok.game.*
 import tablero.*
 import nivelPrueba.*
 import horario.*
+import escenarioDerrota.*
 class Visual {
 
 	method comportamientoNoche(horario) {
@@ -174,7 +175,7 @@ class Sonido { // los sonidos pueden ejecutarse una sola vez,
 object sonido{
 	var property agonia = game.sound("tomasAgonia.mp3")
 }
-
+ 
 class Zombie inherits Visual {
 
 	var property position = game.at(20, 20) // game.at(1, 2.randomUpTo(9))
@@ -200,6 +201,7 @@ class Zombie inherits Visual {
 	method recibeDanio() {
 		self.vida(self.vida() - heroe.danio())
 		if (self.vida() <= 0) {
+			estadisticasZombie.incrementarContador()
 			new Sonido().agonia().play()
 		//	sonido.agonia().play()
 				// game.removeVisual(self)
@@ -567,8 +569,8 @@ class PersonajePrincipal inherits Visual {
 	
 	 
 	
-	method cobrarVida(){ // ya no es necesario
-		energia = 50000
+	method cobrarVida(){ // ya no es necesario. escenarios personalizados.
+		energia = 500
 	  position = game.at(1, 3)
 	  madera = 0
 	}
@@ -610,6 +612,7 @@ class Nube inherits Visual {
 			self.position(self.position().down(1))
 			if (self.hayUnaBaya()){
 				self.comerBaya()
+				estadisticasBayas.incrementarContador()
 			}
 	}
 	

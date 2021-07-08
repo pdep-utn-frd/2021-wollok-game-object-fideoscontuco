@@ -3,6 +3,7 @@ import models.*
 import tablero.*
 import models.*
 import seleccionDificultad.*
+
 class Horario inherits Visual {
 
 	var property tiempoDelDia = 20000
