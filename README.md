@@ -1,8 +1,8 @@
-# Spiderwick Shovel knight
+# El caballero de la Pala
 ## Descripcion
  Es un juego basado en las cronicas de Spiderwick. Una pelicula de fantasia estrenada en 2008 en la que un niño debe defender su casa de un ogro.
  
- ![Las cronicas de Spiderwick](https://github.com/pdep-utn-frd/2021-wollok-game-object-fideoscontuco/blob/master/las-cronicas-de-spiderwick-destacada.jpg)
+ ![Las cronicas de Shovel Knight](https://i2.wp.com/www.gaymer.es/es/wp-content/uploads/2017/03/shovel_knight_3d_re_creation_by_davislim-d7ua74v.jpg?resize=750%2C400&ssl=1)
  
 ## Objetivo
   El objetivo del juego es defender la casa de los zombies. Estos solo aparecen de noche y tienen como objetivo destruir dicha casa. Para defender su hogar, el jugador puede atacar a los zombies para matarlos y asi impedir que destruyan su querida casa. Ademas, puede talar arboles para conseguir madera, que despues puede utilizar para arreglar la casa, sumando asi los puntos de salud de la misma. Sobre todo eso, el jugador debe estar atento a su energia, ya que esta disminuye con cada movimiento, ataque o hachazo a un arbol. Para subir sus niveles de energia, puede comer Baya que aparecen en distintas ubicaciones del mapa y desaparecen una vez consumidas.
