@@ -32,6 +32,17 @@ class Ventanas {
 // configurar pantalla podria ir aca y utilizarse super en otras.
 }
 
+class Puntaje {
+	var property position
+	var property image	
+
+
+	method cambiarPuntaje(puntaje) {
+		image = 'puntaje' + puntaje + '.png'
+	}
+}
+
+
 // que hace siguiente? remarca al siguiente, lo elegido.  y lo pone como la decision actual
 class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 
@@ -43,7 +54,9 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	const nube = new Nube() // hacerlos por fuera de nivel?
 	var property personajePrincipal = new PersonajePrincipal(rocaConsejera = roca)
 	var property reiniciado = false
-
+ 
+ 
+	
 	method inicio() {
 		game.clear()
 		self.configurarPantalla()
@@ -92,23 +105,36 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 
 	method configurarTeclado(p) {
 		keyboard.c().onPressDo{ p.interactuarPosicion()}
-		keyboard.up().onPressDo({ if (not p.puedeMoverseA(p.position())) {
+		
+		keyboard.up().onPressDo({ 
+			if (not p.puedeMoverseA(p.position())) {
 				p.position(p.position().down(1)) // ir direccion contraria traba al visual en el lugar que esta
+			} else { // puede moverse
+				p.efectoDeCaminar() // setter energia e imagen, delego cambio a posicionNueva a game.addVisualCharacter por rendimiento	
+			
 			} // position() devolveria la posicion final, luego de moverse por game.addVisualCharacter(personajePrincipal)
 		})
 		keyboard.down().onPressDo({ if (not p.puedeMoverseA(p.position())) {
 				p.position(p.position().up(1))
-			} // position() devolveria la posicion final, luego de moverse por game.addVisualCharacter(personajePrincipal)
+			} else {
+				p.efectoDeCaminar()
+			}
 		})
 		keyboard.right().onPressDo({ if (not p.puedeMoverseA(p.position())) {
 				p.position(p.position().left(1))
-			} // position() devolveria la posicion final, luego de moverse por game.addVisualCharacter(personajePrincipal)
+			} else {
+				p.efectoDeCaminar()
+			}
 		})
 		keyboard.left().onPressDo({ if (not p.puedeMoverseA(p.position())) {
 				p.position(p.position().right(1))
-			} // position() devolveria la posicion final, luego de moverse por game.addVisualCharacter(personajePrincipal)
+			} else { // puede moverse
+				p.efectoDeCaminar()
+			}
 		})
+		
 	}
+	
 
 	method teclasPrincipales() {
 		keyboard.l().onPressDo({ // try{
@@ -223,8 +249,7 @@ object nivelNormal inherits Nivel {
 
 }
 
-object escenarioDerrota inherits Ventanas { // nuevo nivel
-
+object escenarioDerrota inherits Ventanas { // metodo?
 	const roca1 = new Roca()
 
 	method inicio(razon) {

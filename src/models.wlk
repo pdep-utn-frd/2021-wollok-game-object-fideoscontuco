@@ -518,6 +518,9 @@ class PersonajePrincipal inherits Visual {
 	method cansar(nro) {
 		energia = energia - nro
 		self.alarmaDeEnergia()
+		if (energia < 0){
+			escenarioDerrota.inicio("te has quedado sin energia")
+		}
 	}
 
 	// method sumarEnergia(nro,baya) {
@@ -538,7 +541,7 @@ class PersonajePrincipal inherits Visual {
 		return  game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() } // get objectsIn devuelve lista. 
 	}
 	
-	 
+	 /* 
 	method irA(nuevaPos) { // toma objeto pos
 	// cada paso chequeo si no hay energia o casa esta rota
 		if (self.puedeMoverseA(nuevaPos)) { // solo si casillero siguiente es objeto atravesable
@@ -563,10 +566,22 @@ class PersonajePrincipal inherits Visual {
 
 		}
 	}
-
+	*/
+	
+	method efectoDeCaminar(){
+		self.cansar(5) 
+	  	estaEnPie = not estaEnPie
+		if (contadorEscondidoDePasos % 2 == 0) { 
+				self.daUnPaso()
+			}else{
+				self.daOtroPaso()
+				 
+			}
+	}
+	 
 	
 	method cobrarVida(){ // ya no es necesario
-		energia = 50000
+		energia = 222
 	  position = game.at(1, 3)
 	  madera = 0
 	}
