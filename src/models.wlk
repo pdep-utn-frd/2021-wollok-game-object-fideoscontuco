@@ -576,7 +576,7 @@ class PersonajePrincipal inherits Visual {
 
 	method image() {
 		if (self.estaEnPie()) {
-			return "shovelMain.png"
+			return "accion1.png"
 		} else return "shovelMain2.png"
 	}
 
