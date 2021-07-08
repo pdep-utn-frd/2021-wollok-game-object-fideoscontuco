@@ -14,12 +14,13 @@ import escenarioDerrota.*
 object seleccionDificultad inherits Ventanas { // como se podra usar el mouse?
 
 	var property dificultad = facil
-
+	
 	method inicio() { // pantalla inicial de seleccion de dificultades
-		game.height(15)
+		game.height(15)  
 		game.width(15)
 			// game.boardGround("tileNegro.png")
-		game.title("fideosConTuco  X salir / L nueva dificultad / C interactuar")
+		//	game.title("fideosConTuco  X salir / L nueva dificultad / C interactuar")
+		 
 		game.addVisualIn(pantallaNegra, game.origin())
 		game.addVisualIn(elegirDif, game.at(4, 12))
 		game.addVisualIn(guiaDificultad, game.origin())

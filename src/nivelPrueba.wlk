@@ -6,7 +6,7 @@ import horario.*
 import fabricaSujetos.*
 import seleccionDificultad.*
 import escenarioDerrota.*
-
+import escenarioMulti.*
 
 const reloj = new Horario()
 
@@ -29,7 +29,7 @@ class Ventanas {
 
 	var property ancho = anchoVentanas
 	var property alto = anchoVentanas
-
+	
 // configurar pantalla podria ir aca y utilizarse super en otras.
 }
 
@@ -38,8 +38,8 @@ class Dia inherits Visual{
 	var property image	
 
 
-	method cambiarImagen(puntaje) {
-		image = 'dia' + puntaje + '.png'
+	method cambiarImagen(nroDia) {
+		image = 'd' + nroDia.toString() + '.png'
 	}
 	method cobrarVida(){}
 	
@@ -48,16 +48,25 @@ class Dia inherits Visual{
 
 object diasCartelera inherits Visual{
 	var property position
-	method image() = "diaCartelera.png"
+	method image() = "diaCartelera3.png"
 	method cobrarVida(){}
 }
+
+
+
+
+
+
+
+
+
 // que hace siguiente? remarca al siguiente, lo elegido.  y lo pone como la decision actual
 class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 
 	// var property ancho = 15
 	// var property alto = 15
 	// var property multiplicador   // incrementa o reduce la capacidad de actores
-	var property casaActual = new Casa(estaRota = false,salud = 80000)
+	var property casaActual = new Casa(estaRota = false,salud = 500)
 	const roca = new Roca()
 	const nube = new Nube() // hacerlos por fuera de nivel?
 	var property personajePrincipal = new PersonajePrincipal(rocaConsejera = roca)
@@ -67,7 +76,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	
 	var property numeroDia = new Dia(
 		position = game.at(13, 14),
-		image='dia' + contadorDias.toString() + '.png'
+		image='d1.png' 
 	)
  	
 	
@@ -81,6 +90,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		tablero.casa(casaActual)
 		//visualYAtributos.addVisual(personajePrincipal)
 		game.addVisualCharacter(personajePrincipal)
+		  // hace cambios segun respectivo modo (1jugador, 2 jugadores)
 			// game.addVisualIn(dialogoCuidadoZombies, game.at(3,10) )
 		game.addVisual(nube)
 		game.addVisual(roca)
@@ -96,6 +106,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		self.spawnear()
 		
 		game.addVisualIn(flechas, game.at(0, 0))
+		modoJugadores.eleccion().iniciar()
 		game.schedule(reloj.tiempoDelDia() / 2, {=> game.removeVisual(flechas)})
 			// game.addVisualIn(flechas,game.at(10,9)
 		mapa.crearParedesInvisibles()
@@ -133,9 +144,10 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	}
 
 	method configurarTeclado(p) {
-		keyboard.c().onPressDo{ p.interactuarPosicion()}
+	//	keyboard.c().onPressDo{ p.interactuarPosicion()}
+		keyboard.enter().onPressDo{ p.interactuarPosicion()}
 		
-		keyboard.up().onPressDo({ 
+		keyboard.up().onPressDo({  // p.position es la posicion siguiente por el game.addVisualCharacter()
 			if (not p.puedeMoverseA(p.position()) or p.estaAnimando()) {
 				p.position(p.position().down(1)) // ir direccion contraria traba al visual en el lugar que esta
 			} else { // puede moverse

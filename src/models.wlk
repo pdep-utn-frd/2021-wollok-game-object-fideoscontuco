@@ -27,7 +27,7 @@ object burbujaC inherits Visual{
 
 object flechas inherits Visual{
 	method image(){
-		return "guia15.png"
+		return "j1Guia.png"
 	}
 	method cobrarVida(){}
 	method esAtravesable() = true
@@ -175,7 +175,12 @@ class Sonido { // los sonidos pueden ejecutarse una sola vez,
 object sonido{
 	var property agonia = game.sound("tomasAgonia.mp3")
 }
- 
+ object guiaJugadorDos inherits Visual{
+ 	var property position 
+ 	method image() = "j2.png"
+ 	method cobrarVida(){}
+ 	method esAtravesable() = true
+ }
 class Zombie inherits Visual {
 
 	var property position = game.at(20, 20) // game.at(1, 2.randomUpTo(9))
@@ -287,6 +292,9 @@ class Zombie inherits Visual {
 		//
 	}
 	
+	method nuevaPos(pos){
+		position = pos
+	}
 	method estaFueraDelMapa(){
 		return self.position().equals(game.at(anchoVentanas + 5, altoVentanas + 5))
 	}
@@ -483,7 +491,7 @@ class Roca inherits Visual {
 
 class PersonajePrincipal inherits Visual {
 
-	var property energia = 2
+	var property energia = 500
 	var property position = game.at(1, 3)
 	var property madera = 0
 	var property contadorEscondidoDePasos = 0
@@ -491,12 +499,18 @@ class PersonajePrincipal inherits Visual {
 	var property nombre = "personajePrincipal"
 	var property estaEnPie = false
 	var property tieneComportamiento = false
-	var property rocaConsejera
+	var property rocaConsejera = null
 	var property esAtravesable = true
-	var property image = "shovelMain.png"
+ 
+ 
 	var property estaAnimando = false
 	
-	
+	var property image = "shovelMain.png"
+	var property accion1 = "accion1.png"  // se utiliza redefinicion para nuevos personajes
+	var property accion2 = "accion2.png"
+	var property imagenPrincipal = "shovelMain.png"
+	var property imagenPasoDado = "shovelMain2.png"
+	 
 	method danio(){
 		return danio * multiplicador.numero()
 	}
@@ -507,22 +521,22 @@ class PersonajePrincipal inherits Visual {
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
 			itemFound.esInteractuado(self)
 			self.cansar(10)
-		 //	 rocaConsejera.darConsejo(itemFound)
+		  rocaConsejera.darConsejo(itemFound)
 		// game.say(self,"interactuo con " + itemFound.toString()) // testing
 		} catch e : wollok.lang.Exception { // Illegal operation 'uniqueElement' on collection with 2 elements
 		 //	e.printStackTrace()  tests
 			var lista = game.getObjectsIn(position)
 		 	
 	 		lista.forEach{ v => v.esInteractuado(self)}
-		 	 game.say(self, "interactuo 2 visuales")
+		 	
 		}
 	}
 	method moverPala(){
 		estaAnimando = true
-		image = "accion1.png"
-		game.schedule(100,{=>image ="accion2.png"})
+		image = accion1
+		game.schedule(100,{=>image =accion1})
 			
-			game.schedule(200,{=>self.cambiarImagen("shovelMain.png")
+			game.schedule(200,{=>self.cambiarImagen(imagenPrincipal)
 				estaAnimando = false
 			})
 		}
@@ -530,17 +544,16 @@ class PersonajePrincipal inherits Visual {
 	
 	
 	method hacerPasos(){
-		if (image == "shovelMain.png"){
-			image = "shovelMain2.png"
+		if (image == imagenPrincipal){
+			image = imagenPasoDado
 		} else{
-			image = "shovelMain.png"
+			image = imagenPrincipal
 		}
 	}
 		
 		
 	method accionar(){
-		
-		cambioDeImagen.armario(self.image())
+		game.say(self,"energia : " + self.energia())
 		self.moverPala()
 		
 		
@@ -606,10 +619,8 @@ class PersonajePrincipal inherits Visual {
 	
 	 
 	
-	method cobrarVida(){ // ya no es necesario. escenarios personalizados.
-		energia = 500
-	  position = game.at(1, 3)
-	  madera = 0
+	method cobrarVida(){ // ya no es necesario.  
+	//
 	}
  
 
@@ -621,10 +632,7 @@ class PersonajePrincipal inherits Visual {
 	 
 }
 
-object cambioDeImagen {
-	var property armario
-}
-
+ 
 
 
 class Nube inherits Visual {
