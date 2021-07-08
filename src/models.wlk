@@ -568,7 +568,7 @@ class PersonajePrincipal inherits Visual {
 	 
 	
 	method cobrarVida(){ // ya no es necesario
-		energia = 222
+		energia = 50000
 	  position = game.at(1, 3)
 	  madera = 0
 	}
