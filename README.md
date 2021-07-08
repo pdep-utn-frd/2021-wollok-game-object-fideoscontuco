@@ -21,7 +21,7 @@
               ventana, ademas hay ciertos objetos que no puede atravesar, como la piedra ubicada en el 
               centro del mapa, y los bordes de la escalera central.
    #### Interaccion
-              Con la tecla "c" el personaje interactua con el objeto que este en su misma posicion. 
+              Con la tecla "enter" el personaje interactua con el objeto que este en su misma posicion. 
               Esta interaccion varia dependiendo del objeto en cuestion. A los zombies los ataca, 
               por otro lado a los arboles los tala y a las Baya las come, ademas al interactuar con la casa, 
               si el jugador tiene madera, la arregla.
