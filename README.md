@@ -1,14 +1,14 @@
 # Nombre Juego
 ## Descripcion
  Es un juego basado en las cronicas de Spiderwick. Una pelicula de fantasia estrenada en 2008 en la que un niño debe defender su casa de un ogro.
- ![Las cronicas de Spiderwick]()
+ ![Las cronicas de Spiderwick](https://github.com/pdep-utn-frd/2021-wollok-game-object-fideoscontuco/blob/master/las-cronicas-de-spiderwick-destacada.jpg)
 ## Objetivo
   El objetivo del juego es defender la casa de los zombies. Estos solo aparecen de noche y tienen como objetivo destruir dicha casa. Para defender su hogar, el jugador puede atacar a los zombies para matarlos y asi impedir que destruyan su querida casa. Ademas, puede talar arboles para conseguir madera, que despues puede utilizar para arreglar la casa, sumando asi los puntos de salud de la misma. Sobre todo eso, el jugador debe estar atento a su energia, ya que esta disminuye con cada movimiento, ataque o hachazo a un arbol. Para subir sus niveles de energia, puede comer bayas que aparecen en distintas ubicaciones del mapa y desaparecen una vez consumidas.
-  ![Mapa de dia]()
-  ![Mapa de noche]()
+  ![Mapa de dia](https://github.com/pdep-utn-frd/2021-wollok-game-object-fideoscontuco/blob/master/mapa-dia.png)
+  ![Mapa de noche](https://github.com/pdep-utn-frd/2021-wollok-game-object-fideoscontuco/blob/master/mapa-noche.png)
 ## Seleccion de la dificultad
   Lo primero que ve el jugador alcorrer el programa es una pantalla donde puede elegir la dificultad del juego. Tiene tres niveles: Facil, Normal, y Dificil. Esta seleccion influira en la cantidad de arboles, zombies y bayas que apareceran en el mapa.
-  ![Pantalla de Seleccion de dificultad]()
+  ![Pantalla de Seleccion de dificultad](https://github.com/pdep-utn-frd/2021-wollok-game-object-fideoscontuco/blob/master/seleccion-dificultad.png)
 ## Controles
    Los controles del juego son bastante intuitivos:
    #### Movimiento
