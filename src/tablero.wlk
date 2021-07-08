@@ -38,7 +38,7 @@ object tablero { // candidato a clase?
 	method reiniciarEstado() {
 	}
 	   
-	method espacioLibreEnMapa() { //  9 a 10 segundos de cargas en test 22 bayas
+	method espacioLibreEnMapa() { //  9 a 10 segundos de cargas en test 22 Baya
 		const listaOcupados = []
 		const listaTotal = []
 		const alto = game.height() - 1 // 50PX 50PX  10 = 500
@@ -50,7 +50,7 @@ object tablero { // candidato a clase?
 	}
 	 
 	
-	method espacioLibreEnMapa2(){ //  < 2 segundo carga en test de 22 bayas
+	method espacioLibreEnMapa2(){ //  < 2 segundo carga en test de 22 Baya
 		var posicion = game.at(1.randomUpTo(13),1.randomUpTo(13))
 		  
 		if (game.getObjectsIn(posicion).isEmpty() && (not self.esRepetido(posicion))){ // verificar que no sea pos ya utilizada. 
