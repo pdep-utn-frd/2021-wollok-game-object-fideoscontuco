@@ -19,7 +19,7 @@ object multiplicador { // utilizado para definir comportamiento de personajes se
 	var property numero = 0
 }
 
-object listaBayas { // utilizado para que nube pueda identificar que en celda hay alguna baya y robarla
+object listaBaya { // utilizado para que nube pueda identificar que en celda hay alguna baya y robarla
 
 	var property lista = []
 
@@ -91,7 +91,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		
 		 
 			// 4.randomUpTo(8).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
-	 	game.addVisual(new BayasMedianas(position = game.at(8,1))) // baya test nube prueba
+	 	game.addVisual(new BayaMediana(position = game.at(8,1))) // baya test nube prueba
 		game.addVisual(new Arbol(position = game.at(8,1))) // test 2 visuales mismo tile 
 		self.spawnear()
 		
@@ -136,29 +136,34 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		keyboard.c().onPressDo{ p.interactuarPosicion()}
 		
 		keyboard.up().onPressDo({ 
-			if (not p.puedeMoverseA(p.position())) {
+			if (not p.puedeMoverseA(p.position()) or p.estaAnimando()) {
 				p.position(p.position().down(1)) // ir direccion contraria traba al visual en el lugar que esta
 			} else { // puede moverse
 				p.efectoDeCaminar() // setter energia e imagen, delego cambio a posicionNueva a game.addVisualCharacter por rendimiento	
-			
+				p.hacerPasos()
 			} // position() devolveria la posicion final, luego de moverse por game.addVisualCharacter(personajePrincipal)
 		})
-		keyboard.down().onPressDo({ if (not p.puedeMoverseA(p.position())) {
+		keyboard.down().onPressDo({ if (not p.puedeMoverseA(p.position()) or  p.estaAnimando() ) {
 				p.position(p.position().up(1))
 			} else {
 				p.efectoDeCaminar()
+				p.hacerPasos()
 			}
 		})
-		keyboard.right().onPressDo({ if (not p.puedeMoverseA(p.position())) {
+		keyboard.right().onPressDo({ if (not p.puedeMoverseA(p.position()) or p.estaAnimando() ) {
 				p.position(p.position().left(1))
 			} else {
 				p.efectoDeCaminar()
+				p.hacerPasos()
 			}
 		})
-		keyboard.left().onPressDo({ if (not p.puedeMoverseA(p.position())) {
+		keyboard.left().onPressDo({ if (not p.puedeMoverseA(p.position()) or p.estaAnimando() ) {
 				p.position(p.position().right(1))
 			} else { // puede moverse
+				
 				p.efectoDeCaminar()
+				p.hacerPasos()
+				
 			}
 		})
 		
@@ -171,7 +176,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 				// } catch e : Exception{
 				// no hace nada	
 				// }
-			listaBayas.lista().clear() //rever
+			listaBaya.lista().clear() //rever
 			tablero.lista().clear()
 			game.clear()
 			reloj.estado(dia) // probar instanciar
@@ -215,15 +220,15 @@ object nivelFacil inherits Nivel { // y si la dificultad cambiase el comportamie
 	}
 
 	override method spawnear() { // truncate?
-		new FabricaSujetos(nivel = self, nZombies = 1.randomUpTo(3), nBayas = 10.randomUpTo(18), nArboles = 8.randomUpTo(12)).iniciar()
-	// new FabricaSujetos(nivel = self, nZombies = 4, nBayas = 15, nArboles =4).iniciar()
-	// game.addVisual(new BayasMedianas(position = game.at(7,11)))
+		new FabricaSujetos(nivel = self, nZombies = 1.randomUpTo(3), nBaya = 10.randomUpTo(18), nArboles = 8.randomUpTo(12)).iniciar()
+	// new FabricaSujetos(nivel = self, nZombies = 4, nBaya = 15, nArboles =4).iniciar()
+	// game.addVisual(new BayaMediana(position = game.at(7,11)))
 	/* 
 	 * 		6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
-	 * 			// 4.randomUpTo(10).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
-	 * 			// 22.times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
-	 * 		6.randomUpTo(12).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
-	 * 		listaBayas.lista().forEach{ l => game.addVisual(l)}
+	 * 			// 4.randomUpTo(10).times{ l => listaBaya.lista().add(new BayaMediana())} // guardo en una lista para que nube pregunte si se topa con una de las Baya
+	 * 			// 22.times{ l => listaBaya.lista().add(new BayaMediana())} // guardo en una lista para que nube pregunte si se topa con una de las Baya
+	 * 		6.randomUpTo(12).times{ l => listaBaya.lista().add(new BayaMediana())} // guardo en una lista para que nube pregunte si se topa con una de las Baya
+	 * 		listaBaya.lista().forEach{ l => game.addVisual(l)}
 	 * 			// 8.times{ l => game.addVisual(new Arbol())}
 	 * 		1.randomUpTo(3).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	 * 		// 24.times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
@@ -242,14 +247,14 @@ object nivelDificil inherits Nivel {
 	}
 
 	override method spawnear() {
-		new FabricaSujetos(nivel = self, nZombies = 7.randomUpTo(12), nBayas = 2.randomUpTo(4), nArboles = 2.randomUpTo(6)).iniciar()
+		new FabricaSujetos(nivel = self, nZombies = 7.randomUpTo(12), nBaya = 2.randomUpTo(4), nArboles = 2.randomUpTo(6)).iniciar()
 	/*  
-	 * const listaBayas = []
+	 * const listaBaya = []
 	 * 3.randomUpTo(6).times{ l => game.addVisual(new Arbol())}
-	 * 	// 4.times{ l => game.addVisual(new BayasMedianas())}
-	 * 2.randomUpTo(9).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
-	 * 	// 20.times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
-	 * listaBayas.lista().forEach{ l => game.addVisual(l)}
+	 * 	// 4.times{ l => game.addVisual(new BayaMediana())}
+	 * 2.randomUpTo(9).times{ l => listaBaya.lista().add(new BayaMediana())} // guardo en una lista para que nube pregunte si se topa con una de las Baya
+	 * 	// 20.times{ l => listaBaya.lista().add(new BayaMediana())} // guardo en una lista para que nube pregunte si se topa con una de las Baya
+	 * listaBaya.lista().forEach{ l => game.addVisual(l)}
 	 * 6.randomUpTo(12).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	 * 	}
 	 */
@@ -266,16 +271,58 @@ object nivelNormal inherits Nivel {
 	}
 
 	override method spawnear() { //
-		new FabricaSujetos(nivel = self, nZombies = 2.randomUpTo(6), nBayas = 5.randomUpTo(10), nArboles = 6.randomUpTo(12)).iniciar()
+		new FabricaSujetos(nivel = self, nZombies = 2.randomUpTo(6), nBaya = 5.randomUpTo(10), nArboles = 6.randomUpTo(12)).iniciar()
 	/*  
 	 * 4.randomUpTo(10).times{ l => game.addVisual(new Arbol())}
-	 * 	// 9.times{ l => game.addVisual(new BayasMedianas())}
-	 * 4.randomUpTo(9).times{ l => listaBayas.lista().add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
-	 * listaBayas.lista().forEach{ l => game.addVisual(l)}
+	 * 	// 9.times{ l => game.addVisual(new BayaMediana())}
+	 * 4.randomUpTo(9).times{ l => listaBaya.lista().add(new BayaMediana())} // guardo en una lista para que nube pregunte si se topa con una de las Baya
+	 * listaBaya.lista().forEach{ l => game.addVisual(l)}
 	 * 4.randomUpTo(7).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	 */
 	}
 
 }
-/* */
+/*  
+<<<<<<< HEAD
  
+=======
+object escenarioDerrota inherits Ventanas { // metodo?
+	const roca1 = new Roca()
+
+	method inicio(razon) {
+		game.clear()
+			// game.addVisualIn("derrota.png", game.origin())
+		game.width(ancho)
+		game.title("fideosConTuco-casero")
+		game.height(alto)
+		game.addVisualIn(roca1, game.center())
+		game.say(roca1, "has perdido: " + razon) // razon de derrota.
+		game.schedule(6000, {=>
+			game.say(roca1, "presiona cualquier tecla para volver a comenzar")
+			keyboard.any().onPressDo{ // game.removeTickEvent("dia cambia")
+				listaBaya.lista().clear() // candidato clase
+				game.clear() // como reinicio
+				reloj.estado(dia)
+				tablero.lista().clear()
+				game.addVisual(new Cargando()) // es necesario?
+				game.schedule(500, {=> seleccionDificultad.inicio()})
+			}
+		})
+	}
+
+}
+*/
+class Cargando inherits Visual { // pasar a clase
+
+	method image() = "cargandoChico.png"
+
+	method position() = game.at(8, 13)
+
+	method cobrarVida() {
+	}
+
+	method esAtravesable() = true
+
+}
+
+>>>>>>> branch 'master' of https://github.com/pdep-utn-frd/2021-wollok-game-object-fideoscontuco.git

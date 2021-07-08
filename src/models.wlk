@@ -341,6 +341,7 @@ class Arbol inherits Visual {
 			if (madera > 0) {
 				sujetoParticipe.cansar(10) // reever
 				sujetoParticipe.madera(sujetoParticipe.madera() + madera)
+				sujetoParticipe.accionar()
 				game.say(sujetoParticipe, "madera  + " + madera)
 				madera = 0
 				game.schedule(9200, { self.reinicio()})
@@ -367,24 +368,25 @@ object visualYAtributos {
 
 }
 
-class BayasMedianas inherits Visual {
+class BayaMediana inherits Visual {
 
 	var property esAtravesable = true
 	var property calorias = 100
 	var property position = tablero.posRandom()
-	var property nombre = "bayasMedianas"
+	var property nombre = "BayaMediana"
 	var property tieneComportamiento = true
-	method image() = "bayasMedianas.png"
+	method image() = "BayaMediana.png"
 
-	method esInteractuado(sujetoParticipe) { // bayas vuelven a aparecer cada cierto tiempo
+	method esInteractuado(sujetoParticipe) { // Baya vuelven a aparecer cada cierto tiempo
 	//	sujetoParticipe.sumarEnergia(calorias,self)
 		sujetoParticipe.sumarEnergia(calorias)
+		sujetoParticipe.accionar()
 		self.position(game.at(25, 25))
 		//var posicionNueva = tablero.posRandom()
 		var tiempo = 4000.randomUpTo(8000)
 		game.schedule(tiempo, { => self.reaparecer()})
 		 	// game.removeVisual(self)  
-			// game.schedule(100.randomUpTo(1230), { game.addVisual(new BayasMedianas())})
+			// game.schedule(100.randomUpTo(1230), { game.addVisual(new BayaMediana())})
  
 	}
  	
@@ -446,7 +448,7 @@ class Roca inherits Visual {
 	method llenarDiccio() {
 		
 		diccio.put("arbol", "la madera pueda utilizarse para reparar  la casa") // probar
-		diccio.put("bayasMedianas", "bayas aparecen cada cierto tiempo")
+		diccio.put("BayaMediana", "Baya aparecen cada cierto tiempo")
 		diccio.put("casa", "si la casa cae pierdes el juego")
 		diccio.put("zombie", "no dejes que los zombies se acerquen a la casa")
 		diccio.put("personajePrincipal", "pierdes el juego al quedarte sin energia")
@@ -491,7 +493,10 @@ class PersonajePrincipal inherits Visual {
 	var property tieneComportamiento = false
 	var property rocaConsejera
 	var property esAtravesable = true
-	 
+	var property image = "shovelMain.png"
+	var property estaAnimando = false
+	
+	
 	method danio(){
 		return danio * multiplicador.numero()
 	}
@@ -512,6 +517,38 @@ class PersonajePrincipal inherits Visual {
 		 	 game.say(self, "interactuo 2 visuales")
 		}
 	}
+	method moverPala(){
+		estaAnimando = true
+		image = "accion1.png"
+		game.schedule(100,{=>image ="accion2.png"})
+			
+			game.schedule(200,{=>self.cambiarImagen("shovelMain.png")
+				estaAnimando = false
+			})
+		}
+	
+	
+	
+	method hacerPasos(){
+		if (image == "shovelMain.png"){
+			image = "shovelMain2.png"
+		} else{
+			image = "shovelMain.png"
+		}
+	}
+		
+		
+	method accionar(){
+		
+		cambioDeImagen.armario(self.image())
+		self.moverPala()
+		
+		
+	}
+	method cambiarImagen(img){
+		image = img
+	}
+
 	
 	method esInteractuado(personaje){
 		//no hace nada
@@ -576,16 +613,19 @@ class PersonajePrincipal inherits Visual {
 	}
  
 
-	method image() {
-		if (self.estaEnPie()) {
-			return "shovelMain.png"
-		} else return "shovelMain2.png"
-	}
+	
+	
 
 	
  
 	 
 }
+
+object cambioDeImagen {
+	var property armario
+}
+
+
 
 class Nube inherits Visual {
 
@@ -626,7 +666,7 @@ class Nube inherits Visual {
 	   
 	 	try{
 	 		loc = game.uniqueCollider(self)
-	 	 	return listaBayas.lista().contains(loc)
+	 	 	return listaBaya.lista().contains(loc)
 		}catch e : Exception{
 			return false
 		}
@@ -634,7 +674,7 @@ class Nube inherits Visual {
 		 if (game.colliders(self).isEmpty()){
 		 	return false
 		 }else{
-		 	return listaBayas.lista().contains(game.colliders(self))
+		 	return listaBaya.lista().contains(game.colliders(self))
 		 }
 		 * 
 		 */

@@ -9,7 +9,7 @@ import escenarioDerrota.*
 
 class FabricaSujetos{
 	var property nZombies
-	var property nBayas
+	var property nBaya
 	var property nArboles
 	var property nivel
 	
@@ -17,14 +17,14 @@ class FabricaSujetos{
 	method iniciar(){
 		nArboles.times{ l => game.addVisual(new Arbol())}
 		nZombies.times{ l => game.addVisual(new Zombie(hogar = nivel.casaActual(), heroe = nivel.personajePrincipal()))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
-		self.agregarBayas() // bayas se agregan a una lista para luego nube tomarlas en su paso
+		self.agregarBaya() // Baya se agregan a una lista para luego nube tomarlas en su paso
 	}
 	
-	method agregarBayas(){
-		var lista = listaBayas.lista()
-		nBayas.times{ l => lista.add(new BayasMedianas())} // guardo en una lista para que nube pregunte si se topa con una de las bayas
+	method agregarBaya(){
+		var lista = listaBaya.lista()
+		nBaya.times{ l => lista.add(new BayaMediana())} // guardo en una lista para que nube pregunte si se topa con una de las Baya
 		lista.forEach{ l => game.addVisual(l)}
-	//nBayas.times{ l => game.addVisual(new BayasMedianas())}
+	//nBaya.times{ l => game.addVisual(new BayaMediana())}
 	}
 	//comentario para sacar el truncate
 }
