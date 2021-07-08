@@ -534,7 +534,7 @@ class PersonajePrincipal inherits Visual {
 	method moverPala(){
 		estaAnimando = true
 		image = accion1
-		game.schedule(100,{=>image =accion1})
+		game.schedule(100,{=>image =accion2})
 			
 			game.schedule(200,{=>self.cambiarImagen(imagenPrincipal)
 				estaAnimando = false
