@@ -32,17 +32,22 @@ class Ventanas {
 // configurar pantalla podria ir aca y utilizarse super en otras.
 }
 
-class Puntaje {
+class Dia inherits Visual{
 	var property position
 	var property image	
 
 
-	method cambiarPuntaje(puntaje) {
-		image = 'puntaje' + puntaje + '.png'
+	method cambiarImagen(puntaje) {
+		image = 'dia' + puntaje + '.png'
 	}
+	method cobrarVida(){}
 }
 
-
+object diasCartelera inherits Visual{
+	var property position
+	method image() = "diaCartelera.png"
+	method cobrarVida(){}
+}
 // que hace siguiente? remarca al siguiente, lo elegido.  y lo pone como la decision actual
 class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 
@@ -54,13 +59,18 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	const nube = new Nube() // hacerlos por fuera de nivel?
 	var property personajePrincipal = new PersonajePrincipal(rocaConsejera = roca)
 	var property reiniciado = false
- 
- 
+	
+	var contadorDias = 1
+	var numeroDia = new Dia(
+		position = game.at(13, 14),
+		image='dia' + contadorDias.toString() + '.png'
+	)
+ 	
 	
 	method inicio() {
 		game.clear()
 		self.configurarPantalla()
-		
+			
 		game.addVisual(reloj) // que no sea al mismo tiempo.
 		mapa.crearParedesInvisibles()
 		casaActual.dibujar()
@@ -71,6 +81,11 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		game.addVisual(nube)
 		game.addVisual(roca)
 		roca.construirRoca()
+		
+		game.addVisual(numeroDia)
+		game.addVisualIn(diasCartelera,game.at(11,14))
+		
+		 
 			// 4.randomUpTo(8).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	 	game.addVisual(new BayasMedianas(position = game.at(8,1))) // baya test nube prueba
 		game.addVisual(new Arbol(position = game.at(8,1))) // test 2 visuales mismo tile 
@@ -81,8 +96,10 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 			// game.addVisualIn(flechas,game.at(10,9)
 		mapa.crearParedesInvisibles()
 		game.allVisuals().forEach{ v => v.cobrarVida()} // no esta bueno dos propositos en mismo mensaje
+		self.eventoDias()
 		self.configurarTeclado(personajePrincipal)
 		self.teclasPrincipales()
+		
 	}
 
 	/*  
@@ -96,7 +113,15 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	 * }
 	 */
 	method spawnear()
-
+	
+	method eventoDias(){ 
+	game.onTick(reloj.tiempoDelDia(), 'add score', {
+			contadorDias = contadorDias + 1
+			numeroDia.cambiarImagen(contadorDias)			
+		})
+		
+		}
+	
 	method configurarPantalla() {
 		// game.clear()
 		game.height(alto)
@@ -248,7 +273,7 @@ object nivelNormal inherits Nivel {
 	}
 
 }
-
+/* */
 object escenarioDerrota inherits Ventanas { // metodo?
 	const roca1 = new Roca()
 
