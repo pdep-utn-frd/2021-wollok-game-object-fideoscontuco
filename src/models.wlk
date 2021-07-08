@@ -515,13 +515,6 @@ class PersonajePrincipal inherits Visual {
 		//no hace nada
 	}
 
-	method cansar(nro) {
-		energia = energia - nro
-		self.alarmaDeEnergia()
-		if (energia < 0){
-			escenarioDerrota.inicio("te has quedado sin energia")
-		}
-	}
 
 	// method sumarEnergia(nro,baya) {
 	method sumarEnergia(nro) {
@@ -541,43 +534,37 @@ class PersonajePrincipal inherits Visual {
 		return  game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() } // get objectsIn devuelve lista. 
 	}
 	
-	 /* 
-	method irA(nuevaPos) { // toma objeto pos
-	// cada paso chequeo si no hay energia o casa esta rota
-		if (self.puedeMoverseA(nuevaPos)) { // solo si casillero siguiente es objeto atravesable
-			estaEnPie = not estaEnPie // preguntar
-			self.cansar(2)
-			position = nuevaPos // asigna nueva posicion
-			if (contadorEscondidoDePasos % 2 == 0) { 
-				self.daUnPaso()
-			}else{
-				self.daOtroPaso()
-			
-				}
-			contadorEscondidoDePasos = contadorEscondidoDePasos + 1
-		}
-		if (self.estaCansado()) {
-
-		 escenarioDerrota.inicio("te has quedado sin energia")
-		// sprite en el piso
-
-		//	nivel.escenarioDerrota("te has quedado sin energia")
-		// sprite en el piso--
-
-		}
-	}
-	*/
 	
-	method efectoDeCaminar(){
-		self.cansar(5) 
-	  	estaEnPie = not estaEnPie
-		if (contadorEscondidoDePasos % 2 == 0) { 
-				self.daUnPaso()
-			}else{
-				self.daOtroPaso()
-				 
-			}
+	
+	method cansar(nro) {
+		energia = energia - nro
 	}
+	
+	method alarmaDeEnergia(){
+		if (energia < 0){
+			escenarioDerrota.inicio("te has quedado sin energia")
+		}
+	}
+	method efectoDeCaminar(){ 
+		self.cansar(5) 
+		self.aumentarContadorPasos()
+		self.alarmaDeEnergia()
+	  	estaEnPie = not estaEnPie
+		self.ruido().play()
+	}
+	
+	method aumentarContadorPasos(){
+		contadorEscondidoDePasos = contadorEscondidoDePasos + 1
+	}
+	
+	method ruido(){
+		if (contadorEscondidoDePasos % 2 == 0){ 
+	 		return new Sonido().paso1() 
+	 	}else{
+	 	    return  new Sonido().paso2() 
+	 	}
+	}
+	
 	 
 	
 	method cobrarVida(){ // ya no es necesario
@@ -585,10 +572,7 @@ class PersonajePrincipal inherits Visual {
 	  position = game.at(1, 3)
 	  madera = 0
 	}
-
-	method daUnPaso() = new Sonido().paso1().play()
-	method daOtroPaso() = new Sonido().paso2().play()
-
+ 
 
 	method image() {
 		if (self.estaEnPie()) {
@@ -596,12 +580,7 @@ class PersonajePrincipal inherits Visual {
 		} else return "shovelMain2.png"
 	}
 
-	method alarmaDeEnergia() {
-		if (energia < 50) {
-			game.say(self, "me estoy quedando sin energia")
-			rocaConsejera.darConsejo(self)
-		}
-	}
+	
  
 	 
 }
