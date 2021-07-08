@@ -1,6 +1,6 @@
 # El caballero de la Pala
 ## Descripcion
- Es un juego basado en las cronicas de Spiderwick. Una pelicula de fantasia estrenada en 2008 en la que un niño debe defender su casa de un ogro.
+ Es un juego basado en el famoso juego plataformero Shovel Knight. Shovel Knight es un juego de plataformas 2D de 2014 desarrollado y publicado por la compañía de videojuegos independiente Yacht Club Games.
  
  ![Las cronicas de Shovel Knight](https://i2.wp.com/www.gaymer.es/es/wp-content/uploads/2017/03/shovel_knight_3d_re_creation_by_davislim-d7ua74v.jpg?resize=750%2C400&ssl=1)
  
@@ -17,7 +17,7 @@
   Lo segundo que ve el jugador alcorrer el programa es una pantalla donde puede elegir la dificultad del juego. Tiene tres niveles: Facil, Normal, y Dificil. Esta seleccion influira en la cantidad de arboles, zombies y Baya que apareceran en el mapa.
   
   ![Pantalla de Seleccion de dificultad](https://github.com/pdep-utn-frd/2021-wollok-game-object-fideoscontuco/blob/master/seleccion-dificultad.png)
-  
+
 ## Controles
    Los controles del juego son bastante intuitivos:
    #### Movimiento
