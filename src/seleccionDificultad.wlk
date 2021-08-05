@@ -52,7 +52,7 @@ object seleccionDificultad inherits Ventanas { // como se podra usar el mouse?
 
 }
 
-object facil inherits Visual {
+object facil inherits Visual { //Hay logica repetida entre facil/normal/dificil
 
 	var property position = game.at(4, 3)
 	var property estaRemarcado = true
@@ -151,4 +151,4 @@ object normal inherits Visual {
 		game.schedule(1, {=> nivelNormal.inicio()})
 	}
 
-}
+} // Se podria vincular niveles con sus respectivos visuales, con un atributo

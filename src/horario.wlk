@@ -25,7 +25,7 @@ class Horario inherits Visual {
 	}
   
 	method esDeDia() {
-		return (estado.equals(dia))
+		return (estado.equals(dia)) // ==
 	}
 	 
 	//method comportamiento       estado.cambiarHorario()
@@ -42,29 +42,37 @@ class Horario inherits Visual {
 					// nivel.visualesComportamiento().forEach{ v => v.comportamientoDia(self)}   
 				game.allVisuals().forEach{ v => v.comportamientoDia(self)} // probar si tilda
 			}*/
-			var estadoSiguiente = estado.escenarioSiguiente()
-			 self.cambiarEstado(estadoSiguiente) // estado dia cambia a noche, noche a dia
-			 estadoSiguiente.ejecutar(self) 
+			 self.cambiarEstado() // estado dia cambia a noche, noche a dia
+			 estado.ejecutar(self) 
 		})
 	}
 	
-	method cambiarEstado(nuevoEstado){
-		estado = nuevoEstado
+	method cambiarEstado(){
+		estado = estado.escenarioSiguiente()
+		//Mas claro si este metodo se encarga
 	}
 	method esAtravesable() {
 		return true
 	}
 
 }
-
-object dia{
-	method escenarioSiguiente() = noche
+class Escenario {
+	
 	method ejecutar(phorario){
-		 
-		game.allVisuals().forEach{ v => v.comportamientoDia(phorario)} 
+		game.allVisuals().forEach{ v => self.comportamiento(v,phorario)} 
+	}
+	method comportamiento(visual,horario)
+}
+
+
+object dia inherits Escenario{
+	method escenarioSiguiente() = noche
+	override method comportamiento(v, phorario){
+		v.comportamientoDia(phorario) 
 	}
 	
-	
+	// Variante para no repetir logica entre escenarios
+	// podrian agregarse métodos
 	
 	method getImagen() = "escenaDiaGrande.png"
 	

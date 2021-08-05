@@ -47,7 +47,7 @@ class Dia inherits Visual{
 }
 
 object diasCartelera inherits Visual{
-	var property position
+	var property position = null
 	method image() = "diaCartelera3.png"
 	method cobrarVida(){}
 }

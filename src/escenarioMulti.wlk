@@ -207,6 +207,7 @@ const p2 = new PersonajePrincipal(
 				p2.hacerPasos() // cambio de visual
 		 	}
 		})
+		// Repite logica en cada tecla
 		
 		} 
 

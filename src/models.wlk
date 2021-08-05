@@ -14,6 +14,8 @@ class Visual {
 
 //	method tieneComportamiento() = false
 	 
+	 // No tiene sentido esta clase sin comportamiento ni atributos. 
+	 // Podrian agregarle position e image. Incluso el esAtravesable() 
 }
  
  
@@ -33,8 +35,7 @@ object flechas inherits Visual{
 	method esAtravesable() = true
 	
 	 
-}
-
+}// mas que herencia,serian instancias de Visual
 
 
 class TileInvisible inherits Visual{
@@ -47,7 +48,7 @@ class TileInvisible inherits Visual{
 
 object mapa{
 	method crearParedesInvisibles(){
-		game.addVisualIn(new TileInvisible(),game.at(6,4))
+		game.addVisualIn(new TileInvisible(),game.at(6,4)) //Mejor que el visual tenga la posicion y usar addVisual
 		game.addVisualIn(new TileInvisible(),game.at(8,4))
 	}
 }
@@ -72,7 +73,7 @@ object guiaDificultad{
 	method image() = "Screenshot_8.png"
 	method cobrarVida(){}
 }
-
+// Idem, no tienen comportamiento diferente, solo un valor diferente para un atributo
 
 class ParteCasa inherits Visual {
 
@@ -155,6 +156,11 @@ class Casa inherits Visual{
 class Sonido { // los sonidos pueden ejecutarse una sola vez, 
 //entonces instancio?
 
+//No hace falta crear objetos de esta clase. directamente usar los objetos wollok de sonido 
+// const agonia = game.sound("tomasAgonia.mp3")
+// ...
+// agonia.play()
+
 	var property agonia = game.sound("tomasAgonia.mp3")
 	var property meDueleTodo = game.sound("tomasMeDueleTodo.mp3")
 	var property golpeMadera = game.sound("golpeMadera.mp3")
@@ -176,7 +182,7 @@ object sonido{
 	var property agonia = game.sound("tomasAgonia.mp3")
 }
  object guiaJugadorDos inherits Visual{
- 	var property position 
+ 	var property position = null
  	method image() = "j2.png"
  	method cobrarVida(){}
  	method esAtravesable() = true
@@ -479,6 +485,7 @@ class Roca inherits Visual {
 		// game.say(self,"no deberia decir nada ahora")// hacer nada - preguntar 
 		}
 	}
+	// Esta parte, mas facil con polimorfismo, sin diccionario. 
 	
 	 
 	method cobrarVida() {
@@ -489,7 +496,7 @@ class Roca inherits Visual {
 }
 
 
-class PersonajePrincipal inherits Visual {
+class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una subclase comun a algunos Visuales
 
 	var property energia = 500
 	var property position = game.at(1, 3)

@@ -27,7 +27,7 @@ const estadisticasBayas = new Estadistica(contador = 0)
  
 object escenarioDerrota inherits Ventanas { // metodo?
 	const roca1 = new Roca()
-	var property nivel
+	var property nivel = null
 	method inicio(razon) { // nivel para estadisticas
 		self.configPantalla()
 		self.dibujarEstadisticasDia()
