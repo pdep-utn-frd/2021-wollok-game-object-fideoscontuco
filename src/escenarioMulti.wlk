@@ -90,7 +90,7 @@ object carteleraJugadores {
 
 
 
-object unJugador { // configuracion teclas unJugador
+object unJugador { 
 
 	method configurarTeclasExtras() { // clase nivel ya configura personaje1
 	// no hace nada
@@ -100,7 +100,11 @@ object unJugador { // configuracion teclas unJugador
 		modoJugadores.eleccion(self)
 	}
 	method iniciar(){
-		
+		game.addVisual(personaje1)
+		//game.addVisualIn(guiaJugadorDos, game.at(7,0))
+		game.addVisual(guiaJugadorDos)
+		game.schedule(reloj.tiempoDelDia() / 2, {=> game.removeVisual(guiaJugadorDos)})
+		personaje1.configurarTeclasExtras()
 	}
 	method agregarVisuales() { // el visual de personaje ya fue añadido por clase Nivel
 	// no hace nada 
@@ -108,76 +112,75 @@ object unJugador { // configuracion teclas unJugador
 
 }
 
- 
-
-object dosJugadores { // wasd teclado
 
 
-const p2 = new PersonajePrincipal(
-	position = game.at(7,3),
-	image = "personaje21.png",
-	imagenPrincipal = "personaje21.png",
-	imagenPasoDado = "personaje2.png",
-	accion1 = "accion3.png",
-	accion2 = "accion4.png"
-)
- 	
+object dosJugadores{
+	
  	method inicio(){
 		modoJugadores.eleccion(self)
 	}
  	
 	method iniciar() {
- 		
-		game.addVisual(p2)
-		game.showAttributes(p2)
+ 		game.addVisual(personaje1)
+		game.addVisual(personaje2)
+		game.showAttributes(personaje2)
 		//game.addVisualIn(guiaJugadorDos, game.at(7,0))
 		game.addVisual(guiaJugadorDos)
 		game.schedule(reloj.tiempoDelDia() / 2, {=> game.removeVisual(guiaJugadorDos)})
-	 	self.configurarTeclasExtras()
-		
+	 	personaje2.configurarTeclasExtras()
+		personaje1.configurarTeclasExtras()
 	}
+	
+	
+	
+}
 
-	method puedeMoverse(pos) { // si hay una animacion (para no cortarla con la animacion de movimiento) o si hay algo en esa direccion que no es atravesable
-		return   ( (p2.puedeMoverseA(pos))   and (not p2.estaAnimando()))
-	}
-	
-	method moverse(nuevaPos){ // rever
-		if (self.puedeMoverse(nuevaPos)){  
-			p2.position(nuevaPos)
-			p2.efectoDeCaminar() // setter energia e imagen, delego cambio a posicionNueva a game.addVisualCharacter por rendimiento	
-			p2.hacerPasos() // cambio de visual
-		}
-	}
-	
+ 
+
+object modoJugadores { // seleccion guardada de usuario
+
+	var property eleccion
+
+}
+
+
+
+
+
+
+
+
+
+ object personaje1 inherits PersonajePrincipal{
 	
 	method configurarTeclasExtras() {
-	 	keyboard.c().onPressDo{ p2.interactuarPosicion()} // c tecla compartida
-	//	keyboard.f().onPressDo{ p2.interactuarPosicion()}
+	 	keyboard.enter().onPressDo{ self.interactuarPosicion()} // c tecla compartida
+	//	keyboard.f().onPressDo{ self.interactuarPosicion()}
 		
-		keyboard.w().onPressDo({  
+		keyboard.up().onPressDo({  
 	 //	var posSiguiente = p2.position().up(1)
-			var posSiguiente = game.at(p2.position().x(), p2.position().y() + 1)
+			var posSiguiente = game.at(self.position().x(), self.position().y() + 1)
 			self.moverse(posSiguiente)
 		})
 		
-		keyboard.s().onPressDo({ 
+		keyboard.down().onPressDo({ 
 			//var posSiguiente = p2.position().down(1)
-		 	var posSiguiente = game.at(p2.position().x(), p2.position().y() - 1)
+		 	var posSiguiente = game.at(self.position().x(), self.position().y() - 1)
 		 	self.moverse(posSiguiente)
 		 	}
 		)
 		
-		keyboard.a().onPressDo({ 
+		keyboard.left().onPressDo({ 
 		//	var posSiguiente = p2.position().left(1)
-		 	var posSiguiente = game.at(p2.position().x() - 1, p2.position().y())
+		 	var posSiguiente = game.at(self.position().x() - 1, self.position().y())
 		 	self.moverse(posSiguiente)
 		 	})
 		//})
 		
 		
-		keyboard.d().onPressDo({ 
+		keyboard.right().onPressDo({ 
 		//	var posSiguiente = p2.position().right(1)
-		 	var posSiguiente = game.at(p2.position().x() + 1, p2.position().y())
+		 	var posSiguiente = game.at(self.position().x() + 1, self.position().y())
 		 	self.moverse(posSiguiente)
 		 	}
 		//})
@@ -185,14 +188,62 @@ const p2 = new PersonajePrincipal(
 		
 		)
 		}
+		
+		 
 
 }
-
-object modoJugadores { // seleccion guardada de usuario
-
-	var property eleccion
-
+object personaje2 inherits PersonajePrincipal(
+	position = game.at(7,3),
+	image = "personaje21.png",
+	imagenPrincipal = "personaje21.png",
+	imagenPasoDado = "personaje2.png",
+	accion1 = "accion3.png",
+	accion2 = "accion4.png"){
+	
+	method configurarTeclasExtras() {
+	 	keyboard.c().onPressDo{ self.interactuarPosicion()} // c tecla compartida
+	//	keyboard.f().onPressDo{ self.interactuarPosicion()}
+		
+		keyboard.w().onPressDo({  
+	 //	var posSiguiente = p2.position().up(1)
+			var posSiguiente = game.at(self.position().x(), self.position().y() + 1)
+			self.moverse(posSiguiente)
+		})
+		
+		keyboard.s().onPressDo({ 
+			//var posSiguiente = p2.position().down(1)
+		 	var posSiguiente = game.at(self.position().x(), self.position().y() - 1)
+		 	self.moverse(posSiguiente)
+		 	}
+		)
+		
+		keyboard.a().onPressDo({ 
+		//	var posSiguiente = p2.position().left(1)
+		 	var posSiguiente = game.at(self.position().x() - 1, self.position().y())
+		 	self.moverse(posSiguiente)
+		 	})
+		//})
+		
+		
+		keyboard.d().onPressDo({ 
+		//	var posSiguiente = p2.position().right(1)
+		 	var posSiguiente = game.at(self.position().x() + 1, self.position().y())
+		 	self.moverse(posSiguiente)
+		 	}
+		//})
+		// Repite logica en cada tecla
+		
+		)
+		}
+		override method cobrarVida(){
+			super()
+			position = game.at(7,3)
+			
+		}
+		
+		 
 }
+ 
 
 
  

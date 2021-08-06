@@ -63,7 +63,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	var property casaActual = new Casa(estaRota = false,salud = 500)
 	const roca = new Roca()
 	const nube = new Nube() // hacerlos por fuera de nivel?
-	var property p1 = new PersonajePrincipal( rocaConsejera = roca)
+	//var property p1 = new PersonajePrincipal( rocaConsejera = roca)
 	var property reiniciado = false
 	
 	var property contadorDias = 1
@@ -75,6 +75,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
  	
 	
 	method inicio() {
+		
 		game.clear()
 		self.configurarPantalla()
 		escenarioDerrota.nivel(self)	
@@ -83,11 +84,12 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	 	casaActual.dibujar()
 		tablero.casa(casaActual)
 		//visualYAtributos.addVisual(personajePrincipal)
-	  	game.addVisualCharacter(p1)
+	  //	game.addVisualCharacter(p1)
 		  // hace cambios segun respectivo modo (1jugador, 2 jugadores)
 			// game.addVisualIn(dialogoCuidadoZombies, game.at(3,10) )
  		game.addVisual(nube)
 	 	game.addVisual(roca)
+	 	personaje1.rocaConsejera(roca) 
 	 	roca.construirRoca()
 		
 	 	game.addVisual(numeroDia)
@@ -108,7 +110,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	 	mapa.crearParedesInvisibles()
 		game.allVisuals().forEach{ v => v.cobrarVida()} // no esta bueno dos propositos en mismo mensaje
 		self.eventoDias()
-		 self.configurarTeclado(p1)
+	//	 self.configurarTeclado(p1)
 		self.teclasPrincipales()
 		
 	}
@@ -138,7 +140,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		game.height(alto)
 		game.width(ancho)
 	}
-	
+	/* 
 	method configurarTeclado(p) {
 	//	keyboard.c().onPressDo{ p.interactuarPosicion()}
 		keyboard.enter().onPressDo{ p.interactuarPosicion()}
@@ -178,7 +180,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	}
 	
 	
-	
+	 */
 	
 
 	method teclasPrincipales() {

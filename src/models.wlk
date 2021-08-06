@@ -130,8 +130,8 @@ class Casa inherits Visual{
 	}
 
 	method estaRota() {
-		//return (salud < 0 )
-		return false
+		return (salud < 0 )
+	//	return false
 	}
 
  
@@ -540,7 +540,7 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
 			itemFound.esInteractuado(self)
 			self.cansar(10)
-			
+			 
 		  rocaConsejera.darConsejo(itemFound)
 		// game.say(self,"interactuo con " + itemFound.toString()) // testing
 		} catch e : wollok.lang.Exception { // Illegal operation 'uniqueElement' on collection with 2 elements
@@ -561,8 +561,26 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 			})
 		}
 	
+	override method cobrarVida(){
+		  	madera = 0
+		  energia = 500
+          position = game.at(1, 3)
+	}
+	////
+	method puedeMoverse(pos) { // si hay una animacion (para no cortarla con la animacion de movimiento) o si hay algo en esa direccion que no es atravesable
+		return   ( (self.puedeMoverseA(pos))   and (not self.estaAnimando()))
+	}
+	
+	method moverse(nuevaPos){ // rever
+		if (self.puedeMoverse(nuevaPos)){  
+			self.position(nuevaPos)
+			self.efectoDeCaminar() // setter energia e imagen, delego cambio a posicionNueva a game.addVisualCharacter por rendimiento	
+			self.hacerPasos() // cambio de visual
+		}
+	}
 	
 	
+	////
 	method hacerPasos(){
 		if (image == imagenPrincipal){
 			image = imagenPasoDado
@@ -603,13 +621,14 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 	} */
 	
 	method puedeMoverseA(nuevaPos) { // si es atravezable y no esta fuera del limite
-		return  game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable() } // get objectsIn devuelve lista. 
+		return  game.getObjectsIn(nuevaPos).all{ sujeto => sujeto.esAtravesable()} 
+		&& not tablero.fueraDelLimite(nuevaPos)  // get objectsIn devuelve lista. 
 	}
 	
 	
 	
 	method cansar(nro) {
-	//	energia = energia - nro
+	 	energia = energia - nro
 	}
 	
 	method alarmaDeEnergia(){
