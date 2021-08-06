@@ -9,146 +9,147 @@ import escenarioDerrota.*
 
 
 
-
-
-object seleccionDificultad inherits Ventanas { // como se podra usar el mouse?
-
-	var property dificultad = facil
+class PantallaSeleccion inherits Ventanas{ // utilizado para evitar logica repetida entre niveles de seleccion de dificultad/jugadores
+	var property seleccion = null
+ 
+	var property listaDeBotones = []
 	
-	method inicio() { // pantalla inicial de seleccion de dificultades
-		game.height(15)  
-		game.width(15)
-			// game.boardGround("tileNegro.png")
-		//	game.title("fideosConTuco  X salir / L nueva dificultad / C interactuar")
-		 
-		game.addVisualIn(pantallaNegra, game.origin())
-		game.addVisualIn(elegirDif, game.at(4, 12))
-		game.addVisualIn(guiaDificultad, game.origin())
-		game.addVisual(dificil)
-		game.addVisual(facil)
-		game.addVisual(normal)
-		self.configurarTeclado()
-	}
-
+	
 	method configurarTeclado() { // mover con las flechas pasa de un objeto a otro, seleccionar ejecuta el nivel.
 		keyboard.x().onPressDo({ game.stop()})
-		keyboard.up().onPressDo({ new Sonido().sonidoMenu().play()
-			dificultad.quitarMarca() // quita marca a dificultad actual 
-			dificultad.siguiente().remarcar() // pone marca en dificultad siguiente
-			self.nuevaDificultad(dificultad.siguiente()) // nueva dificultad para
+		keyboard.up().onPressDo({ 
+			var seleccionSiguiente = listaDeBotones.get(seleccion.siguiente())
+		    self.efectosSeleccion(seleccionSiguiente )
 		})
-		keyboard.down().onPressDo({ new Sonido().sonidoMenu().play()
-			dificultad.quitarMarca() // quita marca a dificultad actual 
-			dificultad.anterior().remarcar() // pone marca en dificultad siguiente
-			self.nuevaDificultad(dificultad.anterior()) // nueva dificultad para
+		keyboard.down().onPressDo({  
+			var seleccionAnterior = listaDeBotones.get(seleccion.anterior())
+			self.efectosSeleccion(seleccionAnterior)
+			
 		})
-		keyboard.enter().onPressDo({ dificultad.seleccionar()})
+		keyboard.enter().onPressDo({ seleccion.seleccionar()}) // seleccion elegir..
 	}
+	
+	method hacerSonido(){
+		const sonidoMenu = game.sound("menuSeleccion.ogg") 
+		sonidoMenu.play() 
+	}
+	
+	method remarcarNuevo(pSeleccion){
+		seleccion.quitarMarca() 
+		self.nuevaSeleccion(pSeleccion)
+		seleccion.remarcar() 
+	}
+	
+	method efectosSeleccion(pSeleccion){
+		self.hacerSonido()
+		self.remarcarNuevo(pSeleccion) 
+	}
+	
+		
+	method nuevaSeleccion(nuevaSeleccion) {
+		seleccion = nuevaSeleccion
+	}
+}
 
-	// estaria bueno una confirmacion, tipo.  SEGURO Y N  en una ventana.
-	method nuevaDificultad(nuevaDificultad) {
-		dificultad = nuevaDificultad
+
+object seleccionDificultad inherits PantallaSeleccion(
+	seleccion = botonFacil,
+	listaDeBotones = [botonFacil, // segun el indice que devuelve mensaje sigueinte o anterior se elige el boton
+					   botonNormal,
+					   botonDificil
+						 
+	]){
+	 
+	method inicio() { // pantalla inicial de seleccion de dificultades
+ 
+
+	 	game.addVisual(new VisualUI(image = "pantallaNegra.png", position = game.origin()))
+	 	game.addVisual(new VisualUI(image = "elegirDif.png", position = game.at(4,12))) 
+	  	game.addVisual(new VisualUI(image = "Screenshot_8.png", position = game.origin())) // guia
+
+	 	
+	 	
+	 	game.addVisual(botonDificil)
+	 	game.addVisual(botonFacil)
+	 	game.addVisual(botonNormal)
+	 	self.configurarTeclado()
 	}
+	 
+ 
 
 }
 
-object facil inherits Visual { //Hay logica repetida entre facil/normal/dificil
 
-	var property position = game.at(4, 3)
-	var property estaRemarcado = true
 
-	method image() { // podria resumirse en clase
-		if (not estaRemarcado) {
-			return "facil2.png"
-		} else {
-			return "facilRemarcado2.png"
-		}
+
+// botones
+ 
+
+class BotonDificultad inherits Boton{
+	override method seleccionar(){
+		super()
+		game.schedule(1, {=> seleccion.inicio()})
 	}
-
-	method siguiente() = normal
-
-	method anterior() = dificil
-
-	method remarcar() {
-		estaRemarcado = true
-	}
-
-	method quitarMarca() {
-		estaRemarcado = false
-	}
-
-	method seleccionar() {
-		game.clear()
-		game.title("sdsdsdsd")
-		game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
-		game.schedule(1, {=> nivelFacil.inicio()})
-	}
-
 }
 
-object dificil inherits Visual {
-
-	var property position = game.at(4, 9)
-	var property estaRemarcado = false
-
-	method image() { // podria resumirse en clase
-		if (not estaRemarcado) {
-			return "dificil.png"
-		} else {
-			return "dificilRemarcado.png"
-		}
-	}
-
-	method quitarMarca() {
-		estaRemarcado = false
-	}
-
-	method remarcar() { // le quita la marca a uno anterior, y  remarca uno nuevo,
+class Boton inherits Visual{
+	var property estaRemarcado = false 
+	var property position = null
+	var property imagen1 = null
+	var property imagen2 = null
+	var property siguiente = null
+	var property anterior = null
+	var property seleccion = null
+	method remarcar() { // c 
 		estaRemarcado = true
 	}
 
-	method siguiente() = facil
-
-	method anterior() = normal
-
-	method seleccionar() {
-		// preguntar si esta seguro?
+	method quitarMarca() { // c 
+		estaRemarcado = false
+	}
+	 
+	method seleccionar() { // super
 		game.clear()
 		game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
-		game.schedule(1, {=> nivelDificil.inicio()})
 	}
-
+	
+	 
+	method image(){
+		if (not estaRemarcado) {
+			return imagen1
+		} else {
+			return imagen2
+		}
+	}
 }
 
-object normal inherits Visual {
 
-	var property position = game.at(4, 6)
-	var property estaRemarcado = false
+const botonFacil = new BotonDificultad( 
+	position = game.at(4,3), 
+	estaRemarcado = true,
+	imagen1= "facil2.png",
+	imagen2= "facilRemarcado2.png",
+	siguiente = 1, // si utilizo siguiente = botonDificil, la referencia aun no existe,wollok.lang.StackOverflowException: null 
+	anterior = 2,
+	seleccion = nivelFacil
+)  
 
-	method image() { // podria resumirse en clase
-		if (not estaRemarcado) {
-			return "normal.png"
-		} else {
-			return "normalRemarcado.png"
-		}
-	}
+const botonDificil = new BotonDificultad(
+	position = game.at(4,9), 
+	imagen1= "dificil.png",
+	imagen2= "dificilRemarcado.png",
+	siguiente = 0,
+	anterior = 1,
+	seleccion = nivelDificil
+)  
 
-	method quitarMarca() {
-		estaRemarcado = false
-	}
+const botonNormal = new BotonDificultad(
+	position = game.at(4,6),
+	imagen1= "normal.png",
+	imagen2= "normalRemarcado.png",
+	siguiente = 2,
+	anterior = 0,
+	seleccion = nivelNormal
+)
 
-	method siguiente() = dificil
-
-	method anterior() = facil
-
-	method remarcar() {
-		estaRemarcado = true
-	}
-
-	method seleccionar() {
-		game.clear()
-		game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
-		game.schedule(1, {=> nivelNormal.inicio()})
-	}
-
-} // Se podria vincular niveles con sus respectivos visuales, con un atributo
+// Se podria vincular niveles con sus respectivos visuales, con un atributo

@@ -4,113 +4,124 @@ import tablero.*
 import nivelPrueba.*
 import horario.*
 import escenarioDerrota.*
-class Visual {
 
+class Visual{ // comportamiento necesario para polimorfismo de todos los visuales
+ 	
 	method comportamientoNoche(horario) {
 	}
 
 	method comportamientoDia(horario) {
 	}
-
-//	method tieneComportamiento() = false
+	method esAtravesable() = true // default
+	
+	method cobrarVida(){}
+	
+	
+  	
+}
+  
+class VisualUI inherits Visual { // blueprint de visuales sin logica particular.  No me gusto utilizar solo clase visual para visuales con logica propia y visuales como carteles.
+	var property image = null
+	var property position = null
+	//	method tieneComportamiento() = false
 	 
-	 // No tiene sentido esta clase sin comportamiento ni atributos. 
-	 // Podrian agregarle position e image. Incluso el esAtravesable() 
+	// No tiene sentido esta clase sin comportamiento ni atributos. 
+	// Podrian agregarle position e image. Incluso el esAtravesable() 
 }
- 
- 
-object burbujaC inherits Visual{
-	method image(){
-		return "burbuja.png"
-	}
-	method cobrarVida(){}
-	method esAtravesable() = true
-}
-
-object flechas inherits Visual{
-	method image(){
-		return "j1Guia.png"
-	}
-	method cobrarVida(){}
-	method esAtravesable() = true
+  
+const flechas = new VisualUI(image = "j1Guia.png", position = game.origin()) 
+const guiaJugadorDos = new VisualUI(image = "j2.png", position = game.at(7,0))
+//object flechas inherits Visual{ /* objetos visual sin comportamiento particular, usualmente dialogos, paso a instanciarlo con imagen como parametro desde clase Visual */
+//	override method image(){
+//		return "j1Guia.png"
+//	}
+//	method cobrarVida(){}
+	//method esAtravesable() = true
 	
 	 
-}// mas que herencia,serian instancias de Visual
+//}// mas que herencia,serian instancias de Visual  
 
-
+/*  
 class TileInvisible inherits Visual{
-	method image(){
+	override method image(){
 		return "tileInvisible.png"
 	}
-	method cobrarVida(){}
-	method esAtravesable() = false
+	//method cobrarVida(){}
+	//method esAtravesable() = false
 }
-
+*/
 object mapa{
 	method crearParedesInvisibles(){
-		game.addVisualIn(new TileInvisible(),game.at(6,4)) //Mejor que el visual tenga la posicion y usar addVisual
-		game.addVisualIn(new TileInvisible(),game.at(8,4))
+	//	game.addVisualIn(new TileInvisible(),game.at(6,4)) //Mejor que el visual tenga la posicion y usar addVisual
+	//	game.addVisualIn(new TileInvisible(),game.at(8,4))
+		game.addVisual(new VisualUI(image = "tileInvisible.png", position = game.at(6,4))) //Mejor que el visual tenga la posicion y usar addVisual
+		game.addVisual(new VisualUI(image = "tileInvisible.png", position = game.at(8,4))) //Mejor que el visual tenga la posicion y usar addVisual
+	 
 	}
 }
 
-
-object elegirDif inherits Visual{
-	method image() = "elegirDif.png"
-	method cobrarVida(){}
+ /*   paso a instanciarlos desde clase visual
+object elegirDif inherits Visual{ 
+	override method image() = "elegirDif.png"
+	//method cobrarVida(){}
 }
-
+ 
 object pantallaNegra inherits Visual{
-	method image() = "pantallaNegra.png"
-	method cobrarVida(){}
+	override method image() = "pantallaNegra.png"
+//	method cobrarVida(){}
+	
 }
 
 object dialogoCuidadoZombies{
 	method image() = "cuidado2.png"
-	method cobrarVida(){}
+//	method cobrarVida(){}
 }
 
 object guiaDificultad{
 	method image() = "Screenshot_8.png"
-	method cobrarVida(){}
+//	method cobrarVida(){}
 }
+* 
+*/
 // Idem, no tienen comportamiento diferente, solo un valor diferente para un atributo
 
 class ParteCasa inherits Visual {
-
-	var property position
-	var property esAtravesable = true
+ var property position
+//	var property esAtravesable = true
 	var property casa 
+	  
 	method esInteractuado(sujetoParticipe) { //  
 		casa.repararCasa(sujetoParticipe) // que parteCasa no hable por casa
 	}
-
-	method image() {
+	
+	  method image() {
 		return "tileInvisible.png"
 	}
-
-	method cobrarVida() {
-	}
- 
+	
 }
 class Casa inherits Visual{
 	
-	var property esAtravesable = true
-	// var property position = game.at(3, 4) // tiene varios position
+	//var property esAtravesable = true
+	 
 	var property salud 
 	var property estaRota
 	var property lista = []
 	var property nombre = "casa"
-	var property position = game.at(3, 4)
 	var property tieneComportamiento = false
  
+ 	
 	method repararCasa(sujetoParticipe){ // que la casa hable por si misma
 		self.salud(self.salud() + (sujetoParticipe.madera() * 2))
 		game.say(self, "salud de casa + " + sujetoParticipe.madera())
 		sujetoParticipe.madera(0)
 	}
 	
+	method darMensaje() = "si la casa cae pierdes el juego"
+	method position(){
+		return  game.at(3, 4)
+	}
 	
-	method image() = "casa.png"
+     method image() = "casa.png"
 
 	method esInteractuado(sujetoParticipe) { // rever
 		if (sujetoParticipe.madera() > 0) {
@@ -119,7 +130,8 @@ class Casa inherits Visual{
 	}
 
 	method estaRota() {
-		return (salud < 0 )
+		//return (salud < 0 )
+		return false
 	}
 
  
@@ -140,7 +152,9 @@ class Casa inherits Visual{
 
 	method recibeDanio(danio) { // logica repetida, probar clase
 		salud = salud - danio
-		new Sonido().roturaCasa().play()
+	//	new Sonido().roturaCasa().play()
+		const casaGolpeada = game.sound("roturaCasa.mp3")
+		casaGolpeada.play()
 		game.say(self, "ouch, me queda " + salud + " vida")
 		if (salud < 0) {
 	//		nivel.escenarioDerrota("la casa ha sido destruida")
@@ -148,48 +162,14 @@ class Casa inherits Visual{
 		}
 	}
 
-	method cobrarVida() {
-	}
+	 
 
 }
-	
-class Sonido { // los sonidos pueden ejecutarse una sola vez, 
-//entonces instancio?
-
-//No hace falta crear objetos de esta clase. directamente usar los objetos wollok de sonido 
-// const agonia = game.sound("tomasAgonia.mp3")
-// ...
-// agonia.play()
-
-	var property agonia = game.sound("tomasAgonia.mp3")
-	var property meDueleTodo = game.sound("tomasMeDueleTodo.mp3")
-	var property golpeMadera = game.sound("golpeMadera.mp3")
-
-	var property sonidoMenu = game.sound("menuSeleccion.ogg")
-
-	var property roturaCasa = game.sound("roturaCasa.mp3")
-	var property paso1 = game.sound("caminata1.mp3")
-	var property paso2 = game.sound("caminata2.mp3")
-
-
-
-	var property gemidoZombie = game.sound("gemidoZombie.mp3")
-
-
-}
-
-object sonido{
-	var property agonia = game.sound("tomasAgonia.mp3")
-}
- object guiaJugadorDos inherits Visual{
- 	var property position = null
- 	method image() = "j2.png"
- 	method cobrarVida(){}
- 	method esAtravesable() = true
- }
+	 
+ 
 class Zombie inherits Visual {
 
-	var property position = game.at(20, 20) // game.at(1, 2.randomUpTo(9))
+	 var property position = game.at(20, 20) // game.at(1, 2.randomUpTo(9))
 	//var property vida = 50
 	var danio = 5
 	var property nombre = "zombie"
@@ -199,6 +179,9 @@ class Zombie inherits Visual {
 	var property hogar
 	var property horarioZombie = null
 	var vida = 50
+ 
+	method darMensaje() = "no dejes que los zombies se acerquen a la casa"
+	
 	
 	method vida(){
 		return vida  
@@ -213,7 +196,9 @@ class Zombie inherits Visual {
 		self.vida(self.vida() - heroe.danio())
 		if (self.vida() <= 0) {
 			estadisticasZombie.incrementarContador()
-			new Sonido().agonia().play()
+		//	new Sonido().agonia().play()
+			const agonia = game.sound("tomasAgonia.mp3")
+			agonia.play()
 		//	sonido.agonia().play()
 				// game.removeVisual(self)
 			self.moverFueraDelMapa()
@@ -279,9 +264,7 @@ class Zombie inherits Visual {
 		danio = danio + 10
 	}
 
-	method cobrarVida() { // es necesario con logica dia?
-	//	self.comenzarMovimiento(hogar)
-	}
+	
 
 	// var nombre
 	method esInteractuado(sujetoParticipe) {
@@ -290,8 +273,7 @@ class Zombie inherits Visual {
 		
 	}
 
-	method esAtravesable() = true
- 
+	 
 
 	method puedeMoverseA(nuevaPos) { // zombie huye solo a tiles vacios
 		return ( not tablero.fueraDelLimite(nuevaPos) and game.getObjectsIn(nuevaPos).isEmpty()) // get objectsIn devuelve lista. 
@@ -314,7 +296,9 @@ class Zombie inherits Visual {
 	method comenzarMovimiento(casa) {
 		game.onTick(700.randomUpTo(2009), "zombie se mueve", { => try {
 			if (self.estaAlBordeDeLaCasa()) { // si la casa esta a su alcance ataca
-				new Sonido().golpeMadera().play()
+			//	new Sonido().golpeMadera().play()
+				const golpe = game.sound("golpeMadera.mp3")
+				golpe.play()
 				casa.recibeDanio(danio)
 			} else { // si no, se mueve
 				self.darUnPaso()
@@ -334,15 +318,18 @@ class Zombie inherits Visual {
 
 class Arbol inherits Visual {
 
-	var property position = tablero.posRandom()
-	var property esAtravesable = true
+	var property position = tablero.posRandom() 
 	var property calorias = 0
 	var estaEnPie = true
 	var property madera = 40
 	var property nombre = "arbol"
 	var property tieneComportamiento = true
-
-	method image() {
+ 
+ 
+	method darMensaje() = "la madera pueda utilizarse para reparar  la casa"
+	
+	
+     method image() {
 		if (not estaEnPie) {
 			return "tronco.png"
 		}
@@ -368,8 +355,7 @@ class Arbol inherits Visual {
 		estaEnPie = true
 	}
 	
-	method cobrarVida() {
-	}
+	
 
 }
 
@@ -384,15 +370,19 @@ object visualYAtributos {
 
 class BayaMediana inherits Visual {
 
-	var property esAtravesable = true
+ 
 	var property calorias = 100
 	var property position = tablero.posRandom()
 	var property nombre = "BayaMediana"
 	var property tieneComportamiento = true
+ 
 	method image() = "BayaMediana.png"
-
+	
+	method darMensaje() = "Bayas aparecen cada cierto tiempo"
+	  
 	method esInteractuado(sujetoParticipe) { // Baya vuelven a aparecer cada cierto tiempo
 	//	sujetoParticipe.sumarEnergia(calorias,self)
+	 
 		sujetoParticipe.sumarEnergia(calorias)
 		sujetoParticipe.accionar()
 		self.position(game.at(25, 25))
@@ -412,7 +402,7 @@ class BayaMediana inherits Visual {
  	 	 self.position(posicionNueva)
  	 
  	}
-	method cobrarVida() {
+	override method cobrarVida() {
 		calorias = 100 //* multiplicador.numero()
 	}
 
@@ -420,29 +410,31 @@ class BayaMediana inherits Visual {
 
 
 class PartePiedra inherits Visual{ // tiles invisibles que ocupan el espacio del game.say, para que no sea spawneado por un arbol.
-	var property position
-	var property esAtravesable = true
+ 	 var property position
+ 
 	//var property casa 
+	
+	 
 	method esInteractuado(sujetoParticipe) { //  
 	 	//no hace nada
 	}
-	
-	method image() {
+	 
+	  method image() {
 		return "tileInvisible.png"
 	}
 	
-	method cobrarVida() {
-	}
+	
 }
 
 
 class Roca inherits Visual {
-
+	
 	var property position = game.at(2, 8)
-	var property esAtravesable = false
 	var property c = 0
 	var property diccio = new Dictionary() // const y objeto mismo nombre rompen todo
 	var property tieneComportamiento = false
+	var listaProhibida = []
+	 override  method esAtravesable() = false
 	
 	method construirRoca(){
 		var position1 =  self.position().up(1).right(1) // uno arriba y a la derecha
@@ -458,22 +450,22 @@ class Roca inherits Visual {
 	}
 	
 	
-	// const presentacion = diccio.put(presentacion,"interactua con sujetos presionando la c")
+	//const presentacion = diccio.put(presentacion,"interactua con sujetos presionando la c")
+	/*  
 	method llenarDiccio() {
-		
 		diccio.put("arbol", "la madera pueda utilizarse para reparar  la casa") // probar
 		diccio.put("BayaMediana", "Baya aparecen cada cierto tiempo")
 		diccio.put("casa", "si la casa cae pierdes el juego")
 		diccio.put("zombie", "no dejes que los zombies se acerquen a la casa")
 		diccio.put("personajePrincipal", "pierdes el juego al quedarte sin energia")
 	}
-
+	*/
 	method image() = "piedra80.png"
 
 	method mensajeDeDespedida() { // expandir con razon de derrota
 		return "te has quedado sin energia presiona una tecla para volver a comenzar"
 	}
-
+	/*  
 	method darConsejo(sobreQuien) { // consejo se elegi arb 
 		try { // que no lo de al mismo tiempo que ocurre el mensaje de la accion
 			var consejo = diccio.get(sobreQuien.nombre())
@@ -486,10 +478,26 @@ class Roca inherits Visual {
 		}
 	}
 	// Esta parte, mas facil con polimorfismo, sin diccionario. 
-	
+	 */
+	method guardarMensaje(m){
+		listaProhibida.add(m)
+	}
 	 
-	method cobrarVida() {
-		self.llenarDiccio()
+	method darConsejo(sobreQuien){ // no se repitan los mensajes, 
+			var mensaje = sobreQuien.darMensaje()
+			if (not listaProhibida.contains(mensaje)){
+				self.guardarMensaje(mensaje)
+				game.schedule(10000, game.say(self, mensaje))
+		 
+			}}
+			
+	
+			 
+			
+	
+	
+	override method cobrarVida() {
+	//	self.llenarDiccio()
 		game.say(self, "preciona C para interactuar con objetos")
 	}
 
@@ -499,7 +507,7 @@ class Roca inherits Visual {
 class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una subclase comun a algunos Visuales
 
 	var property energia = 500
-	var property position = game.at(1, 3)
+     var property position = game.at(1, 3)
 	var property madera = 0
 	var property contadorEscondidoDePasos = 0
 	var property danio = 45
@@ -507,17 +515,21 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 	var property estaEnPie = false
 	var property tieneComportamiento = false
 	var property rocaConsejera = null
-	var property esAtravesable = true
- 
- 
+  	var property image = "shovelMain.png"
+  
 	var property estaAnimando = false
-	
-	var property image = "shovelMain.png"
+	//var property image = "shovelMain.png"
 	var property accion1 = "accion1.png"  // se utiliza redefinicion para nuevos personajes
 	var property accion2 = "accion2.png"
 	var property imagenPrincipal = "shovelMain.png"
 	var property imagenPasoDado = "shovelMain2.png"
+ 
 	 
+ 	method darMensaje(){
+ 		return "pierdes el juego al quedarte sin energia"
+ 	}
+ 	 
+ 	
 	method danio(){
 		return danio * multiplicador.numero()
 	}
@@ -528,6 +540,7 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
 			itemFound.esInteractuado(self)
 			self.cansar(10)
+			
 		  rocaConsejera.darConsejo(itemFound)
 		// game.say(self,"interactuo con " + itemFound.toString()) // testing
 		} catch e : wollok.lang.Exception { // Illegal operation 'uniqueElement' on collection with 2 elements
@@ -596,7 +609,7 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 	
 	
 	method cansar(nro) {
-		energia = energia - nro
+	//	energia = energia - nro
 	}
 	
 	method alarmaDeEnergia(){
@@ -605,7 +618,6 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 		}
 	}
 	method efectoDeCaminar(){ 
-		self.cansar(5) 
 		self.aumentarContadorPasos()
 		self.alarmaDeEnergia()
 	  	estaEnPie = not estaEnPie
@@ -618,18 +630,19 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 	
 	method ruido(){
 		if (contadorEscondidoDePasos % 2 == 0){ 
-	 		return new Sonido().paso1() 
+	 		//return new Sonido().paso1() 
+	 		const paso1 = game.sound("caminata1.mp3")
+	  		 return paso1
 	 	}else{
-	 	    return  new Sonido().paso2() 
+	 	 //   return  new Sonido().paso2() 
+	 	     const paso2 = game.sound("caminata2.mp3")
+	 	     return paso2
 	 	}
 	}
 	
 	 
 	
-	method cobrarVida(){ // ya no es necesario.  
-	//
-	}
- 
+	
 
 	
 	
@@ -644,20 +657,21 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 
 class Nube inherits Visual {
 
-	var property position = game.at(1, 9)
+	  var property position = game.at(1, 9)
 	var property estadoNormal = true
-	var property esAtravesable = true
+ 
 	var property cDias = 0 // medida de tiempo, cuando la nube vuelve pasa de dia a noche
 	var property tieneComportamiento = true
 	var property loc = null
 	method esInteractuado(sujeto) {
 		game.say(self, "una pista o consejo") // o cambiar el clima, se ponga a llover
 	}
-
-	method image() {
+	 
+ 	
+	  method image() {
 		if (estadoNormal) return "nube80.png"
 		return "nube5.png"
-	}
+	}  
 
 	method moverDerecha() {
 		if ((self.position().x() > game.width()) && (self.position().y() < game.height())) { // si la siguiente celda en x no es 0
@@ -695,7 +709,7 @@ class Nube inherits Visual {
 		 */
 	}
 	
-	method cobrarVida() {
+	override method cobrarVida() {
 		game.onTick(800, "nubesSeMueven", {=> self.moverDerecha()})
 	}
 

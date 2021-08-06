@@ -16,7 +16,7 @@ class FabricaSujetos{
 	 
 	method iniciar(){
 		nArboles.times{ l => game.addVisual(new Arbol())}
-		nZombies.times{ l => game.addVisual(new Zombie(hogar = nivel.casaActual(), heroe = nivel.personajePrincipal()))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
+		nZombies.times{ l => game.addVisual(new Zombie(hogar = nivel.casaActual(), heroe = nivel.p1()))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 		self.agregarBaya() // Baya se agregan a una lista para luego nube tomarlas en su paso
 	}
 	

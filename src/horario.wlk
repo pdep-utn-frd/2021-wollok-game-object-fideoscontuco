@@ -7,12 +7,13 @@ import seleccionDificultad.*
 class Horario inherits Visual {
 
 	var property tiempoDelDia = 30000
-	var property position = game.origin()
+	//var property position = game.origin()
 	var property estado = dia // polimorfismo? estado.ejecutar()
-
-	method image() {
+	
+	  method position() = game.origin()
+	  method image() {
 		/*  
-		if (estado == "dia") {
+		if (estado == "dia") {  // si hay varias partes del dia seria if grande
 			return "escenaDiaGrande.png"
 		}
 		return "escenaNocheGrande.png"
@@ -25,11 +26,11 @@ class Horario inherits Visual {
 	}
   
 	method esDeDia() {
-		return (estado.equals(dia)) // ==
+		return (estado == dia) // ==
 	}
 	 
 	//method comportamiento       estado.cambiarHorario()
-	method cobrarVida() {
+	override method cobrarVida() {
 		game.onTick(tiempoDelDia, "dia cambia", {=>
 			/*  
 			if (estado == "dia") { // probar ocn objeto en vez de string
@@ -51,9 +52,7 @@ class Horario inherits Visual {
 		estado = estado.escenarioSiguiente()
 		//Mas claro si este metodo se encarga
 	}
-	method esAtravesable() {
-		return true
-	}
+
 
 }
 class Escenario {
@@ -65,10 +64,10 @@ class Escenario {
 }
 
 
-object dia inherits Escenario{
-	method escenarioSiguiente() = noche
-	override method comportamiento(v, phorario){
-		v.comportamientoDia(phorario) 
+object dia inherits Escenario{ 
+	method escenarioSiguiente() = noche //ahhhhhhh
+	override method comportamiento(v, phorario){ // v cada visual
+		v.comportamientoDia(phorario)  // 
 	}
 	
 	// Variante para no repetir logica entre escenarios
@@ -78,11 +77,24 @@ object dia inherits Escenario{
 	
 }
 
-object noche{
+object noche inherits Escenario{
 	method escenarioSiguiente() = dia
-	method ejecutar(phorario){
-		game.allVisuals().forEach{ v => v.comportamientoNoche(phorario)}
+	//method ejecutar(phorario){
+	//	game.allVisuals().forEach{ v => v.comportamientoNoche(phorario)}
+	//}
+	
+	override method comportamiento(v, phorario){
+		v.comportamientoNoche(phorario)
 	}
 	
 	method getImagen() = "escenaNocheGrande.png"
 }
+/*  
+object tarde inherits Escenario{
+	method escenarioSiguiente() = noche
+	method ejecutar(phorario){
+		//no hace nada
+	}
+	
+	method getImagen() = "escenaTardeGrande.png"
+} */

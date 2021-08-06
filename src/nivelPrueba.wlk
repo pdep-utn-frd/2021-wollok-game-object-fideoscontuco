@@ -33,25 +33,19 @@ class Ventanas {
 // configurar pantalla podria ir aca y utilizarse super en otras.
 }
 
-class Dia inherits Visual{
-	var property position
-	var property image	
-
-
+class Dia inherits VisualUI{
 	method cambiarImagen(nroDia) {
 		image = 'd' + nroDia.toString() + '.png'
 	}
-	method cobrarVida(){}
-	
-	method esAtravesable() = true
-}
 
+}
+/*  
 object diasCartelera inherits Visual{
 	var property position = null
 	method image() = "diaCartelera3.png"
-	method cobrarVida(){}
-}
 
+}
+*/
 
 
 
@@ -69,7 +63,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	var property casaActual = new Casa(estaRota = false,salud = 500)
 	const roca = new Roca()
 	const nube = new Nube() // hacerlos por fuera de nivel?
-	var property personajePrincipal = new PersonajePrincipal(rocaConsejera = roca)
+	var property p1 = new PersonajePrincipal( rocaConsejera = roca)
 	var property reiniciado = false
 	
 	var property contadorDias = 1
@@ -84,35 +78,37 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		game.clear()
 		self.configurarPantalla()
 		escenarioDerrota.nivel(self)	
-		game.addVisual(reloj) // que no sea al mismo tiempo.
+	 	game.addVisual(reloj) // que no sea al mismo tiempo.
 		mapa.crearParedesInvisibles()
-		casaActual.dibujar()
+	 	casaActual.dibujar()
 		tablero.casa(casaActual)
 		//visualYAtributos.addVisual(personajePrincipal)
-		game.addVisualCharacter(personajePrincipal)
+	  	game.addVisualCharacter(p1)
 		  // hace cambios segun respectivo modo (1jugador, 2 jugadores)
 			// game.addVisualIn(dialogoCuidadoZombies, game.at(3,10) )
-		game.addVisual(nube)
-		game.addVisual(roca)
-		roca.construirRoca()
+ 		game.addVisual(nube)
+	 	game.addVisual(roca)
+	 	roca.construirRoca()
 		
-		game.addVisual(numeroDia)
-		game.addVisualIn(diasCartelera,game.at(11,14))
-		
+	 	game.addVisual(numeroDia)
+	// 	game.addVisualIn(diasCartelera,game.at(11,14))
+		game.addVisual(new VisualUI(image ="diaCartelera3.png", position = game.at(11,14)))
 		 
 			// 4.randomUpTo(8).times{ l => game.addVisual(new Zombie(hogar = casaActual, heroe = personajePrincipal))} // probar agregar zombie a lista y clear, o zombie preguntar si esta muerto y borrar de lista
 	 	game.addVisual(new BayaMediana(position = game.at(8,1))) // baya test nube prueba
-		game.addVisual(new Arbol(position = game.at(8,1))) // test 2 visuales mismo tile 
-		self.spawnear()
+	 	game.addVisual(new Arbol(position = game.at(8,1))) // test 2 visuales mismo tile 
+	    self.spawnear()
 		
-		game.addVisualIn(flechas, game.at(0, 0))
+	    game.addVisual(flechas)
+		//game.addVisual(new VisualUI(image = "flechas.png", position = game.at(0,0))) 
+		
 		modoJugadores.eleccion().iniciar()
-		game.schedule(reloj.tiempoDelDia() / 2, {=> game.removeVisual(flechas)})
+	 	game.schedule(reloj.tiempoDelDia() / 2, {=> game.removeVisual(flechas)})
 			// game.addVisualIn(flechas,game.at(10,9)
-		mapa.crearParedesInvisibles()
+	 	mapa.crearParedesInvisibles()
 		game.allVisuals().forEach{ v => v.cobrarVida()} // no esta bueno dos propositos en mismo mensaje
 		self.eventoDias()
-		self.configurarTeclado(personajePrincipal)
+		 self.configurarTeclado(p1)
 		self.teclasPrincipales()
 		
 	}
@@ -142,7 +138,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		game.height(alto)
 		game.width(ancho)
 	}
-
+	
 	method configurarTeclado(p) {
 	//	keyboard.c().onPressDo{ p.interactuarPosicion()}
 		keyboard.enter().onPressDo{ p.interactuarPosicion()}
@@ -181,6 +177,9 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 		
 	}
 	
+	
+	
+	
 
 	method teclasPrincipales() {
 		keyboard.l().onPressDo({ // try{
@@ -192,7 +191,8 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 			tablero.lista().clear()
 			game.clear()
 			reloj.estado(dia) // probar instanciar
-			game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
+		//	game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
+			game.addVisual(new VisualUI(image = "cargandoChico.png", position = game.at(8, 13) ))
 				// game.schedule(1, {=> self.inicio()}) // utilizo schedule para que wollok ejecute self.inicio() ejecute el bloque solo cuando termino de dibujar, sino se tildaria con la pantalla anterior dibujada.
 				// onPressDo espera a que finalice  inicio para continuar por estar dentro de bloque.  game.schedule tiene su propio bloque
 			game.schedule(1, {=> seleccionDificultad.inicio()})
@@ -324,16 +324,15 @@ object escenarioDerrota inherits Ventanas { // metodo?
 
 }
 */
+
+/* 
 class Cargando inherits Visual { // pasar a clase
 
-	method image() = "cargandoChico.png"
+	override method image() = "cargandoChico.png"
 
-	method position() = game.at(8, 13)
+	override method position() = game.at(8, 13)
 
-	method cobrarVida() {
-	}
+	 
 
-	method esAtravesable() = true
-
-}
+} */
  

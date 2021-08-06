@@ -57,7 +57,8 @@ object escenarioDerrota inherits Ventanas { // metodo?
 		game.width(ancho)
 		game.title("fideosConTuco-casero")
 		game.height(alto)
-		game.addVisualIn(pantallaNegra, game.origin())
+	//	game.addVisualIn(pantallaNegra, game.origin())
+		game.addVisual(new VisualUI(image = "pantallaNegra.png", position = game.origin()))
 	}
 	
 	 
@@ -66,7 +67,8 @@ object escenarioDerrota inherits Ventanas { // metodo?
 		var numero = nivel.contadorDias()
 		const diasDerrota  = new Dia(
 		image='d' + numero.toString()  + '.png', position = game.at(7,0))
-		game.addVisualIn(cartelera,game.origin())
+	//	game.addVisualIn(cartelera,game.origin())
+		game.addVisual(new VisualUI(image= "cartelera4.png", position = game.origin()))
 		game.addVisual(diasDerrota)
 		
 	}
@@ -77,7 +79,8 @@ object escenarioDerrota inherits Ventanas { // metodo?
 		const zombiesDerrota = new Dia(
 		image='d' + numero.toString()  + '.png', position = game.at(8,2))
 		estadisticasZombie.reiniciar()
-		game.addVisualIn(carteleraZombie, game.at(0,2))
+		//game.addVisualIn(carteleraZombie, game.at(0,2))
+		game.addVisual(new VisualUI(image= "zombieCartelera5.png", position = game.at(0,2)))
 		game.addVisual(zombiesDerrota)
 	}
 	
@@ -86,14 +89,16 @@ object escenarioDerrota inherits Ventanas { // metodo?
 		const bayasRobadas = new Dia(
 		image='d' + numero.toString()  + '.png', position = game.at(12,4))
 		estadisticasBayas.reiniciar()
-		game.addVisualIn(carteleraBayas, game.at(0,4))
+	//	game.addVisualIn(carteleraBayas, game.at(0,4))
+		game.addVisual(new VisualUI(image= "bayasCartelera1.png", position = game.at(0,4)))
 		game.addVisual(bayasRobadas)
+	
 	}
 	 
 
 }
-
-object carteleraBayas{
+/*  
+object carteleraBayas{ // no tiene comportamiento especifico, puede instanciarse desde VisualUI
 	var property position
 	method image() = "bayasCartelera1.png"
 }
@@ -108,17 +113,14 @@ object cartelera{
 	var property position
 	method image() = "cartelera4.png"
 }
-
+*/
 class Cargando inherits Visual { // pasar a clase
 
-	method image() = "cargandoChico.png"
+	 method image() = "cargandoChico.png"
 
 	method position() = game.at(8, 13)
 
-	method cobrarVida() {
-	}
-
-	method esAtravesable() = true
+  
 
 }
 
