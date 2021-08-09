@@ -102,8 +102,8 @@ object unJugador {
 	method iniciar(){
 		game.addVisual(personaje1)
 		//game.addVisualIn(guiaJugadorDos, game.at(7,0))
-		game.addVisual(guiaJugadorDos)
-		game.schedule(reloj.tiempoDelDia() / 2, {=> game.removeVisual(guiaJugadorDos)})
+		//game.addVisual(guiaJugadorDos)
+	//	game.schedule(reloj.tiempoDelDia() / 2, {=> game.removeVisual(guiaJugadorDos)})
 		personaje1.configurarTeclasExtras()
 	}
 	method agregarVisuales() { // el visual de personaje ya fue añadido por clase Nivel
