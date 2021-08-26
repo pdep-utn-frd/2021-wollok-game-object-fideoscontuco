@@ -60,20 +60,21 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	// var property ancho = 15
 	// var property alto = 15
 	// var property multiplicador   // incrementa o reduce la capacidad de actores
-	var property casaActual = new Casa(estaRota = false,salud = 500)
+	var property casaActual = new Casa(estaRota = false,salud = 200)
 	const roca = new Roca()
 	const nube = new Nube() // hacerlos por fuera de nivel?
 	//var property p1 = new PersonajePrincipal( rocaConsejera = roca)
-	var property reiniciado = false
-	
-	var property contadorDias = 1
+	 
+	var property contador = 1 // polimorfico
 	
 	var property numeroDia = new Dia(
 		position = game.at(13, 14),
 		image='d1.png' 
 	)
  	
-	
+	method reiniciar(){
+		contador = 0
+	}
 	method inicio() {
 		
 		game.clear()
@@ -129,8 +130,8 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	
 	method eventoDias(){ 
 	game.onTick(reloj.tiempoDelDia(), 'add score', {
-			contadorDias = contadorDias + 1
-			numeroDia.cambiarImagen(contadorDias)			
+			estadisticasDias.incrementarContador()
+			numeroDia.cambiarImagen(contador )			
 		})
 		
 		}
@@ -296,45 +297,5 @@ object nivelNormal inherits Nivel {
 	}
 
 }
-/*  
-<<<<<<< HEAD
- 
-=======
-object escenarioDerrota inherits Ventanas { // metodo?
-	const roca1 = new Roca()
 
-	method inicio(razon) {
-		game.clear()
-			// game.addVisualIn("derrota.png", game.origin())
-		game.width(ancho)
-		game.title("fideosConTuco-casero")
-		game.height(alto)
-		game.addVisualIn(roca1, game.center())
-		game.say(roca1, "has perdido: " + razon) // razon de derrota.
-		game.schedule(6000, {=>
-			game.say(roca1, "presiona cualquier tecla para volver a comenzar")
-			keyboard.any().onPressDo{ // game.removeTickEvent("dia cambia")
-				listaBaya.lista().clear() // candidato clase
-				game.clear() // como reinicio
-				reloj.estado(dia)
-				tablero.lista().clear()
-				game.addVisual(new Cargando()) // es necesario?
-				game.schedule(500, {=> seleccionDificultad.inicio()})
-			}
-		})
-	}
-
-}
-*/
-
-/* 
-class Cargando inherits Visual { // pasar a clase
-
-	override method image() = "cargandoChico.png"
-
-	override method position() = game.at(8, 13)
-
-	 
-
-} */
  
