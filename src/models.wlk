@@ -24,7 +24,10 @@ class VisualUI inherits Visual { // blueprint de visuales sin logica particular.
 
 	var property image = null
 	var property position = null
-
+	
+	method esInteractuado(p){
+		//no hace nada
+	}
 // method tieneComportamiento() = false
 // No tiene sentido esta clase sin comportamiento ni atributos. 
 // Podrian agregarle position e image. Incluso el esAtravesable() 

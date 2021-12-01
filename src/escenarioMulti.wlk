@@ -149,7 +149,7 @@ object personaje1 inherits PersonajePrincipal {
 object personaje2 inherits PersonajePrincipal(position = game.at(7, 3), image = "personaje21.png", imagenPrincipal = "personaje21.png", imagenPasoDado = "personaje2.png", accion1 = "accion3.png", accion2 = "accion4.png") {
 
 	method configurarTeclasExtras() {
-		keyboard.c().onPressDo{ self.interactuarPosicion()}
+		keyboard.c().onPressDo({ self.interactuarPosicion()})
 		keyboard.w().onPressDo({ self.moverse(self.position().up(1))})
 		keyboard.s().onPressDo({ self.moverse(self.position().down(1))})
 		keyboard.a().onPressDo({ self.moverse(self.position().left(1))})
