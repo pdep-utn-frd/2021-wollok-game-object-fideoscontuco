@@ -55,8 +55,8 @@ class PantallaSeleccion inherits Ventanas{ // utilizado para evitar logica repet
 object seleccionDificultad inherits PantallaSeleccion(
 	seleccion = botonFacil,
 	listaDeBotones = [botonFacil, // segun el indice que devuelve mensaje sigueinte o anterior se elige el boton
-					   botonNormal,
-					   botonDificil
+					  botonNormal,
+					  botonDificil
 						 
 	]){
 	 
@@ -76,7 +76,6 @@ object seleccionDificultad inherits PantallaSeleccion(
 	}
 	 
  
-
 }
 
 
@@ -114,13 +113,8 @@ class Boton inherits Visual{
 	}
 	
 	 
-	method image(){
-		if (not estaRemarcado) {
-			return imagen1
-		} else {
-			return imagen2
-		}
-	}
+	method image() = if (not estaRemarcado) imagen1 else imagen2
+		 
 }
 
 

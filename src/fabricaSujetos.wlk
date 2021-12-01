@@ -21,7 +21,7 @@ class FabricaSujetos{
 	}
 	
 	method agregarBaya(){
-		var lista = listaBaya.lista()
+		const lista = listaBaya.lista()
 		nBaya.times{ l => lista.add(new BayaMediana())} // guardo en una lista para que nube pregunte si se topa con una de las Baya
 		lista.forEach{ l => game.addVisual(l)}
 	//nBaya.times{ l => game.addVisual(new BayaMediana())}

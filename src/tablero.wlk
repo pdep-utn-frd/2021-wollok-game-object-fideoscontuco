@@ -24,7 +24,7 @@ object tablero { // candidato a clase?
 		return self.posicionesProximas(sujeto).filter{ p => sujeto.puedeMoverseA(p) } // check si esta fuera de limite o 
 	}
 
-	// logica repetida 
+	 
 	method fueraDelLimite(nuevaPos) {
 		const x = nuevaPos.x()
 		const y = nuevaPos.y()
@@ -74,7 +74,6 @@ object tablero { // candidato a clase?
 	
 	 
 	method esRepetido(pos){
-		
 		return lista.contains(pos)
 	}
 	method posRandom() { // arbol utiliza para saber donde aparecer, un tile ocupado por cualquier objeto descalifica
@@ -84,16 +83,17 @@ object tablero { // candidato a clase?
 
 	method posicionMasCercanaACasa(sujeto) { // busco posicion menor dentro de las disponibles
 		//const listaEspaciosLibres = self.espacioLibreAlrededor(sujeto)
-		/*  
+		  /*  
 		try {
 			return self.espacioLibreAlrededor(sujeto).min{ pos => pos.distance(casa.celdasOcupadas().min{ p => p.distance(pos)}) }
 		} catch e : Exception { // no hay espacio libre
 			//e.printStackTrace() 
+			game.say(self,"apartense del camino!")
 			return sujeto.position()
 		} 
-		*/
-		return self.espacioLibreAlrededor(sujeto).min{ pos => pos.distance(casa.celdasOcupadas().min{ p => p.distance(pos)}) }
-	//	return self.espacioLibreAlrededor(sujeto).min{ pos => pos.distance(self.parteCasaMasCercana(pos)) } // busca el espacio alrededor con la menor distancia entre su posicion y la parte mas cercana
+		*/ 
+	//	return self.espacioLibreAlrededor(sujeto).min{ pos => pos.distance(casa.celdasOcupadas().min{ p => p.distance(pos)}) }
+	 	return self.espacioLibreAlrededor(sujeto).min{ pos => pos.distance(self.parteCasaMasCercana(pos)) } // busca el espacio alrededor con la menor distancia entre su posicion y la parte mas cercana
 		
 		//crear zombie y ver si 
 	}

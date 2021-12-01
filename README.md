@@ -1,4 +1,22 @@
 # El caballero de la Pala
+
+## Integrantes
+ - Anse Ivan Santiago
+ - Lattanzio Gonzalo
+ - Londra Juan Ignacio
+ - Rodriguez Tomas Agustin
+ - Carrizo Facundo Jose
+    
+    
+##  Docente / Curso / Institucion
+ Lucas Spigariol - asistido por Adrián Bielsa
+ Paradigmas de Programación
+ UTN FRD
+ 
+ fecha : 2021
+ Versión de Wollok:  Version 2.0.2
+    
+    
 ## Descripcion
  Es un juego basado en el famoso juego plataformero Shovel Knight. Shovel Knight es un juego de plataformas 2D de 2014 desarrollado y publicado por la compañía de videojuegos independiente Yacht Club Games.
  
