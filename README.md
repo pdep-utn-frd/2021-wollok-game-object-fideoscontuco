@@ -10,10 +10,11 @@
     
 ##  Docente / Curso / Institucion
  Lucas Spigariol - asistido por Adrián Bielsa
+ 
  Paradigmas de Programación
+ 
  UTN FRD
  
- fecha : 2021
  Versión de Wollok:  Version 2.0.2
     
     
