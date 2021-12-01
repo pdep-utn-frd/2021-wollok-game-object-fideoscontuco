@@ -28,6 +28,8 @@ const estadisticasBayas = new Estadistica(contador = 0, image = "bayasCartelera1
 
 const estadisticasDias = new Estadistica(contador = 0, image = "cartelera4.png", position = game.origin(), posicionNro = game.at(7, 0))
 
+
+
 object escenarioDerrota inherits Ventanas { // metodo?
 
 	const roca1 = new Roca()

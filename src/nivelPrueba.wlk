@@ -31,7 +31,6 @@ class Ventanas {
 	var property ancho = anchoVentanas
 	var property alto = anchoVentanas
 
-// configurar pantalla podria ir aca y utilizarse super en otras.
 }
 
 class Dia inherits VisualUI {
@@ -51,11 +50,12 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	var property contadorDias = 1 // polimorfico
 	var property numeroDia = new Dia(position = game.at(13, 14), image = 'd1.png')
 
-	method reiniciar() {
+	method reiniciarDias() {
 		self.contadorDias(1)
+		numeroDia.cambiarImagen(self.contadorDias())
 	}
 
-	method inicio() {
+	method inicio() {	 
 		self.configurarPantalla()
 		escenarioDerrota.nivel(self)
 		self.agregarVisuales()
@@ -80,6 +80,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	}
 
 	method agregarVisuales() {
+		
 		game.addVisual(reloj) // que no sea al mismo tiempo. dia/noche
 		game.addVisual(nube)
 		game.addVisual(roca)
@@ -105,29 +106,24 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 	}
 
 	method teclasPrincipales() {
-		keyboard.l().onPressDo({ // try{
-			game.removeTickEvent("dia cambia")
-				// } catch e : Exception{
-				// no hace nada	
-				// }
+		keyboard.l().onPressDo({ 
 			listaBaya.lista().clear() // rever
-			tablero.lista().clear()
-			game.clear()
-			reloj.estado(dia) // probar instanciar
-				// game.addVisual(new Cargando()) // mas que nada para evitar esto de que se crean muchos elementos y de la nada el personaje no se puede mover con el tablero anterior ya dibujado( wollok esta creando el tablero)
+			tablero.lista().clear()		
+			reloj.estado(dia)  
 			game.addVisual(new VisualUI(image = "cargandoChico.png", position = game.at(8, 13)))
 				// game.schedule(1, {=> self.inicio()}) // utilizo schedule para que wollok ejecute self.inicio() ejecute el bloque solo cuando termino de dibujar, sino se tildaria con la pantalla anterior dibujada.
 				// onPressDo espera a que finalice  inicio para continuar por estar dentro de bloque.  game.schedule tiene su propio bloque
+			
 			game.schedule(1, {=> seleccionDificultad.inicio()})
+			
 		})
 		keyboard.x().onPressDo({ game.stop()})
 	}
 
 }
 
-//repite mucho factor = multiplicador, demasiados mensajes. ademas si aplica a todos tendria que repetir eso mil veces
-//
-object nivelFacil inherits Nivel {  
+
+class NivelFacil inherits Nivel {  
 	// es utilizado en el comportamiento de los sujetos que se mueven en el mapa para variar su dificultad
 
 	override method inicio() {
@@ -153,7 +149,7 @@ object nivelFacil inherits Nivel {
 
 }
 
-object nivelDificil inherits Nivel {
+class NivelDificil inherits Nivel {
 
 	// es utilizado en el comportamiento de los sujetos que se mueven en el mapa para variar su dificultad
 	override method inicio() {
@@ -163,13 +159,13 @@ object nivelDificil inherits Nivel {
 	}
 
 	override method spawnear() {
-		new FabricaSujetos(nivel = self, nZombies = 4.randomUpTo(6), nBaya = 2.randomUpTo(4), nArboles = 2.randomUpTo(4)).iniciar()
+		new FabricaSujetos(nivel = self, nZombies = 4.randomUpTo(7), nBaya = 2.randomUpTo(4), nArboles = 2.randomUpTo(4)).iniciar()
  
 	}
 
 }
 
-object nivelNormal inherits Nivel {
+class NivelNormal inherits Nivel {
 
 	override method inicio() {
 		multiplicador.numero(1) // podria tambien pasando parametro multiplacador a cada instancia, 

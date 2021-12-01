@@ -27,7 +27,8 @@ const botonUnJugador = new BotonJugador( // mas facil si es necesario hacer much
 imagen1 = "1JugadorB.png", imagen2 = "1JugadorRemarcadoB.png", estaRemarcado = true, siguiente = 1, // si fueran 3 decisiones, seria siguiente = 1, anterior = 2
 anterior = 1, seleccion = unJugador, position = game.at(4, 7))
 
-object seleccionJugadores inherits PantallaSeleccion(seleccion = botonUnJugador, listaDeBotones = [ botonUnJugador, botonDosJugadores ]) { // pantalla de seleccion jugadores, 
+
+object seleccionJugadores inherits PantallaSeleccion(seleccionActual = botonUnJugador, listaDeBotones = [ botonUnJugador, botonDosJugadores ]) { // pantalla de seleccion jugadores, 
 //podria compartir clase con  pantalla de dificultad
 
 	method inicio() {

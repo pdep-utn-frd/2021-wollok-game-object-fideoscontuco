@@ -556,7 +556,7 @@ class Nube inherits Visual {
 
 	method moverDerecha() {
 		if ((self.position().x() > game.width()) && (self.position().y() < game.height())) { // si la siguiente celda en x no es 0
-			self.position(game.at(1, 9)) // mueve al inicio 
+			self.position(game.at(2, 9)) // mueve al inicio 
 		} else self.position((self.position().right(1)))
 		self.position(self.position().down(1))
 		if (self.hayUnaBaya()) {
