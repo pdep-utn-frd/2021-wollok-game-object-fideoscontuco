@@ -303,6 +303,34 @@ object visualYAtributos {
 
 }
 
+
+class BayaAuto inherits BayaMediana { // baya que se regenera en la misma pos cada cierto tiempo y en la misma ubicacion, da vida y ademas aumenta el daño
+
+	var property posicionOriginal = null
+
+	override method moverFueraDelMapa() { // antes de sacar del mapa guarda pos original para volver a esta
+		self.posicionOriginal(self.position())
+		self.position(game.at(25, 25))
+	}
+
+	override method traerAlMapaTemporizado() {
+		const tiempo = 6000.randomUpTo(10000)
+		game.schedule(tiempo, { => self.position(self.posicionOriginal())})
+	}
+	
+	override method image() = "bayaBonus.png"
+	
+	override method esInteractuado(sujetoParticipe){
+		sujetoParticipe.danio(sujetoParticipe.danio() + 10)
+		sujetoParticipe.accionar()
+		game.say(sujetoParticipe, "danio: " + sujetoParticipe.danio())
+		self.moverFueraDelMapa()
+		self.traerAlMapaTemporizado()
+	}
+	 
+}
+
+
 class BayaMediana inherits Visual {
 
 	var property calorias = 100
@@ -319,16 +347,18 @@ class BayaMediana inherits Visual {
 		sujetoParticipe.sumarEnergia(calorias)
 		sujetoParticipe.accionar()
 		game.say(sujetoParticipe, "energia: " + sujetoParticipe.energia())
-		self.position(game.at(25, 25))
-			// var posicionNueva = tablero.posRandom()
-		const tiempo = 4000.randomUpTo(8000)
-		game.schedule(tiempo, { => self.reaparecer()})
+		self.moverFueraDelMapa()
+		self.traerAlMapaTemporizado()
  
 	}
-
-	method reaparecer() {
-		var posicionNueva = tablero.posRandom()
-		self.position(posicionNueva)
+	
+	method moverFueraDelMapa(){
+		self.position(game.at(25, 25))
+	}
+	method traerAlMapaTemporizado() {
+		const tiempo = 4000.randomUpTo(8000)
+		game.schedule(tiempo, { => self.position(tablero.posRandom())})
+		 
 	}
 
 	override method cobrarVida() {
@@ -424,7 +454,7 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 	method darMensaje() = "pierdes el juego al quedarte sin energia"
 
 	method danio() {
-		return danio * multiplicador.numero()
+		return danio // * multiplicador
 	}
 
 	method interactuarPosicion() {
@@ -567,7 +597,8 @@ class Nube inherits Visual {
 
 	method comerBaya() {
 		game.say(self, "ñam")
-		loc.reaparecer()
+		loc.moverFueraDelMapa()
+		loc.traerAlMapaTemporizado()
 	}
 
 	method hayUnaBaya() {

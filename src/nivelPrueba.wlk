@@ -107,9 +107,11 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 
 	method teclasPrincipales() {
 		keyboard.l().onPressDo({ 
-			listaBaya.lista().clear() // rever
+			listaBaya.lista().clear()  
 			tablero.lista().clear()		
-			reloj.estado(dia)  
+			reloj.estado(dia) 
+			game.clear() // necesario para que limpie el mapa
+			 
 			game.addVisual(new VisualUI(image = "cargandoChico.png", position = game.at(8, 13)))
 				// game.schedule(1, {=> self.inicio()}) // utilizo schedule para que wollok ejecute self.inicio() ejecute el bloque solo cuando termino de dibujar, sino se tildaria con la pantalla anterior dibujada.
 				// onPressDo espera a que finalice  inicio para continuar por estar dentro de bloque.  game.schedule tiene su propio bloque
@@ -133,7 +135,7 @@ class NivelFacil inherits Nivel {
 	}
 
 	override method spawnear() { // truncate?
-		new FabricaSujetos(nivel = self, nZombies = 1.randomUpTo(3), nBaya = 6.randomUpTo(18), nArboles = 8.randomUpTo(12)).iniciar()
+		new FabricaSujetos(nivel = self, nZombies = 1.randomUpTo(3), nBaya = 6.randomUpTo(18), nArboles = 8.randomUpTo(12), nBayasBonus = 2).iniciar()
   
 	/* 
 	 * 		6.randomUpTo(12).times{ l => game.addVisual(new Arbol())}
@@ -159,7 +161,7 @@ class NivelDificil inherits Nivel {
 	}
 
 	override method spawnear() {
-		new FabricaSujetos(nivel = self, nZombies = 4.randomUpTo(7), nBaya = 2.randomUpTo(4), nArboles = 2.randomUpTo(4)).iniciar()
+		new FabricaSujetos(nivel = self, nZombies = 4.randomUpTo(7), nBaya = 2.randomUpTo(4), nArboles = 2.randomUpTo(4), nBayasBonus = 1).iniciar()
  
 	}
 
@@ -174,7 +176,7 @@ class NivelNormal inherits Nivel {
 	}
 
 	override method spawnear() { //
-		new FabricaSujetos(nivel = self, nZombies = 2.randomUpTo(5), nBaya = 3.randomUpTo(6), nArboles = 4.randomUpTo(6)).iniciar()
+		new FabricaSujetos(nivel = self, nZombies = 2.randomUpTo(5), nBaya = 3.randomUpTo(6), nArboles = 4.randomUpTo(6), nBayasBonus = 3).iniciar()
  
 	}
 

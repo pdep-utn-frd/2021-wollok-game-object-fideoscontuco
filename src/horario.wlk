@@ -60,15 +60,18 @@ class Escenario {
 
 	method ejecutar(phorario) {
 		game.allVisuals().forEach{ v => self.comportamiento(v, phorario)}
+		self.sonidoTrigger() 
 	}
 
 	method comportamiento(visual, horario)
-
+	
+	method sonidoTrigger() 
+ 
 }
 
 object dia inherits Escenario {
 
-	method escenarioSiguiente() = noche // ahhhhhhh
+	method escenarioSiguiente() = noche 
 
 	override method comportamiento(v, phorario) { // v cada visual
 		v.comportamientoDia(phorario) //
@@ -79,7 +82,11 @@ object dia inherits Escenario {
 	method getImagen() {
 		return "escenaDiaGrande.png"
 	}
-
+	 
+	 
+	override method sonidoTrigger(){
+		 game.sound("galloTemprano.wav").play()
+	}
 }
 
 object noche inherits Escenario {
@@ -94,7 +101,13 @@ object noche inherits Escenario {
 	}
 
 	method getImagen() = "escenaNocheGrande.png"
-
+	
+	override method sonidoTrigger(){
+		const buho = game.sound("buho.mp3")
+		buho.play()
+		game.schedule(5000, {buho.stop()})
+	}
+	
 }
 
 /*  
