@@ -45,8 +45,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 
 	var property casaActual = new Casa(estaRota = false, salud = 200)
 	const roca = new Roca()
-	const nube = new Nube() // hacerlos por fuera de nivel?
-	// var property p1 = new PersonajePrincipal( rocaConsejera = roca)
+	const nube = new Nube() 
 	var property contadorDias = 1 // polimorfico
 	var property numeroDia = new Dia(position = game.at(13, 14), image = 'd1.png')
 
@@ -57,6 +56,7 @@ class Nivel inherits Ventanas { // 750 * 750  // plano de niveles
 
 	method inicio() {	 
 		self.configurarPantalla()
+		estadisticasDias.contador(1)
 		escenarioDerrota.nivel(self)
 		self.agregarVisuales()
 		mapa.crearParedesInvisibles()
@@ -153,10 +153,8 @@ class NivelFacil inherits Nivel {
 
 class NivelDificil inherits Nivel {
 
-	// es utilizado en el comportamiento de los sujetos que se mueven en el mapa para variar su dificultad
 	override method inicio() {
-		multiplicador.numero(0.5) // podria tambien pasando parametro multiplacador a cada instancia, 
-			// pero seria mas corto que cada objeto conozca mensaje multiplicador.numero() y actue diferente
+		multiplicador.numero(0.5)
 		super()
 	}
 
@@ -170,8 +168,7 @@ class NivelDificil inherits Nivel {
 class NivelNormal inherits Nivel {
 
 	override method inicio() {
-		multiplicador.numero(1) // podria tambien pasando parametro multiplacador a cada instancia, 
-			// pero seria mas corto que cada objeto conozca mensaje multiplicador.numero() y actue diferente
+		multiplicador.numero(1) 
 		super()
 	}
 

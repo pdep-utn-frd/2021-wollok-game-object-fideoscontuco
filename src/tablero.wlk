@@ -2,7 +2,7 @@ import wollok.game.*
 import models.*
 import seleccionDificultad.*
 
-//pantalla cargando.. eso estaria buenisimo!
+
 object tablero { // candidato a clase?
 
 	var property casa
@@ -49,7 +49,6 @@ object tablero { // candidato a clase?
 	method espacioLibreEnMapa2() { // < 2 segundo carga en test de 22 Baya
 		var posicion = game.at(1.randomUpTo(13), 1.randomUpTo(13))
 		if (game.getObjectsIn(posicion).isEmpty() && (not self.esRepetido(posicion))) { // verificar que no sea pos ya utilizada. 
-		// getter y setter? otra manera?
 			lista.add(posicion)
 			return posicion
 		} else {
@@ -88,7 +87,7 @@ object tablero { // candidato a clase?
 	}
 
 	method distanciaABarato(pos1, pos2) {
-		// distancia manhattan, sin sqrt es menos costoso, se utiliza para comparar conocer valor distancia no es relevante
+		// distancia manhattan, sin sqrt es menos costoso, se utiliza para comparar valor distancia no es relevante
 		var deltaX = pos1.x() - pos2.x()
 		var deltaY = pos1.y() - pos2.y()
 		return deltaX.abs() + deltaY.abs()

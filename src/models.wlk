@@ -152,11 +152,8 @@ class Zombie inherits Visual {
 		self.vida(self.vida() - heroe.danio())
 		if (self.vida() <= 0) {
 			estadisticasZombie.incrementarContador()
-				// new Sonido().agonia().play()
 			const agonia = game.sound("tomasAgonia.mp3")
 			agonia.play()
-				// sonido.agonia().play()
-				// game.removeVisual(self)
 			self.moverFueraDelMapa()
 			self.traerAlMapa() // traer al mapa no tiene en cuenta el horario. necesitaria que chequee de alguna manera si es de dia o no 
 		} else {
@@ -169,8 +166,6 @@ class Zombie inherits Visual {
 	}
 
 	override method comportamientoNoche(horario) { // spawn progresivo
-	// game.schedule(500.randomUpTo(4000), { self.traerAlMapa()})
-	// horarioZombie = horario
 		game.schedule(500.randomUpTo(6000), { self.traerAlMapa()})
 	}
 
@@ -203,7 +198,7 @@ class Zombie inherits Visual {
 	}
 
 	// //
-	method huye() { // que espacio hay libre disponible alrededor de el??
+	method huye() { // spacio que hay disponible alrededor 
 		return self.position(tablero.espacioLibreAlrededor(self).anyOne())
 	}
 
@@ -241,7 +236,6 @@ class Zombie inherits Visual {
 	method comenzarMovimiento(casa) {
 		game.onTick(4000, "zombie se mueve", { => try {
 			if (self.estaAlBordeDeLaCasa()) { // si la casa esta a su alcance ataca
-			// new Sonido().golpeMadera().play()
 				const golpe = game.sound("golpeMadera.mp3")
 				golpe.play()
 				casa.recibeDanio(danio)
