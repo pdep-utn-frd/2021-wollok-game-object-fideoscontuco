@@ -6,7 +6,7 @@ import seleccionDificultad.*
 
 class Horario inherits Visual {
 
-	var property tiempoDelDia = 30000
+	var property tiempoDelDia = 40000
 	// var property position = game.origin()
 	var property estado = dia // polimorfismo? estado.ejecutar()
 

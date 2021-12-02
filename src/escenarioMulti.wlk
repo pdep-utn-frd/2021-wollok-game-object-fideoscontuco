@@ -27,7 +27,6 @@ const botonUnJugador = new BotonJugador( // mas facil si es necesario hacer much
 imagen1 = "1JugadorB.png", imagen2 = "1JugadorRemarcadoB.png", estaRemarcado = true, siguiente = 1, // si fueran 3 decisiones, seria siguiente = 1, anterior = 2
 anterior = 1, seleccion = unJugador, position = game.at(4, 7))
 
-
 object seleccionJugadores inherits PantallaSeleccion(seleccionActual = botonUnJugador, listaDeBotones = [ botonUnJugador, botonDosJugadores ]) { // pantalla de seleccion jugadores, 
 //podria compartir clase con  pantalla de dificultad
 
@@ -100,63 +99,61 @@ object modoJugadores { // seleccion guardada de usuario
 
 }
 
- 
- 
 object personaje1 inherits PersonajePrincipal {
-	
+
 	method configurarTeclasExtras() {
 		keyboard.enter().onPressDo{ self.interactuarPosicion()}
-		
-		/*   impacto en performance luego de 10 minutos moviendose, preferible evitar self.position().up(1)
-		keyboard.up().onPressDo({ self.moverse(self.position().up(1))}) //
-		keyboard.down().onPressDo({ self.moverse(self.position().down(1))})
-		keyboard.left().onPressDo({ self.moverse(self.position().left(1))})
-		keyboard.right().onPressDo({ self.moverse(self.position().right(1))}// Repite logica en cada tecla
-		)
-		* 
-		*/
-		 
-		
+			/*   impacto en performance luego de 10 minutos moviendose, preferible evitar self.position().up(1)
+			 * keyboard.up().onPressDo({ self.moverse(self.position().up(1))}) //
+			 * keyboard.down().onPressDo({ self.moverse(self.position().down(1))})
+			 * keyboard.left().onPressDo({ self.moverse(self.position().left(1))})
+			 * keyboard.right().onPressDo({ self.moverse(self.position().right(1))}// Repite logica en cada tecla
+			 * )
+			 * 
+			 */
 		keyboard.enter().onPressDo{ self.interactuarPosicion()} // c tecla compartida
-		
-		keyboard.up().onPressDo({  
-			const haciaArriba = game.at(self.position().x(), self.position().y() + 1) 
+		keyboard.up().onPressDo({ 
+			const haciaArriba = game.at(self.position().x(), self.position().y() + 1)
 			self.moverse(haciaArriba)
 		})
-		
 		keyboard.down().onPressDo({ 
-		 	const posSiguiente = game.at(self.position().x(), self.position().y() - 1)
-		 	self.moverse(posSiguiente)
-		 	}
-		)
-		
+			const posSiguiente = game.at(self.position().x(), self.position().y() - 1)
+			self.moverse(posSiguiente)
+		})
 		keyboard.left().onPressDo({ 
-		 	const posSiguiente = game.at(self.position().x() - 1, self.position().y())
-		 	self.moverse(posSiguiente)
-		 	})
-		
-		
+			const posSiguiente = game.at(self.position().x() - 1, self.position().y())
+			self.moverse(posSiguiente)
+		})
 		keyboard.right().onPressDo({ 
-		 	const aLaDerecha = game.at(self.position().x() + 1, self.position().y())
-		 	self.moverse(aLaDerecha)
-		 	})
-		 
-		 
-		
+			const aLaDerecha = game.at(self.position().x() + 1, self.position().y())
+			self.moverse(aLaDerecha)
+		})
 	}
 
 }
 
 object personaje2 inherits PersonajePrincipal(position = game.at(7, 3), image = "personaje21.png", imagenPrincipal = "personaje21.png", imagenPasoDado = "personaje2.png", accion1 = "accion3.png", accion2 = "accion4.png") {
 
+	/* */
 	method configurarTeclasExtras() {
+		keyboard.w().onPressDo({ 
+			const haciaArriba = game.at(self.position().x(), self.position().y() + 1)
+			self.moverse(haciaArriba)
+		})
+		keyboard.s().onPressDo({ 
+			const posSiguiente = game.at(self.position().x(), self.position().y() - 1)
+			self.moverse(posSiguiente)
+		})
+		keyboard.a().onPressDo({ 
+			const posSiguiente = game.at(self.position().x() - 1, self.position().y())
+			self.moverse(posSiguiente)
+		})
+		keyboard.d().onPressDo({ 
+			const aLaDerecha = game.at(self.position().x() + 1, self.position().y())
+			self.moverse(aLaDerecha)
+		})
 		keyboard.c().onPressDo({ self.interactuarPosicion()})
-		keyboard.w().onPressDo({ self.moverse(self.position().up(1))})
-		keyboard.s().onPressDo({ self.moverse(self.position().down(1))})
-		keyboard.a().onPressDo({ self.moverse(self.position().left(1))})
-		keyboard.d().onPressDo({ self.moverse(self.position().right(1))} // })
-		// Repite logica en cada tecla
-		)
+	
 	}
 
 	override method cobrarVida() {

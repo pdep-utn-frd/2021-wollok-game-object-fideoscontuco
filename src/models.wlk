@@ -24,10 +24,11 @@ class VisualUI inherits Visual { // blueprint de visuales sin logica particular.
 
 	var property image = null
 	var property position = null
-	
-	method esInteractuado(p){
-		//no hace nada
+
+	method esInteractuado(p) {
+	// no hace nada
 	}
+
 // method tieneComportamiento() = false
 // No tiene sentido esta clase sin comportamiento ni atributos. 
 // Podrian agregarle position e image. Incluso el esAtravesable() 
@@ -37,7 +38,6 @@ const flechas = new VisualUI(image = "j1Guia.png", position = game.origin())
 
 const guiaJugadorDos = new VisualUI(image = "j2.png", position = game.at(7, 0))
 
- 
 object mapa {
 
 	method crearParedesInvisibles() {
@@ -49,7 +49,6 @@ object mapa {
 
 }
 
- 
 // Idem, no tienen comportamiento diferente, solo un valor diferente para un atributo
 class ParteCasa inherits Visual {
 
@@ -76,12 +75,12 @@ class Casa inherits Visual {
 	var property nombre = "casa"
 	var property tieneComportamiento = false
 
-	method repararCasa(sujetoParticipe){ // que la casa hable por si misma
-		 game.sound("repararCasa3.mp3").play()
-		 const maderaRecibida = sujetoParticipe.madera()
-		 self.salud(self.salud() + maderaRecibida )
-		 game.say(self, "salud de casa + " + maderaRecibida)
-		 sujetoParticipe.madera(0)
+	method repararCasa(sujetoParticipe) { // que la casa hable por si misma
+		game.sound("repararCasa3.mp3").play()
+		const maderaRecibida = sujetoParticipe.madera()
+		self.salud(self.salud() + maderaRecibida)
+		game.say(self, "salud de casa + " + maderaRecibida)
+		sujetoParticipe.madera(0)
 	}
 
 	method darMensaje() = "si la casa cae pierdes el juego"
@@ -91,11 +90,11 @@ class Casa inherits Visual {
 	method image() = "casa.png"
 
 	method esInteractuado(sujetoParticipe) { // rever
-		if (sujetoParticipe.madera() > 0){
+		if (sujetoParticipe.madera() > 0) {
 			self.repararCasa(sujetoParticipe)
 		}
 	}
-	
+
 	method estaRota() = salud < 0
 
 	method celdasOcupadas() {
@@ -137,6 +136,7 @@ class Zombie inherits Visual {
 	var property hogar
 	var property horarioZombie = null
 	var vida = 50
+	var property direccion = null
 
 	method darMensaje() = "no dejes que los zombies se acerquen a la casa"
 
@@ -151,7 +151,6 @@ class Zombie inherits Visual {
 	method recibeDanio() {
 		self.vida(self.vida() - heroe.danio())
 		if (self.vida() <= 0) {
-			
 			estadisticasZombie.incrementarContador()
 				// new Sonido().agonia().play()
 			const agonia = game.sound("tomasAgonia.mp3")
@@ -187,6 +186,8 @@ class Zombie inherits Visual {
 			if (not reloj.esDeDia()) {
 				self.position(tablero.celdasVaciasBordes().anyOne())
 				self.comenzarMovimiento(hogar)
+					// establee su direccion una sola vez para no preguntar en cada paso, mas perf
+				self.direccion(tablero.parteCasaMasCercana(self.position()))
 			}
 		})
 	}
@@ -203,9 +204,7 @@ class Zombie inherits Visual {
 
 	// //
 	method huye() { // que espacio hay libre disponible alrededor de el??
-		 
-			return self.position(tablero.espacioLibreAlrededor(self).anyOne())
-		 
+		return self.position(tablero.espacioLibreAlrededor(self).anyOne())
 	}
 
 	method hacerMasFuerte() {
@@ -234,13 +233,13 @@ class Zombie inherits Visual {
 	}
 
 	method darUnPaso() {
-		if (not self.estaFueraDelMapa()) { // con remove tick event, parece que lo remueve pero se dispara una ultima vez.
-			self.position(tablero.posicionMasCercanaACasa(self))
-		}
+		// if (not self.estaFueraDelMapa()) { // con remove tick event, parece que lo remueve pero se dispara una ultima vez.
+		self.position(tablero.posicionMasCercanaACasa(self))
+	// }
 	}
 
 	method comenzarMovimiento(casa) {
-		game.onTick(700.randomUpTo(2009), "zombie se mueve", { => try {
+		game.onTick(4000, "zombie se mueve", { => try {
 			if (self.estaAlBordeDeLaCasa()) { // si la casa esta a su alcance ataca
 			// new Sonido().golpeMadera().play()
 				const golpe = game.sound("golpeMadera.mp3")
@@ -251,7 +250,7 @@ class Zombie inherits Visual {
 			}
 		} catch e : wollok.lang.ElementNotFoundException {
 			game.say(self, "no tengo donde ir")
-			e.printStackTrace()
+		// e.printStackTrace()
 		}
 		})
 	}
@@ -303,7 +302,6 @@ object visualYAtributos {
 
 }
 
-
 class BayaAuto inherits BayaMediana { // baya que se regenera en la misma pos cada cierto tiempo y en la misma ubicacion, da vida y ademas aumenta el daño
 
 	var property posicionOriginal = null
@@ -317,19 +315,18 @@ class BayaAuto inherits BayaMediana { // baya que se regenera en la misma pos ca
 		const tiempo = 6000.randomUpTo(10000)
 		game.schedule(tiempo, { => self.position(self.posicionOriginal())})
 	}
-	
+
 	override method image() = "bayaBonus.png"
-	
-	override method esInteractuado(sujetoParticipe){
+
+	override method esInteractuado(sujetoParticipe) {
 		sujetoParticipe.danio(sujetoParticipe.danio() + 10)
 		sujetoParticipe.accionar()
 		game.say(sujetoParticipe, "danio: " + sujetoParticipe.danio())
 		self.moverFueraDelMapa()
 		self.traerAlMapaTemporizado()
 	}
-	 
-}
 
+}
 
 class BayaMediana inherits Visual {
 
@@ -349,16 +346,15 @@ class BayaMediana inherits Visual {
 		game.say(sujetoParticipe, "energia: " + sujetoParticipe.energia())
 		self.moverFueraDelMapa()
 		self.traerAlMapaTemporizado()
- 
 	}
-	
-	method moverFueraDelMapa(){
+
+	method moverFueraDelMapa() {
 		self.position(game.at(25, 25))
 	}
+
 	method traerAlMapaTemporizado() {
 		const tiempo = 4000.randomUpTo(8000)
 		game.schedule(tiempo, { => self.position(tablero.posRandom())})
-		 
 	}
 
 	override method cobrarVida() {
@@ -405,14 +401,12 @@ class Roca inherits Visual {
 		game.addVisual(new PartePiedra(position = position5))
 	}
 
- 
 	method image() = "piedra80.png"
 
 	method mensajeDeDespedida() { // expandir con razon de derrota
 		return "te has quedado sin energia presiona una tecla para volver a comenzar"
 	}
 
- 
 	method guardarMensaje(m) {
 		listaProhibida.add(m)
 	}
@@ -461,7 +455,7 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 		try {
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
 			itemFound.esInteractuado(self)
-			self.cansar(10) 
+			self.cansar(10)
 			rocaConsejera.darConsejo(itemFound)
 		// game.say(self,"interactuo con " + itemFound.toString()) // testing
 		} catch e : wollok.lang.Exception { // Illegal operation 'uniqueElement' on collection with 2 elements
@@ -500,23 +494,18 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 		}
 	}
 
-	 
 	method hacerPasos() {
 		if (image == imagenPrincipal) {
 			image = imagenPasoDado
 		} else {
 			image = imagenPrincipal
 		}
-	} 
-	
-	
-	 
-	method accionar() {
-	//	game.say(self, "energia : " + self.energia())
-		self.moverPala()
 	}
 
-	 
+	method accionar() {
+		// game.say(self, "energia : " + self.energia())
+		self.moverPala()
+	}
 
 	method esInteractuado(personaje) {
 	// no hace nada
@@ -549,7 +538,7 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 			escenarioDerrota.inicio("te has quedado sin energia")
 		}
 	}
-	
+
 	method efectoDeCaminar() {
 		self.aumentarContadorPasos()
 		self.alarmaDeEnergia()
@@ -561,9 +550,7 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 		contadorEscondidoDePasos = contadorEscondidoDePasos + 1
 	}
 
-	method ruido() = if (contadorEscondidoDePasos % 2 == 0) game.sound("caminata1.mp3") else  game.sound("caminata2.mp3")
-		 
-	 
+	method ruido() = if (contadorEscondidoDePasos % 2 == 0) game.sound("caminata1.mp3") else game.sound("caminata2.mp3")
 
 }
 
