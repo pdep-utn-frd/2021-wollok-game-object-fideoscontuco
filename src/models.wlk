@@ -128,7 +128,7 @@ class Zombie inherits Visual {
 
 	var property position = game.at(20, 20) // game.at(1, 2.randomUpTo(9))
 	// var property vida = 50
-	var danio = 5
+	var danio = 15
 	var property nombre = "zombie"
 	var property paso = true
 	var property tieneComportamiento = true
@@ -176,7 +176,7 @@ class Zombie inherits Visual {
 	}
 
 	method traerAlMapa() { // necesito un objeto casa que sea golpeable
-		game.schedule(4000.randomUpTo(6000), {=>
+		game.schedule(3000.randomUpTo(5000), {=>
 				// si es de dia, no haga nada
 			if (not reloj.esDeDia()) {
 				self.position(tablero.celdasVaciasBordes().anyOne())
@@ -238,7 +238,7 @@ class Zombie inherits Visual {
 			if (self.estaAlBordeDeLaCasa()) { // si la casa esta a su alcance ataca
 				const golpe = game.sound("golpeMadera.mp3")
 				golpe.play()
-				casa.recibeDanio(danio)
+				casa.recibeDanio(danio / multiplicador.numero()) // dificultad incrementa el daño
 			} else { // si no, se mueve
 				self.darUnPaso()
 			}
