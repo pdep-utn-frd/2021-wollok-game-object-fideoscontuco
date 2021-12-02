@@ -56,4 +56,14 @@
               juego en cualquier momento, al apretar esta tecla el juego se termina y la ventana se cierra. 
               La tecla "L" permite al jugador cambiar la dificultad si este se confundio al seleccionarla.
 
+ ## Pantalla de Estadisticas
+  Al perder
+  - Se muestra una pantalla con  estadisticas utiles de nuestra partida
+  - La roca nos informa la razon de nuestra derrota. 
+  - Presionando cualquier boton se vuelve a la pantalla de seleccion de dificultad, por el cual un nuevo nivel es generado.
+  
+ <br>
+ 
+<img src="https://user-images.githubusercontent.com/46230600/144439252-49ba0f69-d503-4cce-bace-0ff443e01722.png" alt="drawing" width="74%"/>
+ 
 [notas adicionales](notasAdicionales.md)
