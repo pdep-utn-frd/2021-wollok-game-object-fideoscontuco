@@ -159,7 +159,7 @@ class NivelDificil inherits Nivel {
 	}
 
 	override method spawnear() {
-		new FabricaSujetos(nivel = self, nZombies = 7.randomUpTo(10), nBaya = 2.randomUpTo(4), nArboles = 2.randomUpTo(4), nBayasBonus = 1).iniciar()
+		new FabricaSujetos(nivel = self, nZombies = 7.randomUpTo(10), nBaya = 3.randomUpTo(5), nArboles = 2.randomUpTo(4), nBayasBonus = 1).iniciar()
  
 	}
 
@@ -173,7 +173,7 @@ class NivelNormal inherits Nivel {
 	}
 
 	override method spawnear() { //
-		new FabricaSujetos(nivel = self, nZombies = 4.randomUpTo(7), nBaya = 3.randomUpTo(6), nArboles = 4.randomUpTo(6), nBayasBonus = 3).iniciar()
+		new FabricaSujetos(nivel = self, nZombies = 4.randomUpTo(7), nBaya = 4.randomUpTo(8), nArboles = 4.randomUpTo(6), nBayasBonus = 3).iniciar()
  
 	}
 

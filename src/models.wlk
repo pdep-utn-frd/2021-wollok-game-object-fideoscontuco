@@ -450,7 +450,7 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 		try {
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
 			itemFound.esInteractuado(self)
-			self.cansar(10)
+			self.cansar(6)
 			rocaConsejera.darConsejo(itemFound)
 		// game.say(self,"interactuo con " + itemFound.toString()) // testing
 		} catch e : wollok.lang.Exception { // Illegal operation 'uniqueElement' on collection with 2 elements
