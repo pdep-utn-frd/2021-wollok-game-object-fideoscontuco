@@ -55,3 +55,5 @@
               Ademas, hay otras dos teclas especiales. La "L", y la "x". Con la X el jugador puede salir del
               juego en cualquier momento, al apretar esta tecla el juego se termina y la ventana se cierra. 
               La tecla "L" permite al jugador cambiar la dificultad si este se confundio al seleccionarla.
+
+[notas adicionales](notasAdicionales.md)
