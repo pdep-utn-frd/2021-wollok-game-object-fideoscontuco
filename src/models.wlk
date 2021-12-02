@@ -319,7 +319,7 @@ class BayaAuto inherits BayaMediana { // baya que se regenera en la misma pos ca
 	override method image() = "bayaBonus.png"
 
 	override method esInteractuado(sujetoParticipe) {
-		sujetoParticipe.danio(sujetoParticipe.danio() + 10)
+		sujetoParticipe.danioBase(sujetoParticipe.danioBase() + 10)
 		sujetoParticipe.accionar()
 		game.say(sujetoParticipe, "danio: " + sujetoParticipe.danio())
 		self.moverFueraDelMapa()
@@ -432,7 +432,7 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 	var property position = game.at(1, 3)
 	var property madera = 0
 	var property contadorEscondidoDePasos = 0
-	var property danio = 45
+	// var property danio = 45
 	var property nombre = "personajePrincipal"
 	var property estaEnPie = false
 	var property tieneComportamiento = false
@@ -444,18 +444,19 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 	var property accion2 = "accion2.png"
 	var property imagenPrincipal = "shovelMain.png"
 	var property imagenPasoDado = "shovelMain2.png"
+	var property danioBase = 45
 
 	method darMensaje() = "pierdes el juego al quedarte sin energia"
 
 	method danio() {
-		return danio // * multiplicador
+		return self.danioBase() * multiplicador.numero()
 	}
 
 	method interactuarPosicion() {
 		try {
 			const itemFound = game.uniqueCollider(self) // objeto encontrado
 			itemFound.esInteractuado(self)
-			self.cansar(10)
+			self.cansar(50)
 			rocaConsejera.darConsejo(itemFound)
 		// game.say(self,"interactuo con " + itemFound.toString()) // testing
 		} catch e : wollok.lang.Exception { // Illegal operation 'uniqueElement' on collection with 2 elements
@@ -530,7 +531,7 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 	}
 
 	method cansar(nro) {
-		energia = energia - nro
+		energia = energia - (nro / multiplicador.numero())
 	}
 
 	method alarmaDeEnergia() {
@@ -539,8 +540,17 @@ class PersonajePrincipal inherits Visual { // Tal vez se pueda pensar en una sub
 		}
 	}
 
+	method advertenciaEnergia() {
+		if (self.energia() < 60) {
+			game.say(self, "me estoy quedando sin energia")
+			
+		}
+	}
+
 	method efectoDeCaminar() {
 		self.aumentarContadorPasos()
+		self.cansar(4)
+		self.advertenciaEnergia()
 		self.alarmaDeEnergia()
 		estaEnPie = not estaEnPie
 		self.ruido().play()
