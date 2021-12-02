@@ -11,9 +11,9 @@ gridDisponibles.min{ grid => grid.distance(self.parteDeCasaMasCercana())}
 ```
  
 
- ## Manera de conocer la posicion mas cercana:
+ ## Soluciones:  
 
-Problema:
+ ### Manera de conocer la posicion mas cercana::
 Se utilizaba 
 ```
 method distance(position) {
@@ -24,7 +24,7 @@ method distance(position) {
 }
 ```
 Para conocer la distancia al ser consultada en cada paso (12 consultas/3 seg).
-Pero esta operacion resulta costosa por sqrt, ademas no nos es importante conocer la distancia con exactitud.
+Pero esta operacion resulta costosa por sqrt, ademas no resulta importante conocer la distancia con exactitud.
 
 <br> 
 
@@ -39,8 +39,9 @@ method distanciaABarato(pos1, pos2) {
  
 https://bloggity.odatnurd.net/gamedev-math/manhattan/
   
+<br>
 
- ## Respecto a encontrar la parte de la casa hacia donde el zombie se dirige:
+ ### Respecto a encontrar la parte de la casa hacia donde el zombie se dirige:
 
 self.parteDeCasaMasCercana() devolvia mediante distance() la parte de casa mas cercana al zombie.
 (la casa ocupa 4 grids)
@@ -53,16 +54,17 @@ Se utilizo distanciaAMasBarata() para encontrar pos, y
 Se delego al zombie conocer su direccion al regresar al mapa - y no calcular en cada paso la parte de la casa con menor distancia
 
 <br>
- ## Aumentar el tiempo de demora entre pasos de los zombies
+ ### Aumentar el tiempo de demora entre pasos de los zombies
  
 Por debajo de 3000ms entre cada paso la cosa se pone fea.
 
 <br>
 
- ## Soluciones que podrian haber ayudado pero no fueron la gran cosa:
+ ### Soluciones que podrian haber ayudado pero no fueron la gran cosa:
 
 Si un zombie comienza su trayecto desde el costado derecho inferior ej (10,0), es probable que no necesite tener en cuenta
-en cada paso el grid que esta a su izquierda o debajo,  salvo que busque escapar.
+en cada paso el grid que esta a su izquierda o debajo  salvo que busque escapar.
+
 Se utiliza metodo que toma en que cuadrante esta el zombie, y devuelve la lista de posiciones posibles a moverse, reduciendo
 los posibles grids de 4 a 2. 
 - se crea una lista reducida de grids posibles segun cuadrante de zombie
